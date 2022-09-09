@@ -1,0 +1,11 @@
+img{
+    height:450px;
+}
+.App{
+    background-image: url("https://www.assentriskmanagement.co.uk/wp-content/uploads/2018/08/insurance-companies.jpg") ;
+    position: fixed;
+    min-width: 100%;
+    min-height: 100%;
+    background-size: cover;
+    background-position: center;
+}

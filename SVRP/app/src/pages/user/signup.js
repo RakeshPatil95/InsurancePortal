@@ -1,0 +1,323 @@
+import { Col,Form,InputGroup,Row,Container,Button } from "react-bootstrap"
+import { Formik } from "formik";
+import Navbar from "../../components/navbar";
+import { Link } from 'react-router-dom'
+import * as yup from "yup";
+import '../../App.css'
+import axios from 'axios';
+import {useNavigate} from 'react-router-dom' ;
+import { toast } from "react-toastify";
+const schema = yup.object().shape({
+  firstName: yup.string().required("Please Enter your First name"),
+  lastName: yup.string().required("Please Enter your Last name"),
+  email: yup.string().required("Please Enter email address").matches(/\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,"Invalid email ID"),
+  mobileNumber: yup.string().required("Enter mobile Number").matches(/^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/,"Please enter valid 10 digit number"),
+  password: yup.string()
+  .required("Please Enter your Password")
+  .max(25)
+  .matches(/^(?=.{8,})/, "Must Contain 8 Characters")
+  .matches(
+    /^((?=.*[a-z]){1})((?=.*[A-Z]){1})/,
+    "Must Contain One Uppercase, One Lowercase"
+  )
+  .matches(
+    /(\W)/,
+    "Must Contain One Special Case Character"
+  )
+  .matches(/(?=.*\d)/, "Must Contain One Number"),
+  confirmPassword: yup.string().required("Please confirm your Password").oneOf([yup.ref("password"), null], "Passwords must match"),
+  securityAnswer: yup.string().required("Please Enter your Security Answer"),
+  terms: yup.bool().required().oneOf([true], "Terms must be accepted"),
+});
+
+function Signup() {
+  const Navigate=useNavigate();
+  
+  return (
+    <div className='App'>
+       <Navbar />
+    <Formik
+      validationSchema={schema}
+     
+      initialValues={{
+    firstName: '',
+        lastName: '',
+    email: "",
+    mobileNumber: "",
+    password: "",
+    confirmPassword: "",
+        securityAnswer: "",
+        securityQuestion:"",
+        terms: false,
+      }}
+
+      onSubmit={(values)=>{
+        
+        let firstName=values.firstName;
+        let lastName=values.lastName;
+        let phoneNumber=values.mobileNumber;
+        let email=values.email;
+
+        let password=values.password;
+        let securityQuestion=values.securityQuestion;
+        let securityAnswer=values.securityAnswer;
+        let role=values.role;
+        console.log(values.securityAnswer);
+        console.log(values.securityQuestion);
+        let url="";
+        if(role=="AGENT")
+         url='http://localhost:8080/agent/signup';
+          else 
+          url='http://localhost:8080/customer/signup';
+        axios.post(url,{
+          firstName,
+          lastName,
+          phoneNumber,
+           email,
+           password,
+           securityQuestion,
+           securityAnswer
+       }).then((response)=>{
+          const result=response.data;
+         
+          if (response.status == 201) {
+            toast.success('SuccessFully Signed Up');
+            alert("seccessfully signed up");
+            Navigate('/signin');
+             
+            } 
+       }).catch((error)=>{
+        alert("Signup Failed");
+          console.log('error')
+          console.log(error)
+       })
+
+        
+      
+      }}
+    >
+      {({
+        handleSubmit,
+        handleChange,
+        handleBlur,
+        values,
+        touched,
+        isValid,
+        errors,
+      }) => (
+        <div>
+          <Container style={styles.container}>
+            <Form noValidate onSubmit={handleSubmit} style={styles.myfont} >
+              <Row className="mb-2">
+              <Form.Group as={Col} md="12" controlId="validationFormik02">
+                    <Form.Label>Role</Form.Label>
+                    <InputGroup hasValidation>
+                      <Form.Select
+                        aria-label="Default select example"
+                        name="role"
+                        onChange={handleChange}
+                        value={values.role}
+                      >
+                        <option value="CUSTOMER">CUSTOMER</option>
+                        <option value="AGENT">AGENT</option>
+                        
+                      </Form.Select>
+                    </InputGroup>
+                  </Form.Group>
+                <Form.Group as={Col} md="6" controlId="validationFormik01">
+                  <Form.Label>First name</Form.Label>
+                  <Form.Control
+                    type="text"
+                      name="firstName"
+                      placeholder="Enter your First Name here"
+                    value={values.firstName}
+                    onChange={handleChange}
+                    isValid={touched.firstName && !errors.firstName}
+                    isInvalid={!!errors.firstName}
+                  />
+                  <Form.Control.Feedback className="FeedBack" type="invalid">{errors.firstName}</Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group as={Col} md="6" controlId="validationFormik02">
+                  <Form.Label>Last name</Form.Label>
+                  <Form.Control
+                    type="text"
+                      name="lastName"
+                      placeholder="Enter your Last Name here"
+                    value={values.lastName}
+                    onChange={handleChange}
+                    isValid={touched.lastName && !errors.lastName}
+                    isInvalid={!!errors.lastName}
+                  />
+                  <Form.Control.Feedback className="FeedBack" type="invalid">{errors.lastName}</Form.Control.Feedback>
+                </Form.Group>
+               
+              </Row>
+              <Row className="mb-2">
+                <Form.Group as={Col} md="6" controlId="validationFormik03">
+                  <Form.Label>Mobile Number</Form.Label>
+                  <Form.Control
+                    type="text"
+                      name="mobileNumber"
+                      placeholder="Enter your Number here"
+                    value={values.mobileNumber}
+                    onChange={handleChange}
+                    isValid={touched.mobileNumber && !errors.mobileNumber}
+                    isInvalid={!!errors.mobileNumber}
+                  />
+                  <Form.Control.Feedback className="FeedBack" type="invalid">{errors.mobileNumber}</Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group as={Col} md="6" controlId="validationFormik04">
+                  <Form.Label>Email ID</Form.Label>
+                  <Form.Control
+                    type="email"
+                      name="email"
+                      placeholder="Enter your Email here"
+                    value={values.email}
+                    onChange={handleChange}
+                    isValid={touched.email && !errors.email}
+                    isInvalid={!!errors.email}
+                  />
+                 <Form.Control.Feedback className="FeedBack" type="invalid">{errors.email}</Form.Control.Feedback>
+                </Form.Group>
+              </Row>
+              <Row className="mb-2">
+                <Form.Group as={Col} md="6" controlId="validationFormik05">
+                  <Form.Label>Password</Form.Label>
+                  <Form.Control
+                    className="SignUpFormControls"
+                    type="password"
+                      name="password"
+                      placeholder="Enter your Password here"
+                    value={values.password}
+                    onChange={handleChange}
+                  isValid={touched.password && !errors.password}
+                    isInvalid={!!errors.password}
+                  />
+                   <Form.Control.Feedback className="FeedBack" type="invalid">
+                    {errors.password}
+                  </Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group as={Col} md="6" controlId="validationFormik06">
+                  <Form.Label>Confirm Password</Form.Label>
+                  <Form.Control
+                    type="password"
+                      name="confirmPassword"
+                      placeholder="Confirm your Password here"
+                    value={values.confirmPassword}
+                    onChange={handleChange}
+                    isValid={touched.confirmPassword && !errors.confirmPassword}
+                    isInvalid={!!errors.confirmPassword} 
+                  />
+                  <Form.Control.Feedback className="FeedBack" type="invalid">
+          {errors.confirmPassword}
+        </Form.Control.Feedback>
+                </Form.Group>
+              </Row>
+              <Row className="mb-2">
+                <Form.Group
+                  as={Col}
+                  md="12"
+                  controlId="validationFormik02">
+                  <Form.Label>Security Question</Form.Label>
+                  <InputGroup hasValidation
+                 >
+                    
+                    <Form.Select aria-label="Default select example"
+                     name="securityQuestion"
+                     onChange={handleChange}
+                     value={values.securityQuestion}>
+       <option >Choose a Question</option>
+      <option value="In what city were you born?" >In what city were you born?</option>
+      <option value="What was your favorite food as a child ?">What was your favorite food as a child ?</option>
+    <option value="What is the name of your first school ?">What is the name of your first school ?</option>
+    <option value="What is the name of your favourite pet ?">What is the name of your favourite pet ?</option>
+    <option value="What is the name of your Favourite movie ?">What is the name of your Favourite movie ?</option>
+    </Form.Select>
+                  </InputGroup>
+                </Form.Group>
+              </Row>
+              <Row>
+              <Form.Group as={Col} md="12" controlId="validationFormik07">
+                  <Form.Label>Security Answer</Form.Label>
+                  <Form.Control
+                    type="text"
+                      name="securityAnswer"
+                      placeholder="Enter your Security Answer here"
+                    value={values.securityAnswer}
+                    onChange={handleChange}
+                    isValid={touched.securityAnswer && !errors.securityAnswer}
+                    isInvalid={!!errors.securityAnswer}
+                  />
+                  <Form.Control.Feedback className="FeedBack" type="invalid">{errors.securityAnswer}</Form.Control.Feedback>
+                </Form.Group>
+              </Row>
+              <Form.Group className="mb-2">
+                <Form.Check
+                  required
+                  name="terms"
+                  label="Agree to terms and conditions"
+                  onChange={handleChange}
+                  isInvalid={!!errors.terms}
+                  feedback={errors.terms}
+                  feedbackType="invalid"
+                  id="validationFormik0"
+                />
+              </Form.Group>
+              <Row>
+              <Form.Group as={Col} md="12" className="mb-2" controlId="validationFormik08">
+              <Button
+                type="submit"
+                variant="outline-secondary"
+                style={styles.signinButton}
+              >
+                Sign-up
+                    </Button>
+                    <div>
+            Already have an account? <Link to='/signin'>Signin here</Link>
+          </div>
+                  </Form.Group>
+                </Row>
+            </Form>
+          </Container>
+        </div>
+      )}
+      </Formik>
+      </div>
+  );
+}
+const styles = {
+  container: {
+    width: 600,
+    height: "auto",
+    padding: 20,
+    position: "relative",
+    top: 100,
+    left: -400,
+    right: 0,
+    bottom: 0,
+   margin: "auto",
+    borderColor: "#004E8F",
+    borderRadius: 10,
+    broderWidth: 1,
+    borderStyle: "solid",
+    boxShadow: "1px 1px 20px 5px white",
+  },
+  signinButton: {
+    position: "relative",
+    width: "100%",
+    height: 40,
+    backgroundColor: "#FFCB08",
+    color: "black",
+    borderRadius: 5,
+    border: "none",
+    marginTop: 10,
+    fontWeight: "bold",
+  },
+  myfont: {
+    marginRight: "10px",
+    color: "white",
+    textDecoration: "none",
+    fontWeight: "bold",
+  },
+};
+export default Signup;

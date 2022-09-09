@@ -1,0 +1,211 @@
+import { Col, Form, InputGroup, Row, Container, Button } from 'react-bootstrap'
+import { Formik } from 'formik'
+import Navbar from '../../components/navbar'
+import { Link } from 'react-router-dom'
+import * as yup from 'yup'
+import './user.css'
+import '../../App.css'
+import axios from 'axios'
+import { useNavigate, useLocation } from 'react-router-dom'
+import { toast } from 'react-toastify'
+const schema = yup.object().shape({
+  email: yup
+    .string()
+    .required('Please Enter email address')
+    .matches(
+      /\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+      'Invalid email ID',
+    ),
+  password: yup
+    .string()
+    .required('Please Enter your Password')
+    .max(25)
+    .matches(/^(?=.{8,})/, 'Must Contain 8 Characters')
+    .matches(
+      /^((?=.*[a-z]){1})((?=.*[A-Z]){1})/,
+      'Must Contain One Uppercase, One Lowercase',
+    )
+    .matches(/(\W)/, 'Must Contain One Special Case Character')
+    .matches(/(?=.*\d)/, 'Must Contain One Number'),
+})
+
+const Signin = () => {
+  const Navigate = useNavigate()
+
+  return (
+    <div className="App">
+      <Navbar />
+      <Formik
+        validationSchema={schema}
+        onSubmit={(values) => {
+          let email = values.email
+
+          let password = values.password
+          let role = values.role
+          console.log(role);
+          let url="";
+          if(role==="CUSTOMER")
+         url='http://localhost:8080/customer/signin';
+          else if(role==="AGENT")
+          url='http://localhost:8080/agent/signin';
+          else
+          url='http://localhost:8080/admin/signin';
+          console.log(url);
+            axios
+              .post(url, {
+                email,
+                password,
+              })
+              .then((response) => {
+                const result = response.data
+                console.log(response.status);
+                if (response.status === 200) {
+                  sessionStorage.setItem("user",response.data)
+                  toast.success('WELCOME TO SVRP INSURANCE')
+                  console.log(role)
+                 if(role==="ADMIN")
+                 Navigate('/admindashboard')
+                 else if(role=="AGENT")
+                 Navigate('/agentdashboard')
+                 else
+                  Navigate('/customerdashboard')
+                } else {
+                  
+                }
+              })
+              .catch((error) => {
+                toast.error('Please enter valid email or password.... ');
+              })
+          
+        }}
+        initialValues={{
+          email: '',
+          password: '',
+        }}
+      >
+        {({
+          handleSubmit,
+          handleChange,
+
+          values,
+          touched,
+
+          errors,
+        }) => (
+          <div>
+            <Container style={styles.container}>
+              <Form noValidate onSubmit={handleSubmit} style={styles.myfont}>
+                <Row className="mb-2">
+                  <Form.Group as={Col} md="12" controlId="validationFormik02">
+                    <Form.Label>Role</Form.Label>
+                    <InputGroup hasValidation>
+                      <Form.Select
+                        
+                        name="role"
+                        onChange={handleChange}
+                        value={values.role}
+                      >
+                        <option>Choose a Role</option>
+                        <option value="ADMIN">ADMIN</option>
+                        <option value="AGENT">AGENT</option>
+                        <option value="CUSTOMER">CUSTOMER</option>
+                      </Form.Select>
+                    </InputGroup>
+                  </Form.Group>
+                  <Form.Group as={Col} md="12" controlId="validationFormik01">
+                    <Form.Label>Email</Form.Label>
+                    <Form.Control
+                      type="email"
+                      name="email"
+                      placeholder="Enter your Email ID here"
+                      value={values.email}
+                      onChange={handleChange}
+                      isValid={touched.email && !errors.email}
+                      isInvalid={!!errors.email}
+                    />
+                    <Form.Control.Feedback className="FeedBack" type="invalid">
+                      {errors.email}
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                  <Form.Group as={Col} md="12" controlId="validationFormik05">
+                    <Form.Label>Password</Form.Label>
+                    <Form.Control
+                      className="SignUpFormControls"
+                      type="password"
+                      placeholder="Enter your Password here"
+                      name="password"
+                      value={values.password}
+                      onChange={handleChange}
+                      isValid={touched.password && !errors.password}
+                      isInvalid={!!errors.password}
+                    />
+                    <Form.Control.Feedback className="FeedBack" type="invalid">
+                      {errors.password}
+                    </Form.Control.Feedback>
+                    <Link to="/forgotPassword">Forgot Password</Link>
+                  </Form.Group>
+                </Row>
+                <Row>
+                  <Form.Group
+                    as={Col}
+                    md="12"
+                    className="mb-2"
+                    controlId="validationFormik08"
+                  >
+                    <Button
+                      type="submit"
+                      variant="outline-secondary"
+                      style={styles.signinButton}
+                    >
+                      Sign-in
+                    </Button>
+                    <div>
+                      Don't have an account?{' '}
+                      <Link to="/signup">Signup here</Link>
+                    </div>
+                  </Form.Group>
+                </Row>
+              </Form>
+            </Container>
+          </div>
+        )}
+      </Formik>
+    </div>
+  )
+}
+const styles = {
+  container: {
+    width: 600,
+    height: 'auto',
+    padding: 20,
+    position: 'relative',
+    top: 100,
+    left: -400,
+    right: 0,
+    bottom: 0,
+    margin: 'auto',
+    borderColor: 'white',
+    borderRadius: 10,
+    broderWidth: 1,
+    borderStyle: 'solid',
+    boxShadow: '1px 1px 20px 5px white',
+  },
+  signinButton: {
+    position: 'relative',
+    width: '100%',
+    height: 40,
+    backgroundColor: '#FFCB08',
+    color: 'black',
+    borderRadius: 5,
+    border: 'none',
+    marginTop: 10,
+    fontWeight: 'bold',
+  },
+  myfont: {
+    marginRight: '10px',
+    color: 'white',
+    textDecoration: 'none',
+    fontWeight: 'bold',
+  },
+}
+export default Signin
