@@ -3,8 +3,7 @@ package com.app.dto;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-
-import org.hibernate.validator.constraints.Length;
+import javax.validation.constraints.Pattern;
 
 import com.app.entities.Address;
 
@@ -19,22 +18,24 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class AdminDto {
+	@NotNull
+	private long id;
 	@NotBlank
 	private String firstName;
 	@NotBlank
 	private String lastName;
-	@Length(min=10,max = 10)
-	@NotNull
 	private long phoneNumber;
-	@Email
-	@NotNull
+	@Email(message="Email Address not Valid")
 	private String email;
-	@NotBlank
+  @Pattern(regexp = "((?=.*\\d)(?=.*[a-z])(?=.*[#@$*]).{5,20})", message = "Blank or invalid password")
+	private String password;
+  @NotBlank
 	private String securityQuestion;
-	@NotBlank
+ @NotBlank
 	private String securityAnswer;
-	private byte[] image;
-	private String addressLine1;
-	private String addressLine2;
-	private Address pincode;
+
+
+
+	private Address address;
+	private String image;
 }

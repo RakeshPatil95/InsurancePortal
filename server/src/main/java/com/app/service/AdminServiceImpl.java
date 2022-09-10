@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.app.customerException.ResourceNotFoundException;
 import com.app.customerException.UserNotFoundException;
 import com.app.dao.AdminDao;
 import com.app.dao.AgentDao;
@@ -90,15 +91,30 @@ public void anyInit() {
 	}
 
 	@Override
-	public AdminDto updateAdmin(MultipartFile adminImage, AdminUpdateDto adminupdateDto) throws IOException {
+	public AdminDto updateAdmin( AdminUpdateDto adminupdateDto)  {
 	adDao.findById(adminupdateDto.getId()).orElseThrow(()->new UserNotFoundException("Admin not FOund with Id"+adminupdateDto.getId()));
-	String imagePath = folder.concat(File.separator).concat("AdminId"+adminupdateDto.getId());
-	log.info("bytes copied {} ",
-			Files.copy(adminImage.getInputStream(), Paths.get(imagePath), StandardCopyOption.REPLACE_EXISTING));
-  adminupdateDto.setImage(imagePath);
+
+  
   Admin admin=mapper.map(adminupdateDto, Admin.class);
   adDao.save(admin);
   return mapper.map(admin, AdminDto.class);
+	}
+	@Override
+	public String uploadProfileImage(long adminId, MultipartFile profileImage) throws IOException {
+	Admin admin=adDao.findById(adminId).orElseThrow(()->new UserNotFoundException("Admin Not Found With Id "+adminId));
+	String imagePath = folder.concat(File.separator).concat("AdminId "+adminId);
+	log.info("bytes copied {} ",
+			Files.copy(profileImage.getInputStream(), Paths.get(imagePath), StandardCopyOption.REPLACE_EXISTING));
+	admin.setImage(imagePath);
+	return "Admin Profile Uploaded SuccessFully";
+		
+	}
+	@Override
+	public byte[] getProfileImage(long adminId) throws IOException {
+		Admin admin=adDao.findById(adminId).orElseThrow(()->new UserNotFoundException("Admin Not Found With Id "+adminId));
+	if(admin.getImage()==null)
+		  throw new ResourceNotFoundException("Admin doesnt have an ProfileImage");
+				return Files.readAllBytes(Paths.get(admin.getImage()));
 	}
 
 }

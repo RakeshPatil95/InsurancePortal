@@ -1,7 +1,5 @@
 package com.app.dto;
 
-import javax.persistence.Column;
-import javax.persistence.ManyToOne;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -31,13 +29,10 @@ public class AdminUpdateDto {
 	private String securityQuestion;
  @NotBlank
 	private String securityAnswer;
- @NotBlank
-	private String addressLine1;
-@NotBlank
-	private String addressLine2;
 
-	@ManyToOne
-	private Address pincode;
+
+
+	private Address address;
 	private String image;
 
 }

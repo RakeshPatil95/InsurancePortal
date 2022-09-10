@@ -34,6 +34,8 @@ private int maxMonthPremium;
 private double agentCommisionPercentage;
 @Column(nullable = false)
 private double perAnnumRate;
+@Column(length = 1000)
+private String policyDescription;
  
 private  String policyImage;
 
