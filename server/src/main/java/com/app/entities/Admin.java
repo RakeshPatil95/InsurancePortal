@@ -3,8 +3,8 @@ package com.app.entities;
 
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -34,10 +34,9 @@ public class Admin extends BaseEntity {
 	private String securityQuestion;
 	@Column(nullable = false)
 	private String securityAnswer;
-	private String addressLine1;
-	private String addressLine2;
 
-	@ManyToOne
-	private Address pincode;
+
+	@Embedded
+	private Address address;
 	private String image;
 }

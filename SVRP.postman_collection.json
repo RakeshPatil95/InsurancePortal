@@ -1,0 +1,439 @@
+{
+	"info": {
+		"_postman_id": "fcb5a71a-1f76-4ca8-9e92-50ad194ce4cd",
+		"name": "SVRP",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "21151072"
+	},
+	"item": [
+		{
+			"name": "Customer",
+			"item": [
+				{
+					"name": "Signup",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\":\"Prathmesh\",\r\n    \"lastName\":\"Deshmukh\",\r\n    \"phoneNumber\":9876545253,\r\n    \"email\":\"ppp@gmail.com\",\r\n    \"password\":\"Pp@12345\",\r\n    \"securityQuestion\":\"In what city were you born?\",\r\n    \"securityAnswer\":\"pune\"\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/customer/signup/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"customer",
+								"signup",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "SignIn",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": " \r\n {\"email\": \"pp@gmail.com\",\r\n    \"password\": \"Pp@98765\"\r\n }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/customer/signin/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"customer",
+								"signin",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ForgotPassword",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"pp@gmail.com\",\r\n    \"password\": \"Pp@98765\",\r\n    \"securityQuestion\": \"In what city were you born?\",\r\n    \"securityAnswer\": \"pune\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/customer/forgotPassword/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"customer",
+								"forgotPassword",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Agent",
+			"item": [
+				{
+					"name": "Signup",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\":\"Prathmesh\",\r\n    \"lastName\":\"Deshmukh\",\r\n    \"phoneNumber\":9876544253,\r\n    \"email\":\"pp@gmail.com\",\r\n    \"password\":\"Pp@12345\",\r\n    \"securityQuestion\":\"In what city were you born?\",\r\n    \"securityAnswer\":\"pune\"\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/customer/signup/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"customer",
+								"signup",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "SignIn",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": " \r\n {\"email\": \"pp@gmail.com\",\r\n    \"password\": \"Pp@12345\"\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/agent/signin/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"agent",
+								"signin",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ForgotPassword",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"pp@gmail.com\",\r\n    \"password\": \"Pp@98765\",\r\n    \"securityQuestion\": \"In what city were you born?\",\r\n    \"securityAnswer\": \"pune\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/agent/forgotPassword/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"agent",
+								"forgotPassword",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "SignIn",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": " \r\n {\"email\": \"bhilawadesagar321@gmail.com\",\r\n    \"password\": \"Sagar@0321\"\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/admin/signin/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"admin",
+								"signin",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ForgotPassword",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/admin/forgotPassword/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"admin",
+								"forgotPassword",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AddPolicy",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"policyName\":\"JeevanLabh2\",\r\n    \"minEntryAge\":18,\r\n    \"maxEntryAge\":60,\r\n    \"minPeriodMonths\":60,\r\n    \"maxPeriodMonths\":72,\r\n    \"minMonthPremium\":2000,\r\n    \"maxMonthPremium\":5000,\r\n    \"agentCommisionPercentage\":3.2,\r\n    \"perAnnumRate\":10.0\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/admin/addPolicy",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"admin",
+								"addPolicy"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AddPolicyImage",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "imageFile",
+									"type": "file",
+									"src": "/E:/whatsupp downloads/car2.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{URL}}/admin/addPolicyImage/2",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"admin",
+								"addPolicyImage",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetPolicyImageById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/admin/getPolicyImage/1",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"admin",
+								"getPolicyImage",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getPOlicyById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/admin/getPolicy/3",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"admin",
+								"getPolicy",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAllPolicies",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				},
+				{
+					"name": "getAllCustomers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/admin/getAllCustomers",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"admin",
+								"getAllCustomers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAllAgents",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/admin/getAllAgents",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"admin",
+								"getAllAgents"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateAdmin",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/admin/updateProfile",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"admin",
+								"updateProfile"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "URL",
+			"value": "http://localhost:8080",
+			"type": "string"
+		}
+	]
+}

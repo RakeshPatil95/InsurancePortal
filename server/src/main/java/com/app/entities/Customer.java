@@ -3,6 +3,7 @@ package com.app.entities;
 import java.sql.Date;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
@@ -31,7 +32,7 @@ private String password;
 private String securityQuestion;
 
 private String securityAnswer;
-private byte[] image;
+private String image;
 
 
 @ManyToOne
@@ -42,15 +43,14 @@ private int age;
 private Date dateOfBirth;
 @Column(unique = true,length=12)
 private String aadhar;
-private byte[] aadharDoc;
+private String aadharDoc;
 @Column(unique = true,length=10)
 private String pan;
-private byte[] panDoc;
-private String addressLine1;
-private String addressLine2;
+private String panDoc;
 
-@ManyToOne
-private Address pincode;
+
+@Embedded
+private Address address;
 
  
 }
