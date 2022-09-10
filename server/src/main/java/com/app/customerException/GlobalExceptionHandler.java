@@ -1,5 +1,6 @@
 package com.app.customerException;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,6 +23,24 @@ public ResponseEntity<ApiResponse>userNotFoundExceptionHandler(UserNotFoundExcep
 	ApiResponse apiResponse=new ApiResponse(message,HttpStatus.NOT_FOUND);
 
 	return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiResponse);
+	
+}
+@ExceptionHandler(ResourceNotFoundException.class)
+public ResponseEntity<ApiResponse>resourceNotFoundExceptionHandler(ResourceNotFoundException e)
+{
+	String message=e.message;
+	ApiResponse apiResponse=new ApiResponse(message,HttpStatus.NOT_FOUND);
+
+	return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiResponse);
+	
+}
+@ExceptionHandler(IOException.class)
+public ResponseEntity<ApiResponse>IOExceptionHandler(IOException e)
+{
+	
+	ApiResponse apiResponse=new ApiResponse("Copying File Failed",HttpStatus.BAD_REQUEST);
+
+	return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponse);
 	
 }
 @ExceptionHandler(MethodArgumentNotValidException.class)

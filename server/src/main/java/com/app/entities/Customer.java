@@ -25,13 +25,15 @@ private String lastName;
 private long phoneNumber;
 @Column(unique = true,nullable = false)
 private String email;
-@Column(nullable = false)
+
 private String password;
-@Column(nullable = false)
+
 private String securityQuestion;
-@Column(nullable = false)
+
 private String securityAnswer;
 private byte[] image;
+
+
 @ManyToOne
 private Agent agent;
 
@@ -44,8 +46,11 @@ private byte[] aadharDoc;
 @Column(unique = true,length=10)
 private String pan;
 private byte[] panDoc;
-@Column(length = 6)
-private int pincode;
+private String addressLine1;
+private String addressLine2;
+
+@ManyToOne
+private Address pincode;
 
  
 }

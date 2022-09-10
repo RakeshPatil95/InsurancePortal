@@ -14,6 +14,7 @@ const schema = yup.object().shape({
   primium: yup.string().required("Please enter Primium"),
   maturity: yup.string().required("Please enter Maturity"),
   primeDate: yup.string().required("Please enter prime date"),
+  policyImage:yup.string().required("Please give a Policy Image")
 });
 
 const AdminAddPolicy = () => {
@@ -43,6 +44,7 @@ const AdminAddPolicy = () => {
               primium: "",
               maturity: "",
               primeDate: "",
+              policyImage:""
             }}
           >
             {({
@@ -59,7 +61,10 @@ const AdminAddPolicy = () => {
                               <h1 style={{marginBottom:'40px',marginLeft:'10px',textAlign:'center'}}><b>New Policy</b></h1>
                   <Form
                     noValidate
-                    onSubmit={handleSubmit}
+                    onSubmit={(values)=>{
+                      
+                    }
+                    }
                     style={styles.myfont}
                   >
                     <Row>
@@ -200,6 +205,29 @@ const AdminAddPolicy = () => {
                           type="invalid"
                         >
                           {errors.primeDate}
+                        </Form.Control.Feedback>
+                      </Form.Group>
+                                      </Row>
+                                      <Row>
+                      <Form.Group
+                        as={Col}
+                        md="12"
+                        controlId="validationFormik07"
+                      >
+                        <Form.Label>Prime Date</Form.Label>
+                        <Form.Control
+                          type="file"
+                          name="policyImage"
+                          value={values.primeDate}
+                          onChange={handleChange}
+                          isValid={!errors.policyImage}
+                          isInvalid={!!errors.policyImage}
+                        />
+                        <Form.Control.Feedback
+                          className="FeedBack"
+                          type="invalid"
+                        >
+                          {errors.policyImage}
                         </Form.Control.Feedback>
                       </Form.Group>
                                       </Row>

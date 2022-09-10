@@ -39,13 +39,7 @@ const AdminProfile=()=>{
         <div className="mt-5 text-center"><button className="btn btn-primary profile-button" type="button" style={{width:'400px',borderRadius:'15px'}}>Save Profile</button></div>
       </div>
     </div>
-    <div className="col-md-4">
-      <div className="p-3 py-5">
-        <div className="d-flex justify-content-between align-items-center experience"><h4>Documents</h4></div><br />
-        <div className="col-md-12"><label className="labels">Aadhar</label><input type="file" className="form-control"  /></div> <br />
-        <div className="col-md-12"><label className="labels">Pan</label><input type="file" className="form-control"  /></div>
-      </div>
-    </div>
+   
   </div>
 </div>
 

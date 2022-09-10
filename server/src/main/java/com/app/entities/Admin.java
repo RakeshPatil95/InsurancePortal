@@ -1,9 +1,10 @@
 package com.app.entities;
 
-import java.sql.Date;
+
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,7 +22,7 @@ import lombok.ToString;
 public class Admin extends BaseEntity {
 	@Column(nullable = false)
 	private String firstName;
-		@Column(nullable = false)
+	@Column(nullable = false)
 	private String lastName;
 	@Column(unique = true,nullable = false)
 	private long phoneNumber;
@@ -33,5 +34,10 @@ public class Admin extends BaseEntity {
 	private String securityQuestion;
 	@Column(nullable = false)
 	private String securityAnswer;
-	private byte[] image;
+	private String addressLine1;
+	private String addressLine2;
+
+	@ManyToOne
+	private Address pincode;
+	private String image;
 }

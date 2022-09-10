@@ -4,9 +4,11 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import lombok.AllArgsConstructor;
@@ -24,7 +26,7 @@ import lombok.ToString;
 public class Agent extends BaseEntity {
 	@Column(nullable = false)
 	private String firstName;
-		@Column(nullable = false)
+	@Column(nullable = false)
 	private String lastName;
 	@Column(unique = true,nullable = false)
 	private long phoneNumber;
@@ -47,8 +49,11 @@ public class Agent extends BaseEntity {
 	@Column(unique = true,length=10)
 	private String pan;
 	private byte[] panDoc;
-	@Column(length = 6)
-	private int pincode;
-	@OneToMany(mappedBy = "agent",fetch = FetchType.LAZY)
+	private String addressLine1;
+	private String addressLine2;
+
+	@ManyToOne
+	private Address pincode;
+	@OneToMany(mappedBy = "agent",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
 	private List<Customer>customers=new ArrayList<>();
 }
