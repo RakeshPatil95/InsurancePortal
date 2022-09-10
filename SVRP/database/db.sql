@@ -131,3 +131,15 @@ create table policyTransactions(
     foreign key (policyId) references policy(policyId)
 
 );
+
+
+
+
+Insert into customer(
+    first_name,
+    last_name ,
+    phone_number ,
+    email  ,
+    password,
+    age
+) values ("Vinaya","Patil",952546785,"vinaya@gmail.com","Vinaya@123","24");
