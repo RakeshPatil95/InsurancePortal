@@ -91,24 +91,25 @@ public void anyInit() {
 	}
 
 	@Override
-	public AdminDto updateAdmin( AdminUpdateDto adminupdateDto)  {
+	public AdminDto updateAdmin( AdminUpdateDto adminupdateDto,MultipartFile profileImage) throws IOException {
 	adDao.findById(adminupdateDto.getId()).orElseThrow(()->new UserNotFoundException("Admin not FOund with Id"+adminupdateDto.getId()));
-
-  
-  Admin admin=mapper.map(adminupdateDto, Admin.class);
-  adDao.save(admin);
+	String profileImagePath = folder.concat(File.separator).concat("AdminId "+adminupdateDto.getId());
+	Files.copy(profileImage.getInputStream(), Paths.get(profileImagePath), StandardCopyOption.REPLACE_EXISTING);
+  adminupdateDto.setImage(profileImagePath);
+	Admin admin=mapper.map(adminupdateDto, Admin.class);
+   adDao.save(admin);
   return mapper.map(admin, AdminDto.class);
 	}
-	@Override
-	public String uploadProfileImage(long adminId, MultipartFile profileImage) throws IOException {
-	Admin admin=adDao.findById(adminId).orElseThrow(()->new UserNotFoundException("Admin Not Found With Id "+adminId));
-	String imagePath = folder.concat(File.separator).concat("AdminId "+adminId);
-	log.info("bytes copied {} ",
-			Files.copy(profileImage.getInputStream(), Paths.get(imagePath), StandardCopyOption.REPLACE_EXISTING));
-	admin.setImage(imagePath);
-	return "Admin Profile Uploaded SuccessFully";
-		
-	}
+//	@Override
+//	public String uploadProfileImage(long adminId, MultipartFile profileImage) throws IOException {
+//	Admin admin=adDao.findById(adminId).orElseThrow(()->new UserNotFoundException("Admin Not Found With Id "+adminId));
+//	String imagePath = folder.concat(File.separator).concat("AdminId "+adminId);
+//	log.info("bytes copied {} ",
+//			Files.copy(profileImage.getInputStream(), Paths.get(imagePath), StandardCopyOption.REPLACE_EXISTING));
+//	admin.setImage(imagePath);
+//	return "Admin Profile Uploaded SuccessFully";
+//		
+//	}
 	@Override
 	public byte[] getProfileImage(long adminId) throws IOException {
 		Admin admin=adDao.findById(adminId).orElseThrow(()->new UserNotFoundException("Admin Not Found With Id "+adminId));

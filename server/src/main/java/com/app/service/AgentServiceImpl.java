@@ -1,22 +1,47 @@
 package com.app.service;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.annotation.PostConstruct;
+import javax.management.relation.RelationNotFoundException;
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.app.customerException.ResourceNotFoundException;
 import com.app.customerException.UserNotFoundException;
 import com.app.dao.AgentDao;
 import com.app.dao.CustomerDao;
+import com.app.dao.CustomerPolicyDao;
+import com.app.dao.PolicyDao;
 import com.app.dto.AgentDto;
+import com.app.dto.AgentUpdateDto;
+import com.app.dto.CustomerDto;
 import com.app.dto.ForgotPasswordDto;
 import com.app.dto.SigninDto;
 import com.app.dto.SignupDto;
 import com.app.entities.Agent;
 import com.app.entities.Customer;
+import com.app.entities.CustomerPolicy;
+import com.app.entities.Policy;
+
+import lombok.extern.slf4j.Slf4j;
 @Service
 @Transactional
+@Slf4j
 public class AgentServiceImpl implements AgentService {
 	@Autowired
 	private AgentDao agDao;
@@ -24,6 +49,31 @@ public class AgentServiceImpl implements AgentService {
 	private CustomerDao custDao;
 	@Autowired
 	private ModelMapper mapper;
+	@Autowired
+	private CustomerPolicyDao custPolDao;
+	@Autowired
+	private PolicyDao polDao;
+	@Value("${project.agentImages}")
+	private String folder;
+	@Value("${project.customerImages}")
+	private String customerFolder;
+	@PostConstruct
+	public void anyInit() {
+		log.info("in init {} ", folder);
+		
+		File dir = new File(folder);
+		
+		if (!dir.exists())
+			log.info("dir created {} ", dir.mkdirs());
+		else
+			log.info("dir alrdy exists.... ");
+	File dir2 = new File(customerFolder);
+		
+		if (!dir2.exists())
+			log.info("dir created {} ", dir2.mkdirs());
+		else
+			log.info("dir alrdy exists.... ");
+	}
 
 	@Override
 	public AgentDto addAgent(SignupDto signupDto) {
@@ -64,6 +114,76 @@ public class AgentServiceImpl implements AgentService {
 		Agent agent=this.agDao.findById(agentId).orElseThrow(()->new UserNotFoundException("Agent Not found with Id "+agentId));
 		
 		return null;
+	}
+
+	@Override
+	public AgentUpdateDto upDateProfile(@Valid AgentUpdateDto agUpDto, MultipartFile profileImage, MultipartFile acDoc,
+			MultipartFile pcDoc) throws IOException {
+		agDao.findById(agUpDto.getId()).orElseThrow(()->new UserNotFoundException("Agent Not Found With ID  "+agUpDto.getId()));
+		String profileImagePath = folder.concat(File.separator).concat("AgentID "+agUpDto.getId());
+		Files.copy(profileImage.getInputStream(), Paths.get(profileImagePath), StandardCopyOption.REPLACE_EXISTING);
+		agUpDto.setImage(profileImagePath);
+		String aadharDocPath = folder.concat(File.separator).concat("AgentAadhar "+agUpDto.getId());
+		Files.copy(acDoc.getInputStream(), Paths.get(aadharDocPath), StandardCopyOption.REPLACE_EXISTING);
+		agUpDto.setAadharDoc(aadharDocPath);
+		String panDocPath = folder.concat(File.separator).concat("AgentPan  "+agUpDto.getId());
+		Files.copy(pcDoc.getInputStream(), Paths.get(panDocPath), StandardCopyOption.REPLACE_EXISTING);
+		agUpDto.setPanDoc(panDocPath);
+	Agent	 agent=mapper.map(agUpDto, Agent.class);
+		agDao.save(agent);
+		return agUpDto;
+	}
+
+	@Override
+	public List<CustomerDto> getMyCustomers(long  agentId) {
+	    Agent agent=agDao.findById(agentId).orElseThrow(()->new UserNotFoundException("Agent Not Found With Id  "+agentId));
+		return custDao.findByAgent(agent).stream().map((customer)->mapper.map(customer, CustomerDto.class)).collect(Collectors.toList());
+	}
+
+	@Override
+	public CustomerDto addMyCustomer(@Valid long agentId, CustomerDto custDto, MultipartFile profileImage,
+			MultipartFile acDoc, MultipartFile pcDoc) throws IOException {
+		Agent agent=agDao.findById(agentId).orElseThrow(()-> new UserNotFoundException("Agent Not Found Exception "+agentId));
+		
+		Customer customer=custDao.save(mapper.map(custDto, Customer.class));
+		customer.setAgent(agent);
+		String profileImagePath = customerFolder.concat(File.separator).concat("CustomerId "+customer.getId());
+		Files.copy(profileImage.getInputStream(), Paths.get(profileImagePath), StandardCopyOption.REPLACE_EXISTING);
+		customer.setImage(profileImagePath);
+		String aadharDocPath = customerFolder.concat(File.separator).concat("CustomerAadhar "+customer.getId());
+		Files.copy(acDoc.getInputStream(), Paths.get(aadharDocPath), StandardCopyOption.REPLACE_EXISTING);
+		customer.setAadharDoc(aadharDocPath);
+		String panDocPath = customerFolder.concat(File.separator).concat("CustomerPan  "+customer.getId());
+		Files.copy(pcDoc.getInputStream(), Paths.get(panDocPath), StandardCopyOption.REPLACE_EXISTING);
+		customer.setPanDoc(panDocPath);
+		//custDao.save(mapper.map(custDto, Customer.class));
+		return mapper.map(customer, CustomerDto.class);
+		//return custDto;
+	}
+
+	@Override
+	public List<CustomerPolicy> getMyCustomersPolicies(long agentId) {
+		Agent agent=agDao.findById(agentId).orElseThrow(()->new UserNotFoundException("Agent not found with Id "+agentId));
+		return custPolDao.findByAgent(agent);
+	}
+
+	@Override
+	public List<CustomerPolicy> getMyCustomersPolicyPremiums(long agentId) {
+		
+		return custPolDao.getAgentsCustomersPremiums(agentId, LocalDate.now());
+	}
+
+	@Override
+	public CustomerPolicy addMyCustomersPolicy(long agentId, long customerId, long policyId,
+			CustomerPolicy customerPolicy) {
+		Agent agent=agDao.findById(agentId).orElseThrow(()->new UserNotFoundException("Agent not found with Id "+agentId));
+		Customer customer=custDao.findById(customerId).orElseThrow(()->new UserNotFoundException("Customer not found with Id "+customerId));
+		Policy policy=polDao.findById(policyId).orElseThrow(()->new ResourceNotFoundException("Policy not found with id "+policyId));
+		customerPolicy.setAgent(agent);
+		customerPolicy.setCustomer(customer);
+		customerPolicy.setPolicy(policy);
+		custPolDao.save(customerPolicy);
+		return customerPolicy;
 	}
 
 }

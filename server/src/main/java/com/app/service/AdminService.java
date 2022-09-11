@@ -17,7 +17,7 @@ AdminDto getAdminByEmailAndPassword(SigninDto signinDto);
 AdminDto getAdminByEmailAndSecurityQuestionAndSecurityAnswer(ForgotPasswordDto fpDto);
 List<CustomerDto>getAllCustomers();
 List<AgentDto>getAllAgents();
-AdminDto updateAdmin( AdminUpdateDto adminupdateDto);
-String uploadProfileImage(long adminId, MultipartFile profileImage)throws IOException;
+AdminDto updateAdmin( AdminUpdateDto adminupdateDto,MultipartFile profileImage)throws IOException;
+//String uploadProfileImage(long adminId, MultipartFile profileImage)throws IOException;
 byte[] getProfileImage(long adminId)throws IOException;
 }

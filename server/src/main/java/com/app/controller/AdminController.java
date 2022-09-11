@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -105,21 +106,21 @@ public ResponseEntity<List<CustomerDto>> getAllCustomers()
 return ResponseEntity.ok(adServ.getAllCustomers());
 }
 @PutMapping(value="/updateProfile")
-public ResponseEntity<?>updateAdminDetails(@RequestBody @Valid AdminUpdateDto adupDto) throws IOException
+public ResponseEntity<?>upDateProfile(@ModelAttribute @Valid AdminUpdateDto adupDto,@RequestParam MultipartFile profileImage) throws IOException
 {
 	
-	return ResponseEntity.ok().body(adServ.updateAdmin( adupDto));
+	return ResponseEntity.ok().body(adServ.updateAdmin( adupDto,profileImage));
 	
 }
-@PostMapping("/addProfileImage/{adminId}")
-public ResponseEntity<?> addProfileImage(@PathVariable long adminId, @RequestParam MultipartFile profileImage)
-		throws IOException {
-	
-	return ResponseEntity.status(HttpStatus.CREATED).body(adServ.uploadProfileImage(adminId, profileImage));
-}
+//@PostMapping("/addProfileImage/{adminId}")
+//public ResponseEntity<?> addProfileImage(@PathVariable long adminId, @RequestParam MultipartFile profileImage)
+//		throws IOException {
+//	
+//	return ResponseEntity.status(HttpStatus.CREATED).body(adServ.uploadProfileImage(adminId, profileImage));
+//}
 @GetMapping(value = "/getProfileImage/{adminId}",produces = 
 {MediaType.IMAGE_GIF_VALUE,MediaType.IMAGE_JPEG_VALUE,MediaType.IMAGE_PNG_VALUE})
-public ResponseEntity<?> getProfileImage(@PathVariable long adminId) throws IOException
+public ResponseEntity<?> getProfileImage(@PathVariable  @Valid long adminId) throws IOException
 {
 
 return ResponseEntity.ok(adServ.getProfileImage(adminId));

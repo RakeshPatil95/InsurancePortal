@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.app.customerException.ResourceNotFoundException;
 import com.app.dao.PolicyDao;
 import com.app.dto.AddPolicyDto;
+import com.app.dto.CustomerDto;
 import com.app.dto.PolicyReturnDto;
 import com.app.entities.Policy;
 
@@ -86,5 +87,7 @@ public class PolicyServiceImpl implements PolicyService {
 		List<PolicyReturnDto>retAllPolicies=allPolicies.stream().map((policy)->mapper.map(policy, PolicyReturnDto.class)).collect(Collectors.toList());
 		return retAllPolicies;
 	}
+
+
 
 }
