@@ -2,7 +2,7 @@ const mysql=require('mysql');
 const Pool=mysql.createPool({  
     host:'localhost',
     user:'root',
-    password:'0000',
+    password:'manager',
     port:3306,
     database:'SVRP',
     connectionLimit:100
