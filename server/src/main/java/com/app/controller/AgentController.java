@@ -22,11 +22,11 @@ import org.springframework.web.multipart.MultipartFile;
 import com.app.dto.AgentUpdateDto;
 import com.app.dto.ApiResponse;
 import com.app.dto.CustomerDto;
+import com.app.dto.CustomerPolicyDto;
 import com.app.dto.ForgotPasswordDto;
 import com.app.dto.PolicyReturnDto;
 import com.app.dto.SigninDto;
 import com.app.dto.SignupDto;
-import com.app.entities.CustomerPolicy;
 import com.app.service.AgentService;
 import com.app.service.PolicyService;
 
@@ -89,15 +89,15 @@ public ResponseEntity<?>getMyCustomersPremiums(@PathVariable long agentId)
 {
 	return ResponseEntity.ok().body(agServ.getMyCustomersPolicyPremiums(agentId));
 }
-@GetMapping(value="/getMyCustomerPolicies/{agentId}")
-public ResponseEntity<?>getMyCustomersPolicies(@PathVariable long agentId)
+@GetMapping(value="/getMyCustomerPolicies/{agentId}/customer/{customerId}")
+public ResponseEntity<?>getMyCustomersPolicies(@PathVariable long agentId,@PathVariable long customerId)
 {
-	return ResponseEntity.ok().body(agServ.getMyCustomersPolicies(agentId));
+	return ResponseEntity.ok().body(agServ.getMyCustomersPolicies(agentId,customerId));
 }
 @PostMapping("/addMyCustomersPolicy/agent/{agentId}/customer/{customerId}/policy/{policyId}")
-public ResponseEntity<?>addMyCustomersPolicy(@PathVariable long agentId,@PathVariable long customerId,@PathVariable long policyId,@RequestBody CustomerPolicy customerPolicy)
+public ResponseEntity<?>addMyCustomersPolicy(@PathVariable long agentId,@PathVariable long customerId,@PathVariable long policyId,@RequestBody CustomerPolicyDto customerPolicyDto)
 
 {
-	return ResponseEntity.ok().body(agServ.addMyCustomersPolicy(agentId,customerId,policyId,customerPolicy));
+	return ResponseEntity.ok().body(agServ.addMyCustomersPolicy(agentId,customerId,policyId,customerPolicyDto));
 }
 }

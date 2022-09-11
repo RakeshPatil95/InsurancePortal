@@ -5,13 +5,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
-import javax.management.relation.RelationNotFoundException;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
@@ -30,6 +28,7 @@ import com.app.dao.PolicyDao;
 import com.app.dto.AgentDto;
 import com.app.dto.AgentUpdateDto;
 import com.app.dto.CustomerDto;
+import com.app.dto.CustomerPolicyDto;
 import com.app.dto.ForgotPasswordDto;
 import com.app.dto.SigninDto;
 import com.app.dto.SignupDto;
@@ -109,12 +108,7 @@ public class AgentServiceImpl implements AgentService {
 		return mapper.map(agent, AgentDto.class);
 	}
 
-	@Override
-	public String addCustomer(Customer customer, long agentId) {
-		Agent agent=this.agDao.findById(agentId).orElseThrow(()->new UserNotFoundException("Agent Not found with Id "+agentId));
-		
-		return null;
-	}
+
 
 	@Override
 	public AgentUpdateDto upDateProfile(@Valid AgentUpdateDto agUpDto, MultipartFile profileImage, MultipartFile acDoc,
@@ -162,28 +156,30 @@ public class AgentServiceImpl implements AgentService {
 	}
 
 	@Override
-	public List<CustomerPolicy> getMyCustomersPolicies(long agentId) {
+	public List<CustomerPolicyDto> getMyCustomersPolicies(long agentId,long customerId) {
 		Agent agent=agDao.findById(agentId).orElseThrow(()->new UserNotFoundException("Agent not found with Id "+agentId));
-		return custPolDao.findByAgent(agent);
+		Customer customer=custDao.findById(customerId).orElseThrow(()->new UserNotFoundException("Customer not found with Id "+customerId));
+		return custPolDao.findByAgentAndCustomer(agent,customer).stream().map((customerPolicy)->mapper.map(customerPolicy, CustomerPolicyDto.class)).collect(Collectors.toList());
 	}
 
 	@Override
-	public List<CustomerPolicy> getMyCustomersPolicyPremiums(long agentId) {
+	public List<CustomerPolicyDto> getMyCustomersPolicyPremiums(long agentId) {
 		
-		return custPolDao.getAgentsCustomersPremiums(agentId, LocalDate.now());
+		return custPolDao.getAgentsCustomersPremiums(agentId, LocalDate.now()).stream().map((customerPolicy)->mapper.map(customerPolicy, CustomerPolicyDto.class)).collect(Collectors.toList());
 	}
 
 	@Override
-	public CustomerPolicy addMyCustomersPolicy(long agentId, long customerId, long policyId,
-			CustomerPolicy customerPolicy) {
+	public CustomerPolicyDto addMyCustomersPolicy(long agentId, long customerId, long policyId,
+			CustomerPolicyDto customerPolicyDto) {
 		Agent agent=agDao.findById(agentId).orElseThrow(()->new UserNotFoundException("Agent not found with Id "+agentId));
 		Customer customer=custDao.findById(customerId).orElseThrow(()->new UserNotFoundException("Customer not found with Id "+customerId));
 		Policy policy=polDao.findById(policyId).orElseThrow(()->new ResourceNotFoundException("Policy not found with id "+policyId));
+		CustomerPolicy customerPolicy=mapper.map(customerPolicyDto, CustomerPolicy.class);
 		customerPolicy.setAgent(agent);
 		customerPolicy.setCustomer(customer);
 		customerPolicy.setPolicy(policy);
 		custPolDao.save(customerPolicy);
-		return customerPolicy;
+		return mapper.map(customerPolicy, CustomerPolicyDto.class);
 	}
 
 }

@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.app.dto.AgentDto;
 import com.app.dto.AgentUpdateDto;
 import com.app.dto.CustomerDto;
+import com.app.dto.CustomerPolicyDto;
 import com.app.dto.ForgotPasswordDto;
 import com.app.dto.SigninDto;
 import com.app.dto.SignupDto;
@@ -21,13 +22,13 @@ public interface AgentService {
 public AgentDto addAgent(SignupDto signupDto);
 public AgentDto getAgentByEmailAndPassword(SigninDto signinDto);
 public AgentDto getAgentByEmailAndSecurityQuestionAndSecurityAnswer(ForgotPasswordDto fpDto);
-public String addCustomer(Customer customer,long agentId);
+
 public AgentUpdateDto upDateProfile(@Valid AgentUpdateDto agUpDto, MultipartFile profileImage, MultipartFile acDoc,
 		MultipartFile pcDoc)throws IOException;
 public List<CustomerDto> getMyCustomers(long agentId);
 public CustomerDto addMyCustomer(@Valid long agentId, CustomerDto custDto, MultipartFile profileImage, MultipartFile acDoc,
 		MultipartFile pcDoc) throws IOException;
-public List<CustomerPolicy> getMyCustomersPolicies(long agentId);
-public List<CustomerPolicy> getMyCustomersPolicyPremiums(long agentId);
-public CustomerPolicy addMyCustomersPolicy(long agentId, long customerId, long policyId, CustomerPolicy customerPolicy);
+public List<CustomerPolicyDto> getMyCustomersPolicies(long agentId,long customerId);
+public List<CustomerPolicyDto> getMyCustomersPolicyPremiums(long agentId);
+public CustomerPolicyDto addMyCustomersPolicy(long agentId, long customerId, long policyId, CustomerPolicyDto customerPolicy);
 }
