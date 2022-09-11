@@ -22,6 +22,8 @@ import lombok.ToString;
 @ToString
 public class AgentDto {
 @NotBlank
+private long id;
+@NotBlank
 private String firstName;
 @NotBlank
 private String lastName;
@@ -43,10 +45,10 @@ private Date dateOfBirth;
 private Date hireDate;
 @Length(min=12,max=12)
 private String aadhar;
-private byte[] aadharDoc;
+private  String aadharDoc;
 @Length(min=10,max=10)
 private String pan;
-private byte[] panDoc;
+private String panDoc;
 @Length(min=6,max=6)
 private int pincode;
 

@@ -9,6 +9,9 @@ import javax.validation.constraints.NotBlank;
 
 import org.hibernate.validator.constraints.Length;
 
+import com.app.entities.Address;
+import com.app.entities.Agent;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +23,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class CustomerDto {
+	private long id;
 @NotBlank
 private String firstName;
 @NotBlank
@@ -28,26 +32,26 @@ private String lastName;
 private long phoneNumber;
 @Email
 private String email;
+private String password;
 @NotBlank
 private String securityQuestion;
+
 @NotBlank
 private String securityAnswer;
-private byte[] image;
+private String image;
 private AgentDto agent;
 
-@Min(18)
-@Max(100)
+//@Min(18)
+//@Max(100)
 private int age;
 private Date dateOfBirth;
 @Length(min=12,max=12)
 private String aadhar;
-private byte[] aadharDoc;
+private String aadharDoc;
 @Length(min=10,max=10)
 private String pan;
-private byte[] panDoc;
-@Length(min=6,max=6)
-private int pincode;
-
+private String panDoc;
+private Address address;
 
 
 }

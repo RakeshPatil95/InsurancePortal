@@ -32,5 +32,7 @@ public class CustomerPolicy extends BaseEntity {
 	private Customer customer;
 	@ManyToOne
 	private Policy policy;
+	@ManyToOne
+	private Agent agent;
 
 }
