@@ -7,101 +7,6 @@
 	},
 	"item": [
 		{
-			"name": "Customer",
-			"item": [
-				{
-					"name": "Signup",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"firstName\":\"Prathmesh\",\r\n    \"lastName\":\"Deshmukh\",\r\n    \"phoneNumber\":9876545253,\r\n    \"email\":\"ppp@gmail.com\",\r\n    \"password\":\"Pp@12345\",\r\n    \"securityQuestion\":\"In what city were you born?\",\r\n    \"securityAnswer\":\"pune\"\r\n\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:8080/customer/signup/",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"customer",
-								"signup",
-								""
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "SignIn",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": " \r\n {\"email\": \"pp@gmail.com\",\r\n    \"password\": \"Pp@98765\"\r\n }",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:8080/customer/signin/",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"customer",
-								"signin",
-								""
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "ForgotPassword",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"pp@gmail.com\",\r\n    \"password\": \"Pp@98765\",\r\n    \"securityQuestion\": \"In what city were you born?\",\r\n    \"securityAnswer\": \"pune\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://localhost:8080/customer/forgotPassword/",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"customer",
-								"forgotPassword",
-								""
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
 			"name": "Agent",
 			"item": [
 				{
@@ -760,6 +665,361 @@
 								"admin",
 								"getProfileImage",
 								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Customer",
+			"item": [
+				{
+					"name": "Signup",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"first_name\":\"vinaya\",\r\n    \"last_name\":\"patil\",\r\n    \"phone_number\":8877552266,\r\n    \"email\":\"vinya@gmail.com\",\r\n    \"password\":\"vinya@12345\",\r\n    \"security_question\":\"In what city were you born?\",\r\n    \"security_answer\":\"mumbai\",\r\n    \"age\":45\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/customer/signup/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"customer",
+								"signup",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetProfile",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NiwiaWF0IjoxNjYyOTUxMDEyfQ.wkoLWE2mGjsyMdMBoc165dQMs8rYDS3zkjDae4NJbok",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:4000/customer/profile/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"customer",
+								"profile",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateProfile",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NiwiaWF0IjoxNjYyOTUxMDEyfQ.wkoLWE2mGjsyMdMBoc165dQMs8rYDS3zkjDae4NJbok",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "images",
+									"type": "file",
+									"src": "/D:/PGDAC/dotnet/Pawan's Notes/Day 4-Part 1.png"
+								},
+								{
+									"key": "images",
+									"type": "file",
+									"src": "/D:/downloads/cdac mumbai dsa mock.pdf"
+								},
+								{
+									"key": "images",
+									"type": "file",
+									"src": "/D:/downloads/3. Selenium (1).pdf"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:4000/customer/updateprofile/1?age=25&aadhar=22222222&address_line1=mumbai&address_line2=nashik&date_of_birth=1996/2/2&pan=123456&pincode=420109&state=maha&city=mumbai&village=dombivali",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"customer",
+								"updateprofile",
+								"1"
+							],
+							"query": [
+								{
+									"key": "age",
+									"value": "25"
+								},
+								{
+									"key": "aadhar",
+									"value": "22222222"
+								},
+								{
+									"key": "address_line1",
+									"value": "mumbai"
+								},
+								{
+									"key": "address_line2",
+									"value": "nashik"
+								},
+								{
+									"key": "date_of_birth",
+									"value": "1996/2/2"
+								},
+								{
+									"key": "pan",
+									"value": "123456"
+								},
+								{
+									"key": "pincode",
+									"value": "420109"
+								},
+								{
+									"key": "state",
+									"value": "maha"
+								},
+								{
+									"key": "city",
+									"value": "mumbai"
+								},
+								{
+									"key": "village",
+									"value": "dombivali"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetAllPolicies",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NiwiaWF0IjoxNjYyOTUxMDEyfQ.wkoLWE2mGjsyMdMBoc165dQMs8rYDS3zkjDae4NJbok",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:4000/customer/allplans",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"customer",
+								"allplans"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "SignIn",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": " \r\n {\r\n    \"email\": \"rrp@gmail.com\",\r\n    \"password\": \"rrp@12345\"\r\n }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/customer/signin",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"customer",
+								"signin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ForgotPassword",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"pp@gmail.com\",\r\n    \"password\": \"Pp@123456\",\r\n    \"securityQuestion\": \"In what city were you born?\",\r\n    \"securityAnswer\": \"pune\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/customer/forgotPassword/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"customer",
+								"forgotPassword",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "buyPolicy",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"policy_start_date\":\"2022/1/1\",\r\n\"policy_end_date\":\"2030/2/2\",\r\n\"premium_date\":\"2022/11/11\",\r\n\"premium\":2500,\r\n\"invoice\":\"invoice.pdf\",\r\n\"claim_date\":\"2025/2/2\",\r\n\"claim_amount\":250000,\r\n\"status\":true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/customer/1/buypolicy/6",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"customer",
+								"1",
+								"buypolicy",
+								"6"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "myallpolicies",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NiwiaWF0IjoxNjYyOTUxMDEyfQ.wkoLWE2mGjsyMdMBoc165dQMs8rYDS3zkjDae4NJbok",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:4000/customer/1/myallpolicies",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"customer",
+								"1",
+								"myallpolicies"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "premiumPayment",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:4000/customer/1/premiumpayments",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"customer",
+								"1",
+								"premiumpayments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "uploadprofilePic",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "images",
+									"type": "file",
+									"src": "/C:/Users/rrpat/Pictures/Shivaji-Maharaj-Statue-with-Sunset-HD-Wallpaper.jpg"
+								},
+								{
+									"key": "images",
+									"type": "file",
+									"src": "/D:/downloads/519_295775_tech.hero.jpg"
+								},
+								{
+									"key": "images",
+									"type": "file",
+									"src": "/D:/downloads/wp7039147-software-engineer-wallpapers.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:4000/customer/uploadImage",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"customer",
+								"uploadImage"
 							]
 						}
 					},
