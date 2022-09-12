@@ -119,14 +119,14 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/customer/signup/",
+							"raw": "http://localhost:8080/agent/signup/",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
 							"port": "8080",
 							"path": [
-								"customer",
+								"agent",
 								"signup",
 								""
 							]
@@ -193,6 +193,278 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "UpdateProfile",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "profileImage",
+									"type": "file",
+									"src": "/E:/whatsupp downloads/275938028_277534664541100_397903602382415863_n.jpg"
+								},
+								{
+									"key": "acDoc",
+									"type": "file",
+									"src": "/E:/whatsupp downloads/275938028_277534664541100_397903602382415863_n.jpg"
+								},
+								{
+									"key": "pcDoc",
+									"type": "file",
+									"src": "/E:/whatsupp downloads/FullSizeRender-3.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{URL}}/agent/updateProfile?id=1&firstName=Vinaya&lastName=Patil&phoneNumber=7841970321&email=bh@gmail.com&password=Sagar@0321&securityQuestion=In what city were you born?&securityAnswer=pune&aadhar=123456789231&pan=BH12345678",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"agent",
+								"updateProfile"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "1"
+								},
+								{
+									"key": "firstName",
+									"value": "Vinaya"
+								},
+								{
+									"key": "lastName",
+									"value": "Patil"
+								},
+								{
+									"key": "phoneNumber",
+									"value": "7841970321"
+								},
+								{
+									"key": "email",
+									"value": "bh@gmail.com"
+								},
+								{
+									"key": "password",
+									"value": "Sagar@0321"
+								},
+								{
+									"key": "securityQuestion",
+									"value": "In what city were you born?"
+								},
+								{
+									"key": "securityAnswer",
+									"value": "pune"
+								},
+								{
+									"key": "aadhar",
+									"value": "123456789231"
+								},
+								{
+									"key": "pan",
+									"value": "BH12345678"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAllPolicies",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/agent/getAllPolicies",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"agent",
+								"getAllPolicies"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AddMyCustomer",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "profileImage",
+									"type": "file",
+									"src": "/E:/whatsupp downloads/car2.jpg"
+								},
+								{
+									"key": "acDoc",
+									"type": "file",
+									"src": "/E:/whatsupp downloads/car.jpg"
+								},
+								{
+									"key": "pcDoc",
+									"type": "file",
+									"src": "/E:/whatsupp downloads/car.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{URL}}/agent/addMyCustomer/1?firstName=Vinaya&lastName=Patil&phoneNumber=7841970325&email=bhaaaaa@gmail.com&password=Sagar@0321&securityQuestion=In what city were you born?&securityAnswer=pune&aadhar=123456889236&pan=BH12345671",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"agent",
+								"addMyCustomer",
+								"1"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "firstName",
+									"value": "Vinaya"
+								},
+								{
+									"key": "lastName",
+									"value": "Patil"
+								},
+								{
+									"key": "phoneNumber",
+									"value": "7841970325"
+								},
+								{
+									"key": "email",
+									"value": "bhaaaaa@gmail.com"
+								},
+								{
+									"key": "password",
+									"value": "Sagar@0321"
+								},
+								{
+									"key": "securityQuestion",
+									"value": "In what city were you born?"
+								},
+								{
+									"key": "securityAnswer",
+									"value": "pune"
+								},
+								{
+									"key": "aadhar",
+									"value": "123456889236"
+								},
+								{
+									"key": "pan",
+									"value": "BH12345671"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getMyCustomers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/agent/getMyCustomers/1",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"agent",
+								"getMyCustomers",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AddMyCustomersPolicy",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"policyStartDate\":\"2022-01-01\",\r\n\"policyEndDate\":\"2030-02-02\",\r\n\"premiumDate\":\"2022-09-09\",\r\n\"Premium\":2500,\r\n\"invoice\":\"invoice.pdf\",\r\n\"claimDate\":\"2025-02-02\",\r\n\"claimAmount\":250000,\r\n\"status\":true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/agent/addMyCustomersPolicy/agent/1/customer/3/policy/4",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"agent",
+								"addMyCustomersPolicy",
+								"agent",
+								"1",
+								"customer",
+								"3",
+								"policy",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getMyCustomersPolicy",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/agent/getMyCustomerPolicies/1/customer/3",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"agent",
+								"getMyCustomerPolicies",
+								"1",
+								"customer",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getMyCustomersPremium",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/agent/getMyCustomersPremiums/1",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"agent",
+								"getMyCustomersPremiums",
+								"1"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -206,7 +478,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": " \r\n {\"email\": \"bhilawadesagar321@gmail.com\",\r\n    \"password\": \"Sagar@0321\"\r\n    }",
+							"raw": " \r\n {\"email\": \"bhilawadesagar321@gmail.com\",\r\n    \"password\": \"Sagar@0321\"\r\n }",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -393,14 +665,101 @@
 					"request": {
 						"method": "PUT",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "// {\r\n//     \"id\":1,\r\n//     \"firstName\":\"SAGAR\",\r\n//     \"lastName\":\"Bhilawade\",\r\n//     \"phoneNumber\":7841970321,\r\n//     \"email\":\"bhilwadesagar321@gmail.com\",\r\n//     \"password\":\"Sagar@0321\",\r\n//     \"securityQuestion\":\"In what city you were born?\",\r\n//     \"securityAnswer\":\"Samdoli\",\r\n   \r\n//     \"address\":{\r\n//         \"pincode\":416416,\r\n//         \"village\":\"Samdoli\",\r\n//         \"city\":\"Sangli\",\r\n//         \"state\":\"Maharastra\",\r\n//          \"addressLine1\":\"BhilawadeGalli\",\r\n//         \"addressLine2\":\"chandralekha nivas\"\r\n\r\n//     }\r\n// }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "{{URL}}/admin/updateProfile",
+							"raw": "{{URL}}/admin/updateProfile?id=1&firstName=Sagar&lastName=Bhilawade&email= bhilwadesagar321@gmail.com &password=Sagar@0321&securityQuestion=In what city you were born?&securityAnswer=Samdoli",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
 								"admin",
 								"updateProfile"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "1"
+								},
+								{
+									"key": "firstName",
+									"value": "Sagar"
+								},
+								{
+									"key": "lastName",
+									"value": "Bhilawade"
+								},
+								{
+									"key": "email",
+									"value": " bhilwadesagar321@gmail.com "
+								},
+								{
+									"key": "password",
+									"value": "Sagar@0321"
+								},
+								{
+									"key": "securityQuestion",
+									"value": "In what city you were born?"
+								},
+								{
+									"key": "securityAnswer",
+									"value": "Samdoli"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "AddProfileImage",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "profileImage",
+									"type": "file",
+									"src": "/E:/whatsupp downloads/275938028_277534664541100_397903602382415863_n.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{URL}}/admin/addProfileImage/1",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"admin",
+								"addProfileImage",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getProfileImage",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/admin/getProfileImage/1",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"admin",
+								"getProfileImage",
+								"1"
 							]
 						}
 					},
