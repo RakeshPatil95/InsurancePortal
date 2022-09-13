@@ -37,6 +37,8 @@ private String email;
 private String securityQuestion;
 @NotBlank
 private String securityAnswer;
+private String password;
+private String token;
 private byte[] image;
 @Min(18)
 @Max(100)
@@ -51,6 +53,7 @@ private String pan;
 private String panDoc;
 @Length(min=6,max=6)
 private int pincode;
+private String Role="AGENT";
 
 
 

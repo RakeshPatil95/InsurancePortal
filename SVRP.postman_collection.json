@@ -411,6 +411,15 @@
 					"request": {
 						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"bhilwadesagar321@gmail.com\",\r\n    \"password\": \"Vinaya@0321\",\r\n    \"securityQuestion\": \"In what city were you born?\",\r\n    \"securityAnswer\": \"pune\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "http://localhost:8080/admin/forgotPassword/",
 							"protocol": "http",

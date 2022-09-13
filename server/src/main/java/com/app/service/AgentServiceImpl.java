@@ -16,6 +16,7 @@ import javax.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -56,6 +57,8 @@ public class AgentServiceImpl implements AgentService {
 	private String folder;
 	@Value("${project.customerImages}")
 	private String customerFolder;
+	@Autowired
+	private PasswordEncoder encoder;
 	@PostConstruct
 	public void anyInit() {
 		log.info("in init {} ", folder);
@@ -76,9 +79,9 @@ public class AgentServiceImpl implements AgentService {
 
 	@Override
 	public AgentDto addAgent(SignupDto signupDto) {
-	
+	    
 		Agent agent=this.mapper.map(signupDto,Agent.class);
-	
+	   agent.setPassword(encoder.encode(signupDto.getPassword()));
 		Agent retAgent=agDao.save(agent);
 		
 		return this.AgentToDto(retAgent);
@@ -94,7 +97,7 @@ public class AgentServiceImpl implements AgentService {
 	public AgentDto getAgentByEmailAndSecurityQuestionAndSecurityAnswer(ForgotPasswordDto fpDto) {
 	
 		Agent agent=agDao.findByEmailAndSecurityQuestionAndSecurityAnswer(fpDto.getEmail(), fpDto.getSecurityQuestion(),fpDto.getSecurityAnswer()).orElseThrow(()->new UserNotFoundException("Agents Email or Password is Invalid"));
-		agent.setPassword(fpDto.getPassword());
+		agent.setPassword(encoder.encode(fpDto.getPassword()));
 		agDao.save(agent);
 		return this.AgentToDto(agent);
 		

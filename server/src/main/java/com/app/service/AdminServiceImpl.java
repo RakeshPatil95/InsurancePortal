@@ -14,6 +14,7 @@ import javax.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -45,6 +46,8 @@ private AgentDao agDao;
 private ModelMapper mapper;
 @Value("${project.adminImages}")
 private String folder;
+@Autowired
+private PasswordEncoder encoder;
 @PostConstruct
 public void anyInit() {
 	log.info("in init {} ", folder);
@@ -66,7 +69,7 @@ public void anyInit() {
 	{
 		
 		Admin admin=adDao.findByEmailAndSecurityQuestionAndSecurityAnswer(fpDto.getEmail(), fpDto.getSecurityQuestion(), fpDto.getSecurityAnswer()).orElseThrow(()->new UserNotFoundException("Invalid Admin Email or Security Question or Security Answer"));
-	 admin.setPassword(fpDto.getPassword());
+	 admin.setPassword(encoder.encode(fpDto.getPassword()));
 	 adDao.save(admin);
 	 return this.adminToDto(admin);
 	}

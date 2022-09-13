@@ -25,10 +25,10 @@ import com.app.dto.CustomerDto;
 import com.app.dto.CustomerPolicyDto;
 import com.app.dto.ForgotPasswordDto;
 import com.app.dto.PolicyReturnDto;
-import com.app.dto.SigninDto;
 import com.app.dto.SignupDto;
 import com.app.service.AgentService;
 import com.app.service.PolicyService;
+
 
 @RestController
 @RequestMapping("/agent")
@@ -38,10 +38,16 @@ public class AgentController {
 private AgentService agServ;
 @Autowired
 private PolicyService polServ;
+
+
+//private AgentDetailsService agentDetailsService;
+//@Autowired
+//private JwtTokenHelper jwtTokenHelper;
 @PostMapping("/signup")
 public ResponseEntity<?>signup(@RequestBody @Valid SignupDto signupDto)
 {
 	try {
+		
 		return ResponseEntity.status(HttpStatus.CREATED).body(agServ.addAgent(signupDto));
 	}
 	catch(RuntimeException e) {
@@ -49,14 +55,46 @@ public ResponseEntity<?>signup(@RequestBody @Valid SignupDto signupDto)
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(e.getMessage(),HttpStatus.CONFLICT));
 	}
 }
-@PostMapping("/signin")
-public ResponseEntity<?>signin(@RequestBody @Valid SigninDto signinDto)
-{
-
-		return ResponseEntity.status(HttpStatus.OK).body(agServ.getAgentByEmailAndPassword(signinDto));
-	
-	
-}
+//@PostMapping("/signin")
+//public ResponseEntity<?>signin(@RequestBody @Valid SigninDto signinDto) 
+//{
+//
+//	//	return ResponseEntity.status(HttpStatus.OK).body(agServ.getAgentByEmailAndPassword(signinDto));
+//	try {
+//        authenticationManager.authenticate(
+//                new UsernamePasswordAuthenticationToken(
+//                		signinDto.getEmail(),
+//                		signinDto.getPassword()
+//                )
+//        );
+//    } catch (BadCredentialsException e) {
+//        throw new UserNotFoundException("INVALID_CREDENTIALS BAD CREDENTIALS EXCEPTION OCCURED");
+//    }
+//	catch(Exception e)
+//	{
+//		System.out.println(e.getMessage());
+//	}
+//
+//    final UserDetails userDetails
+//            = agentDetailsService.loadUserByUsername(signinDto.getEmail());
+//
+//    final String token =
+//    		jwtTokenHelper.generateToken(userDetails);
+//
+//	
+//	AgentDto agent=agServ.getAgentByEmailAndPassword(signinDto);
+//	if(agent!=null) {
+//		if(agent.getPassword()!=null&&agent.getPassword().equals(signinDto.getPassword())) {
+//			agent.setToken(token);
+//			return ResponseEntity.ok().body(agent);
+//		}
+//			
+//		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse("Invalid Password",HttpStatus.BAD_REQUEST));	}
+//	else
+//		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse("invalid Agent",HttpStatus.BAD_REQUEST));
+//	
+//	
+//}
 @PostMapping("/forgotPassword")
 public ResponseEntity<?>forgotPassword(@RequestBody @Valid ForgotPasswordDto fpDto){
 

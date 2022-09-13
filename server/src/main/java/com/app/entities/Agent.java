@@ -2,6 +2,7 @@ package com.app.entities;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -11,6 +12,10 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,12 +23,12 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Getter 
+@Getter
 @Setter
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class Agent extends BaseEntity {
+public class Agent extends BaseEntity implements UserDetails {
 	@Column(nullable = false)
 	private String firstName;
 	@Column(nullable = false)
@@ -53,6 +58,41 @@ public class Agent extends BaseEntity {
 
 	@Embedded
 	private Address address;
-	@OneToMany(mappedBy = "agent",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "agent",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
 	private List<Customer>customers=new ArrayList<>();
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		List<GrantedAuthority> grantedAuthorities=new ArrayList<GrantedAuthority>();
+		grantedAuthorities.add(new SimpleGrantedAuthority(Role.AGENT.name()));
+
+		return grantedAuthorities;
+		
+	}
+	@Override
+	public String getUsername() {
+		
+		return email;
+	}
+	@Override
+	public boolean isAccountNonExpired() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+	@Override
+	public boolean isAccountNonLocked() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+	@Override
+	public boolean isCredentialsNonExpired() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+	@Override
+	public boolean isEnabled() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	
 }

@@ -33,7 +33,10 @@ public class AdminDto {
 	private String securityQuestion;
  @NotBlank
 	private String securityAnswer;
+ 
 
+ private String token;
+ private String Role="ADMIN";
 
 
 	private Address address;

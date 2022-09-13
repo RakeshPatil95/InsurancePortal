@@ -9,6 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -21,16 +25,19 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.app.customerException.UserNotFoundException;
 import com.app.dto.AddPolicyDto;
+import com.app.dto.AdminDto;
 import com.app.dto.AgentDto;
 import com.app.dto.ApiResponse;
 import com.app.dto.CustomerDto;
 import com.app.dto.ForgotPasswordDto;
 import com.app.dto.PolicyReturnDto;
-import com.app.dto.SigninDto;
+
 import com.app.dto.AdminUpdateDto;
 import com.app.service.AdminService;
 import com.app.service.PolicyService;
+
 
 @RestController
 @RequestMapping("/admin")
@@ -41,13 +48,9 @@ private AdminService adServ;
 @Autowired
 private PolicyService polServ;
 
-@PostMapping("/signin")
-public ResponseEntity<?>signin(@RequestBody  @Valid SigninDto signinDto)
-{
-	
-		return ResponseEntity.ok().body(adServ.getAdminByEmailAndPassword(signinDto));
-	
-}
+
+
+
 @PostMapping("/forgotPassword")
 public ResponseEntity<?>forgotPassword(@RequestBody  @Valid ForgotPasswordDto fpDto)
 {
