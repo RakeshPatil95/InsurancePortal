@@ -42,39 +42,57 @@ const Signin = () => {
 
           let password = values.password
           let role = values.role
-          console.log(role);
+          
           let url="";
           if(role==="CUSTOMER")
-         url='http://localhost:8080/customer/signin';
-          else if(role==="AGENT")
-          url='http://localhost:8080/agent/signin';
-          else
-          url='http://localhost:8080/admin/signin';
-          console.log(url);
+         url='http://localhost:4000/customer/signin';
+          else if(role==="AGENT"||role==="ADMIN")
+          url='http://localhost:8080/user/signin';
+         
             axios
               .post(url, {
                 email,
                 password,
               })
               .then((response) => {
-                const result = response.data
-                console.log(response.status);
-                if (response.status === 200) {
-                  sessionStorage.setItem("user",response.data)
-                  toast.success('WELCOME TO SVRP INSURANCE')
-                  console.log(role)
-                 if(role==="ADMIN")
-                 Navigate('/admindashboard')
-                 else if(role=="AGENT")
-                 Navigate('/agentdashboard')
-                 else
-                  Navigate('/customerdashboard')
-                } else {
-                  
+                let user=null;
+                
+                if(role=="CUSTOMER")
+                {
+                  if(response.data.status!="error")
+                  {
+                     user=response.data.data;
+                  }
                 }
-              })
+                else if(role=="AGENT"||role=="ADMIN")
+                {
+                  if(response.status==200)
+                  {
+                     user=response.data;
+                  }
+                }
+              
+              
+                
+                 
+                  
+                 
+                  sessionStorage.setItem(`token_${user.role}`,user.token)
+                  toast.success('WELCOME TO SVRP INSURANCE')
+                
+                 console.log(sessionStorage.getItem("user_AGENT"));
+                
+                 if(role==="ADMIN")
+                 Navigate('/admindashboard',{user})
+                 else if(role=="AGENT")
+                 Navigate('/agentdashboard',{user})
+                 else
+                  Navigate('/customerdashboard',{user})
+                } 
+              )
               .catch((error) => {
-                toast.error('Please enter valid email or password.... ');
+                toast.error(error)
+                toast.error('Please enter valid email or password');
               })
           
         }}

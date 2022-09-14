@@ -19,7 +19,7 @@ import "./Dashboard.css";
 
 const CustomerDashBoard = () => {
 	const Navigate=useNavigate();
-
+  //console.log(props.user);
   const data = {
     chart1:{
       labels: [

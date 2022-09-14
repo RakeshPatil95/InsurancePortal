@@ -25,8 +25,11 @@ router.post('/signin',(request,response)=>{
             const payload = { id: users[0].id }
             const token = jwt.sign(payload, config.secret)
             result['status'] = 'success'
+            let role="CUSTOMER"
             result['data'] = {
                 token,
+                role,
+               
             }
         }
         response.send(result)
@@ -37,7 +40,7 @@ router.post('/signup',(request,response)=>{
     const encryptedPassword = String(cryptoJs.MD5(password))
     const statement = `insert into customer(first_name,last_name,phone_number,email,security_question,security_answer,password,age) values(?,?,?,?,?,?,?,?)`;
     db.Pool.query(statement,[first_name,last_name,phone_number,email, security_question,security_answer,encryptedPassword,age],(error,data)=>{
-        response.send(utils.createResult(error,data));
+      response.send(utils.createResult(error,data));
     })
 })
 

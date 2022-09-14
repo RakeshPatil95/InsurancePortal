@@ -62,13 +62,12 @@ function Signup() {
         let securityQuestion=values.securityQuestion;
         let securityAnswer=values.securityAnswer;
         let role=values.role;
-        console.log(values.securityAnswer);
-        console.log(values.securityQuestion);
+       
         let url="";
         if(role=="AGENT")
          url='http://localhost:8080/agent/signup';
           else 
-          url='http://localhost:8080/customer/signup';
+          url='http://localhost:4000/customer/signup';
         axios.post(url,{
           firstName,
           lastName,
@@ -79,15 +78,19 @@ function Signup() {
            securityAnswer
        }).then((response)=>{
           const result=response.data;
-         
-          if (response.status == 201) {
+          console.log(response.data.status);
+         console.log(response.data)
+          if (response.status == 201||response.data.status!="error") {
             toast.success('SuccessFully Signed Up');
-            alert("seccessfully signed up");
+           
             Navigate('/signin');
              
             } 
+            else{
+
+            }
        }).catch((error)=>{
-        alert("Signup Failed");
+       toast.error("Sign Up Failed"+error)
           console.log('error')
           console.log(error)
        })
