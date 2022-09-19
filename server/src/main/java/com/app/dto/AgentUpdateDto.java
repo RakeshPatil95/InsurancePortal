@@ -1,6 +1,8 @@
 package com.app.dto;
 
-import java.sql.Date;
+
+
+import java.time.LocalDate;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -25,16 +27,12 @@ public class AgentUpdateDto {
 	private String email;
 @NotBlank
 	private String password;
-@NotBlank
-	private String securityQuestion;
-@NotBlank
-	private String securityAnswer;
 	private String image;
 	
 
    private int age;
-	private Date dateOfBirth;
-	private Date hireDate;
+	private LocalDate dateOfBirth;
+	private LocalDate hireDate;
 	@NotBlank
    private String aadhar;
 	private String aadharDoc;

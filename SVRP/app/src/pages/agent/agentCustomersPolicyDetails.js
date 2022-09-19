@@ -1,11 +1,61 @@
 import AgentSideBar from "./agentSidebar";
 import AgentNavBar from "./agentNavbar";
 import "./Dashboard.css";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useEffect } from "react";
+import { toast } from "react-toastify";
+import axios from "axios";
+import config from './../config';
 const AgentCustomersPolicyDetails = () => {
+  let location = useLocation()
+
+  let agent = location.state.agent
+  let customer = location.state.customer
+  let customerPolicy=location.state.customerPolicy
+  const Navigate = useNavigate()
+  const [token, setToken] = useState(sessionStorage.getItem('token_AGENT'))
+
+  axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
+  if (token == null) {
+    toast.error('Unauthorized access please login first')
+    Navigate('/signin')
+  }
+  const claim=()=>{
+    let policyEndDate=new Date(customerPolicy.policyEndDate);
+    if(policyEndDate>new Date())
+    {
+      toast.error("Policy Can be Claimed After "+policyEndDate)
+    }
+    else{
+      axios.put(`${config.SpingUrl}/agent/applyForClaim/${customerPolicy.id}`,{})
+      .then(response=>{toast.success("Requested For Claim Succesfully!!! ")
+        Navigate("/agentCustomerPolicies",{state:{agent:agent,customer:customer}})
+    })
+      .catch(error=>toast.error("Claim Request Failed"));
+    }
+   
+}
+  
+  const surrender=()=>{
+    let policyStartDate=customerPolicy.policyStartDate;
+let MonthsUpToDate=getMonthDifference(new Date(policyStartDate),new Date());
+    if(MonthsUpToDate<6){
+    console.log(MonthsUpToDate);
+    toast.error("Miniumum 6 Months Tenure Should be Completed")
+    }
+    else{
+      axios.put(`${config.SpingUrl}/agent/applyForSurrender/${customerPolicy.id}`,{})
+      .then(response=>{toast.success("Requested For Surrender Succesfully!!! ")
+        Navigate("/agentCustomerPolicies",{state:{agent:agent,customer:customer}})
+    })
+      .catch(error=>toast.error("Surrender Request Failed"));
+ }
+}
   return (
     <div className="dashboard d-flex">
       <div>
-        <AgentSideBar />
+        <AgentSideBar agent={agent} />
       </div>
       <div
         style={{
@@ -13,10 +63,10 @@ const AgentCustomersPolicyDetails = () => {
           display: "flex",
           flexFlow: "column",
           height: "100vh",
-          overflowY: "hidden",
+          overflowY: "auto",
         }}
       >
-        <AgentNavBar />
+        <AgentNavBar agentName={agent.firstName}/>
         <h1>Details:</h1>
 
         <center>
@@ -33,32 +83,32 @@ const AgentCustomersPolicyDetails = () => {
                   <h4>Policy Name</h4>
                 </td>
                 <td>
-                  <h4>Jeevan Labh</h4>
+                  <h4>{customerPolicy.policy.policyName}</h4>
                 </td>
               </tr>
               <tr>
                 <td>Policy Holder Name</td>
-                <td>Sagar</td>
+                <td>{customer.firstName} {customer.lastName}</td>
               </tr>
               <tr>
                 <td>Start Date</td>
-                <td>20-06-2020</td>
+                <td>{customerPolicy.policyStartDate}</td>
               </tr>
               <tr>
                 <td>End Date</td>
-                <td>20-03-2030</td>
+                <td>{customerPolicy.policyEndDate}</td>
               </tr>
               <tr>
-                <td>Primium</td>
-                <td>2000 Rps</td>
+                <td>Premium</td>
+                <td>{customerPolicy.premium}</td>
               </tr>
               <tr>
-                <td>Maturity</td>
-                <td>50,00,000 Rps</td>
+                <td>Claim Ammount</td>
+                <td>{customerPolicy.claimAmount}</td>
               </tr>
               <tr>
-                <td>Prim Date</td>
-                <td>20-06-2022</td>
+                <td>Agent</td>
+                <td>{agent.firstName} {agent.lastName}</td>
               </tr>
             </tbody>
           </table>
@@ -73,7 +123,9 @@ const AgentCustomersPolicyDetails = () => {
                     width: "350px",
                     borderRadius: "15px",
                     backgroundColor: "green",
+                   
                   }}
+                  onClick={claim}
                 >
                   Claim
                 </button>
@@ -85,7 +137,9 @@ const AgentCustomersPolicyDetails = () => {
                     width: "350px",
                     borderRadius: "15px",
                     backgroundColor: "red",
+                   
                   }}
+                  onClick={surrender}
                 >
                   Surrender
                 </button>
@@ -105,3 +159,10 @@ const styles = {
     textAlign: "left",
   },
 };
+function getMonthDifference(startDate, endDate) {
+  return (
+    endDate.getMonth() -
+    startDate.getMonth() +
+    12 * (endDate.getFullYear() - startDate.getFullYear())
+  );
+}

@@ -16,7 +16,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-
 import com.app.jwt.JWTRequestFilter;
 
 @EnableWebSecurity // To tell spring sec frmwork : following contains customization instrs for
@@ -41,6 +40,8 @@ public class SecurityConfig {
 		.antMatchers("/user/signin").permitAll()
 		.antMatchers("/agent/signup").permitAll()
 		.antMatchers("/admin/signup").permitAll()
+		.antMatchers("/admin/getPolicyImage/{policyId}").permitAll()
+		.antMatchers("/admin/forgotPassword").permitAll()
 		.antMatchers(HttpMethod.OPTIONS).permitAll()
 		.anyRequest().authenticated().and().
 		sessionManagement()

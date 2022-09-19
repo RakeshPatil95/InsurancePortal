@@ -1,13 +1,21 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import {Navbar,Nav,NavDropdown,Form,FormControl,Button } from "react-bootstrap";
-const Adminnavbar=()=>{
+import { toast } from "react-toastify";
+const Adminnavbar=(props)=>{
+  let Navigate=useNavigate()
+  const signout=()=>{
+
+    sessionStorage.removeItem("token_ADMIN");
+    toast.success("Signed Out Successfully")
+    Navigate("/");
+  }
   return (
     <Navbar bg="#004E8F"  style={styles.navs} variant={"dark"} expand="lg">
     
     
     <Navbar.Brand>
       <img
-        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRlz-3StMO88R-0pKkdMXiloEpP1qxSwBzSqA&usqp=CAU"
+        src={require(`../../Images/logo-color.png`)}
         className="logo"
         style={styles.logo}
         alt="React Bootstrap logo"
@@ -21,7 +29,7 @@ const Adminnavbar=()=>{
           style={{ maxHeight: '100px' }}
           navbarScroll
         >
-          <NavLink to="#" style={styles.myfont}>Welcome Admin</NavLink>
+          <NavLink to="#" style={styles.myfont}>Welcome {props.adminName}</NavLink>
         </Nav>
         <Form className="d-flex" style={{marginRight:'350px'}}>
           <FormControl
@@ -40,13 +48,13 @@ const Adminnavbar=()=>{
                 fontSize: 18,
               }} >Search</Button>
         </Form>
-        <NavLink to="#" style={styles.myfont}>Sign Out</NavLink>
+        <Button onClick={()=>{signout()}} style={styles.myfont}>Sign Out</Button>
       </Navbar.Collapse>
     
   </Navbar>
   )
 }
-export default Adminnavbar;
+export default Adminnavbar; 
 const styles = {
     navs: {
       color: "white",

@@ -3,7 +3,6 @@ package com.app.service;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
@@ -21,7 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.app.customerException.ResourceNotFoundException;
 import com.app.dao.PolicyDao;
 import com.app.dto.AddPolicyDto;
-import com.app.dto.CustomerDto;
 import com.app.dto.PolicyReturnDto;
 import com.app.entities.Policy;
 
@@ -57,7 +55,7 @@ public class PolicyServiceImpl implements PolicyService {
 	@Override
 	public String uploadPolicyImage(long policyId,MultipartFile file) throws IOException {
 		Policy policy=polDao.findById(policyId).orElseThrow(()->new ResourceNotFoundException("Policy Not Found With ID"+policyId));
-		String imagePath = folder.concat(File.separator).concat("PolicyId"+policyId);
+		String imagePath = folder.concat("/PolicyId"+policyId+".jpg");
 		log.info("bytes copied {} ",
 				Files.copy(file.getInputStream(), Paths.get(imagePath), StandardCopyOption.REPLACE_EXISTING));
 		policy.setPolicyImage(imagePath);

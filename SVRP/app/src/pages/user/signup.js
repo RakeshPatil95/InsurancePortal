@@ -7,6 +7,7 @@ import '../../App.css'
 import axios from 'axios';
 import {useNavigate} from 'react-router-dom' ;
 import { toast } from "react-toastify";
+import config from './../config';
 const schema = yup.object().shape({
   firstName: yup.string().required("Please Enter your First name"),
   lastName: yup.string().required("Please Enter your Last name"),
@@ -65,9 +66,9 @@ function Signup() {
        
         let url="";
         if(role=="AGENT")
-         url='http://localhost:8080/agent/signup';
+         url=`${config.SpingUrl}/agent/signup`;
           else 
-          url='http://localhost:4000/customer/signup';
+          url=`${config.ExpressUrl}/customer/signup`;
         axios.post(url,{
           firstName,
           lastName,

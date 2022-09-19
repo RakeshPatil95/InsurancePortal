@@ -32,5 +32,6 @@ public class AddPolicyDto {
 	private double agentCommisionPercentage;
 	@NotNull
 	private double perAnnumRate;
+	private String policyDescription;
 
 }

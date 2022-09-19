@@ -1,13 +1,23 @@
 import { NavLink } from "react-router-dom";
+import { toast,ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
 import {Navbar,Nav,NavDropdown,Form,FormControl,Button } from "react-bootstrap";
-const CustomerNavBar=()=>{
+const CustomerNavBar = () => {
+  
+  const signout = () => {
+    toast("Thanks for Visiting...!!!", {
+      style: {
+        backgroundColor: "black",
+        color: "white",
+      }
+    });
+  }
   return (
     <Navbar bg="#004E8F"  style={styles.navs} variant={"dark"} expand="lg">
     
-    
     <Navbar.Brand>
       <img
-        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRlz-3StMO88R-0pKkdMXiloEpP1qxSwBzSqA&usqp=CAU"
+        src={require(`../../Images/logo-color.png`)}
         className="logo"
         style={styles.logo}
         alt="React Bootstrap logo"
@@ -42,7 +52,7 @@ const CustomerNavBar=()=>{
                 fontSize: 18,
               }} >Search</Button>
         </Form>
-        <NavLink to="#" style={styles.myfont}>Sign Out</NavLink>
+        <NavLink exact to="/" onClick={signout} style={styles.myfont}>Sign Out</NavLink>
       </Navbar.Collapse>
     
   </Navbar>

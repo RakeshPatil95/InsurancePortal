@@ -1,13 +1,8 @@
 package com.app.dto;
 
-import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.ManyToOne;
 
-import com.app.entities.Agent;
-import com.app.entities.Customer;
-import com.app.entities.Policy;
+import java.time.LocalDate;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,26 +13,29 @@ import lombok.NoArgsConstructor;
 public class CustomerPolicyDto {
 	private long id;
 
-	private Date policyStartDate;
+	private LocalDate policyStartDate;
 	
-	private Date policyEndDate;
+	private LocalDate policyEndDate;
 
-	private Date premiumDate;
+	private LocalDate premiumDate;
 
 	private int Premium;
 
-	private String invoice;
+
 
 	private boolean status;
 
 	private float claimAmount;
 
-	private Date claimDate;
+	private LocalDate claimDate;
+	
 
 	private CustomerDto customer;
 
 	private PolicyReturnDto policy;
 
 	private AgentDto agent;
-
+	private int  claimStatus;
+	private int surrenderStatus;
+	private double surrenderAmount;
 }

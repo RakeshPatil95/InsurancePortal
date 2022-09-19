@@ -8,7 +8,8 @@ import {
   CDBSidebarMenuItem,
 } from "cdbreact";
 import { NavLink } from "react-router-dom";
-const AgentSidebar = () => {
+const AgentSidebar = (props) => {
+  let agent=props.agent;
   return (
     <div style={{ height: "100vh", overflow: "scroll initial" }}>
       <CDBSidebar textColor="#fff" backgroundColor="#004E8F">
@@ -25,28 +26,30 @@ const AgentSidebar = () => {
 
         <CDBSidebarContent className="sidebar-content">
           <CDBSidebarMenu>
-            <NavLink exact to="/agentdashboard" activeClassName="activeClicked">
+            <NavLink exact to="/agentdashboard" state={{agent:agent}} activeClassName="activeClicked">
               <CDBSidebarMenuItem icon="columns">Dashboard</CDBSidebarMenuItem>
             </NavLink>
             <NavLink
               exact
               to="/agentPremiumPayment"
               activeClassName="activeClicked"
+              state={{agent:agent}}
             >
               <CDBSidebarMenuItem icon="table">
                 Premium Payments
               </CDBSidebarMenuItem>
             </NavLink>
-            <NavLink exact to="/agentcustomers" activeClassName="activeClicked">
+            <NavLink exact to="/agentcustomers" state={{agent:agent}} activeClassName="activeClicked">
               <CDBSidebarMenuItem icon="table">My Customers</CDBSidebarMenuItem>
             </NavLink>
-            <NavLink exact to="" activeClassName="activeClicked">
-              <CDBSidebarMenuItem icon="table">Invoice</CDBSidebarMenuItem>
+            <NavLink exact to="/agentAppliedPolicies" activeClassName="activeClicked" state={{agent:agent}}>
+              <CDBSidebarMenuItem icon="table">Appied Policies</CDBSidebarMenuItem>
             </NavLink>
             <NavLink
               exact
               to="/agentprofile"
               activeClassName="activeClicked"
+              state={{agent:agent}}
             >
               <CDBSidebarMenuItem icon="user">My Profile</CDBSidebarMenuItem>
             </NavLink>
@@ -54,13 +57,14 @@ const AgentSidebar = () => {
               exact
               to="/agentAllPlans"
               activeClassName="activeClicked"
+              state={{agent:agent}}
             >
               <CDBSidebarMenuItem icon="th-large">All Plans</CDBSidebarMenuItem>
             </NavLink>
 
-            <NavLink exact to="/agentPolicySummery" activeClassName="activeClicked">
+            <NavLink exact to="/agentCustomerPolicyHistory" state={{agent:agent}} activeClassName="activeClicked">
               <CDBSidebarMenuItem icon="table">
-                Summery
+                Policy History
               </CDBSidebarMenuItem>
             </NavLink>
           </CDBSidebarMenu>

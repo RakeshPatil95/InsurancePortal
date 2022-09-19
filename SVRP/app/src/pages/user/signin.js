@@ -8,6 +8,7 @@ import '../../App.css'
 import axios from 'axios'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { toast } from 'react-toastify'
+import config from '../config'
 const schema = yup.object().shape({
   email: yup
     .string()
@@ -45,9 +46,9 @@ const Signin = () => {
           
           let url="";
           if(role==="CUSTOMER")
-         url='http://localhost:4000/customer/signin';
+         url=`${config.ExpressUrl}/customer/signin`;
           else if(role==="AGENT"||role==="ADMIN")
-          url='http://localhost:8080/user/signin';
+          url=`${config.SpingUrl}/user/signin`;
          
             axios
               .post(url, {
@@ -56,7 +57,7 @@ const Signin = () => {
               })
               .then((response) => {
                 let user=null;
-                
+                console.log(response.data);
                 if(role=="CUSTOMER")
                 {
                   if(response.data.status!="error")
@@ -79,18 +80,18 @@ const Signin = () => {
                  
                   sessionStorage.setItem(`token_${user.role}`,user.token)
                   toast.success('WELCOME TO SVRP INSURANCE')
-                
-                 console.log(sessionStorage.getItem("user_AGENT"));
+                  console.log("UserID==>"+user.id);
                 
                  if(role==="ADMIN")
-                 Navigate('/admindashboard',{user})
+                 Navigate('/admindashboard',{state:{admin:user}})
                  else if(role=="AGENT")
-                 Navigate('/agentdashboard',{user})
+                 Navigate('/agentdashboard',{state:{agent:user}})
                  else
-                  Navigate('/customerdashboard',{user})
+                  Navigate('/customerdashboard',{state:{customer:user}})
                 } 
               )
               .catch((error) => {
+                console.log("error"+error)
                 toast.error(error)
                 toast.error('Please enter valid email or password');
               })

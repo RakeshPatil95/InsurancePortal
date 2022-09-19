@@ -1,6 +1,8 @@
 package com.app.entities;
 
-import java.sql.Date;
+
+
+import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -40,7 +42,7 @@ private Agent agent;
 
 
 private int age;
-private Date dateOfBirth;
+private LocalDate dateOfBirth;
 @Column(unique = true,length=12)
 private String aadhar;
 private String aadharDoc;

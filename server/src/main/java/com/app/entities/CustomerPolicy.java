@@ -1,5 +1,7 @@
 package com.app.entities;
-import java.util.Date;
+
+
+import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,26 +20,28 @@ import lombok.Setter;
 @NoArgsConstructor
 public class CustomerPolicy extends BaseEntity {
 	@Column(nullable = false)
-	private Date policyStartDate;
+	private LocalDate policyStartDate;
 	@Column(nullable = false)
-	private Date policyEndDate;
+	private LocalDate policyEndDate;
 	@Column(nullable = false)
-	private Date premiumDate;
+	private LocalDate premiumDate;
 	@Column(nullable = false)
-	private int Premium;
-	@Column(nullable = false)
-	private String invoice;
+	private double premium;
+	
+
 	@Column(nullable = false)
 	private boolean status;
 	@Column(nullable = false)
-	private float claimAmount;
-	@Column(nullable = false)
-	private Date claimDate;
+	private double claimAmount;
+	private LocalDate claimDate;
 	@ManyToOne
 	private Customer customer;
 	@ManyToOne
 	private Policy policy;
 	@ManyToOne
 	private Agent agent;
+	private int  claimStatus;
+	private int surrenderStatus;
+	private double surrenderAmount;
 
 }

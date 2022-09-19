@@ -2,13 +2,43 @@ import AgentSideBar from "./agentSidebar";
 import AgentNavBar from "./agentNavbar";
 import "./Dashboard.css";
 import Table from "react-bootstrap/Table";
-import { Link } from "react-router-dom";
+import { Link ,useLocation, useNavigate} from "react-router-dom";
+import { useEffect,useState } from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
+import config from './../config';
 
 const Agentcustomers = () => {
+  let location=useLocation();
+  const [customers,setCustomers]=useState([]);
+  let agent=location.state.agent;
+
+  const Navigate=useNavigate();
+  const [token, setToken] = useState(sessionStorage.getItem("token_AGENT"));
+
+  axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+  useEffect(()=>{
+   
+  if(!token)
+  {
+    toast.error("Unauthorized access please login first")
+    Navigate("/signin")
+  }
+   else{
+     
+    axios.get(`${config.SpingUrl}/agent/getMyCustomers/${agent.id}`).then((response)=>
+    {
+        setCustomers(response.data);
+       
+    }).catch((error)=>{
+      toast.error(error)
+    })
+  }},[])
+  console.log(customers);
   return (
     <div className="dashboard d-flex">
       <div>
-        <AgentSideBar />
+        <AgentSideBar agent={agent} />
       </div>
       <div
         style={{
@@ -16,14 +46,16 @@ const Agentcustomers = () => {
           display: "flex",
           flexFlow: "column",
           height: "100vh",
-          overflowY: "hidden",
+          overflowY: "auto",
+          overflowX:"hidden"
         }}
       >
-        <AgentNavBar />
+        <AgentNavBar agentName={agent.firstName}/>
         <td>
           <Link
             to="/agentAddCustomer"
             className="btn btn-primary"
+            state={{agent:agent}}
             style={{
               backgroundColor: "#FFCB08",
               borderRadius: "10px",
@@ -55,73 +87,35 @@ const Agentcustomers = () => {
         >
           <thead>
             <tr>
-              <th>#</th>
+              <th>Customer Id</th>
               <th>Customer Name</th>
               <th>Phone No</th>
               <th>Email ID</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>1</td>
-              <td>Sagar</td>
-              <td>1234567890</td>
-              <td>rutsagar@gmail.com</td>
+            {
+              customers.map(customer=>
+                { return(
+                  <tr>
+              <td>{customer.id}</td>
+              <td>{customer.firstName}</td>
+              <td>{customer.phoneNumber}</td>
+              <td>{customer.email}</td>
               <td>
                 <Link
                   to="/agentCustomersDetails"
                   className="btn btn-primary"
                   style={styles.button}
+                  state={{customer:customer,agent:agent}}
                 >
                   View Details
                 </Link>
               </td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td>Rakesh</td>
-              <td>9579260490</td>
-              <td>raka@gmail.com</td>
-              <td>
-                <Link
-                  to="/adminCustomersDetails"
-                  className="btn btn-primary"
-                  style={styles.button}
-                >
-                  View Details
-                </Link>
-              </td>
-            </tr>
-            <tr>
-              <td>3</td>
-              <td>Prathamesh</td>
-              <td>9898989898</td>
-              <td>pratham@gmail.com</td>
-              <td>
-                <Link
-                  to="/adminCustomersDetails"
-                  className="btn btn-primary"
-                  style={styles.button}
-                >
-                  View Details
-                </Link>
-              </td>
-            </tr>
-            <tr>
-              <td>4</td>
-              <td>Vinaya</td>
-              <td>9090909090</td>
-              <td>chaila@gmail.com</td>
-              <td>
-                <Link
-                  to="/adminCustomersDetails"
-                  className="btn btn-primary"
-                  style={styles.button}
-                >
-                  View Details
-                </Link>
-              </td>
-            </tr>
+            </tr>)
+                })
+            }
+           
           </tbody>
         </Table>
       </div>

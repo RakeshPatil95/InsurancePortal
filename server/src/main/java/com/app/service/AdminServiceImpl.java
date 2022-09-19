@@ -23,13 +23,18 @@ import com.app.customerException.UserNotFoundException;
 import com.app.dao.AdminDao;
 import com.app.dao.AgentDao;
 import com.app.dao.CustomerDao;
+import com.app.dao.CustomerPolicyDao;
 import com.app.dto.AdminDto;
 import com.app.dto.AdminUpdateDto;
 import com.app.dto.AgentDto;
 import com.app.dto.CustomerDto;
+import com.app.dto.CustomerPolicyDto;
 import com.app.dto.ForgotPasswordDto;
 import com.app.dto.SigninDto;
+import com.app.entities.Address;
 import com.app.entities.Admin;
+import com.app.entities.Customer;
+import com.app.entities.CustomerPolicy;
 
 import lombok.extern.slf4j.Slf4j;
 @Service
@@ -44,6 +49,8 @@ private CustomerDao custDao;
 private AgentDao agDao;
 @Autowired
 private ModelMapper mapper;
+@Autowired
+private CustomerPolicyDao custPolDao;
 @Value("${project.adminImages}")
 private String folder;
 @Autowired
@@ -94,12 +101,13 @@ public void anyInit() {
 	}
 
 	@Override
-	public AdminDto updateAdmin( AdminUpdateDto adminupdateDto,MultipartFile profileImage) throws IOException {
-	adDao.findById(adminupdateDto.getId()).orElseThrow(()->new UserNotFoundException("Admin not FOund with Id"+adminupdateDto.getId()));
-	String profileImagePath = folder.concat(File.separator).concat("AdminId "+adminupdateDto.getId());
-	Files.copy(profileImage.getInputStream(), Paths.get(profileImagePath), StandardCopyOption.REPLACE_EXISTING);
-  adminupdateDto.setImage(profileImagePath);
-	Admin admin=mapper.map(adminupdateDto, Admin.class);
+	public AdminDto updateAdmin( AdminDto adminDto,Address adress) {
+	Admin ad=adDao.findById(adminDto.getId()).orElseThrow(()->new UserNotFoundException("Admin not Found with Id"+adminDto.getId()));
+   adminDto.setSecurityAnswer(ad.getSecurityAnswer());
+   adminDto.setSecurityQuestion(ad.getSecurityQuestion());
+   adminDto.setPassword(ad.getPassword());
+   adminDto.setAddress(adress);
+	Admin admin=mapper.map(adminDto, Admin.class);
    adDao.save(admin);
   return mapper.map(admin, AdminDto.class);
 	}
@@ -119,6 +127,69 @@ public void anyInit() {
 	if(admin.getImage()==null)
 		  throw new ResourceNotFoundException("Admin doesnt have an ProfileImage");
 				return Files.readAllBytes(Paths.get(admin.getImage()));
+	}
+	@Override
+	public List<CustomerPolicyDto> getMyCustomerPolicies(long customerId) {
+	Customer customer= custDao.findById(customerId).orElseThrow(()->new ResourceNotFoundException("Customer Not Found With ID "+customerId));
+	return custPolDao.findByCustomerAndStatusAndClaimStatusAndSurrenderStatus(customer,true,0,0).stream().map((custPol)->(mapper.map(custPol, CustomerPolicyDto.class))).collect(Collectors.toList());
+	
+	}
+	@Override
+	public List<CustomerPolicyDto> getNewAppicatons() {
+
+		return custPolDao.findByStatus(false).stream().map((custPol)->(mapper.map(custPol, CustomerPolicyDto.class))).collect(Collectors.toList());
+	}
+	@Override
+	public CustomerPolicyDto acceptPolicy(long customerPolicyId) {
+		CustomerPolicy custPolicy=custPolDao.findById(customerPolicyId).orElseThrow(()->new ResourceNotFoundException("CustomerPolicy Not Found With ID==>"+customerPolicyId));
+		 System.out.println("Cpol============>"+custPolicy);
+		custPolicy.setStatus(true);
+		return mapper.map(custPolicy, CustomerPolicyDto.class);
+	}
+	@Override
+	public CustomerPolicyDto rejectPolicy(long customerPolicyId) {
+		CustomerPolicy custPolicy=custPolDao.findById(customerPolicyId).orElseThrow(()->new ResourceNotFoundException("CustomerPolicy Not Found With ID==>"+customerPolicyId));
+		custPolDao.delete(custPolicy);
+		return mapper.map(custPolicy, CustomerPolicyDto.class);
+	}
+	@Override
+	public List<CustomerPolicyDto> getNewClaims() {
+		
+		return custPolDao.findByClaimStatus(1).stream().map((policy)->mapper.map(policy, CustomerPolicyDto.class)).collect(Collectors.toList());
+	}
+	@Override
+	public List<CustomerPolicyDto> getNewSurrenders() {
+		return custPolDao.findBySurrenderStatus(1).stream().map((policy)->mapper.map(policy, CustomerPolicyDto.class)).collect(Collectors.toList());
+	}
+	@Override
+	public CustomerPolicyDto acceptClaim(long customerPolicyId) {
+		CustomerPolicy custPolicy=custPolDao.findById(customerPolicyId).orElseThrow(()->new ResourceNotFoundException("CustomerPolicy Not Found With ID==>"+customerPolicyId));
+		custPolicy.setClaimStatus(2);
+		custPolDao.save(custPolicy);
+		return mapper.map(custPolicy, CustomerPolicyDto.class);
+	}
+	@Override
+	public CustomerPolicyDto rejectClaim(long customerPolicyId) {
+		CustomerPolicy custPolicy=custPolDao.findById(customerPolicyId).orElseThrow(()->new ResourceNotFoundException("CustomerPolicy Not Found With ID==>"+customerPolicyId));
+		custPolicy.setClaimStatus(3);
+		custPolDao.save(custPolicy);
+		return mapper.map(custPolicy, CustomerPolicyDto.class);
+	}
+	@Override
+	public CustomerPolicyDto acceptSurrender(long customerPolicyId, double surrenderAmount) {
+		CustomerPolicy custPolicy=custPolDao.findById(customerPolicyId).orElseThrow(()->new ResourceNotFoundException("CustomerPolicy Not Found With ID==>"+customerPolicyId));
+		custPolicy.setSurrenderStatus(2);
+		custPolicy.setSurrenderAmount(surrenderAmount);
+		custPolDao.save(custPolicy);
+		return mapper.map(custPolicy, CustomerPolicyDto.class);
+	}
+	@Override
+	public CustomerPolicyDto rejectSurrender(long customerPolicyId, double surrenderAmount) {
+		CustomerPolicy custPolicy=custPolDao.findById(customerPolicyId).orElseThrow(()->new ResourceNotFoundException("CustomerPolicy Not Found With ID==>"+customerPolicyId));
+		custPolicy.setSurrenderStatus(3);
+		custPolicy.setSurrenderAmount(surrenderAmount);
+		custPolDao.save(custPolicy);
+		return mapper.map(custPolicy, CustomerPolicyDto.class);
 	}
 
 }

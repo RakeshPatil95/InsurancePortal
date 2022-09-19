@@ -13,12 +13,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.app.dto.AgentDto;
 import com.app.dto.AgentUpdateDto;
 import com.app.dto.ApiResponse;
 import com.app.dto.CustomerDto;
@@ -26,6 +28,7 @@ import com.app.dto.CustomerPolicyDto;
 import com.app.dto.ForgotPasswordDto;
 import com.app.dto.PolicyReturnDto;
 import com.app.dto.SignupDto;
+import com.app.entities.Address;
 import com.app.service.AgentService;
 import com.app.service.PolicyService;
 
@@ -38,11 +41,6 @@ public class AgentController {
 private AgentService agServ;
 @Autowired
 private PolicyService polServ;
-
-
-//private AgentDetailsService agentDetailsService;
-//@Autowired
-//private JwtTokenHelper jwtTokenHelper;
 @PostMapping("/signup")
 public ResponseEntity<?>signup(@RequestBody @Valid SignupDto signupDto)
 {
@@ -55,46 +53,7 @@ public ResponseEntity<?>signup(@RequestBody @Valid SignupDto signupDto)
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse(e.getMessage(),HttpStatus.CONFLICT));
 	}
 }
-//@PostMapping("/signin")
-//public ResponseEntity<?>signin(@RequestBody @Valid SigninDto signinDto) 
-//{
-//
-//	//	return ResponseEntity.status(HttpStatus.OK).body(agServ.getAgentByEmailAndPassword(signinDto));
-//	try {
-//        authenticationManager.authenticate(
-//                new UsernamePasswordAuthenticationToken(
-//                		signinDto.getEmail(),
-//                		signinDto.getPassword()
-//                )
-//        );
-//    } catch (BadCredentialsException e) {
-//        throw new UserNotFoundException("INVALID_CREDENTIALS BAD CREDENTIALS EXCEPTION OCCURED");
-//    }
-//	catch(Exception e)
-//	{
-//		System.out.println(e.getMessage());
-//	}
-//
-//    final UserDetails userDetails
-//            = agentDetailsService.loadUserByUsername(signinDto.getEmail());
-//
-//    final String token =
-//    		jwtTokenHelper.generateToken(userDetails);
-//
-//	
-//	AgentDto agent=agServ.getAgentByEmailAndPassword(signinDto);
-//	if(agent!=null) {
-//		if(agent.getPassword()!=null&&agent.getPassword().equals(signinDto.getPassword())) {
-//			agent.setToken(token);
-//			return ResponseEntity.ok().body(agent);
-//		}
-//			
-//		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse("Invalid Password",HttpStatus.BAD_REQUEST));	}
-//	else
-//		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ApiResponse("invalid Agent",HttpStatus.BAD_REQUEST));
-//	
-//	
-//}
+
 @PostMapping("/forgotPassword")
 public ResponseEntity<?>forgotPassword(@RequestBody @Valid ForgotPasswordDto fpDto){
 
@@ -102,10 +61,12 @@ public ResponseEntity<?>forgotPassword(@RequestBody @Valid ForgotPasswordDto fpD
 		return ResponseEntity.status(HttpStatus.OK).body(agServ.getAgentByEmailAndSecurityQuestionAndSecurityAnswer(fpDto));
 
 }
-@PostMapping("/updateProfile")
-public ResponseEntity<?>updateProfile(@ModelAttribute @Valid AgentUpdateDto agUpDto,@RequestParam MultipartFile profileImage,@RequestParam MultipartFile acDoc,@RequestBody MultipartFile pcDoc) throws IOException
-{
-	return ResponseEntity.status(HttpStatus.OK).body(agServ.upDateProfile(agUpDto,profileImage,acDoc,pcDoc));
+@PutMapping("/updateAgent")
+public ResponseEntity<?>updateProfile(@ModelAttribute AgentDto agDto,@ModelAttribute Address address) 
+{ System.out.println(agDto);
+//Address address=agDto.getAddress();
+System.out.println(address);
+	return ResponseEntity.status(HttpStatus.OK).body(agServ.upDateProfile(agDto,address));
 }
 @GetMapping(value="/getAllPolicies")
 public ResponseEntity<List<PolicyReturnDto>> getAllPolicies() 
@@ -118,13 +79,17 @@ public ResponseEntity<List<CustomerDto>>getMyCustomers(@PathVariable long agentI
 	return ResponseEntity.ok().body(agServ.getMyCustomers(agentId));
 }
 @PostMapping(value="/addMyCustomer/{agentId}")
-public ResponseEntity<?>addMyCustomer(@PathVariable @Valid long agentId,@ModelAttribute CustomerDto custDto,@RequestParam MultipartFile profileImage, @RequestParam MultipartFile acDoc,@RequestParam MultipartFile pcDoc) throws IOException
-{
-	return ResponseEntity.ok().body(agServ.addMyCustomer(agentId,custDto,profileImage,acDoc,pcDoc));
+public ResponseEntity<?>addMyCustomer(@PathVariable @Valid long agentId,@ModelAttribute CustomerDto custDto,@ModelAttribute Address address) throws IOException
+{//{System.out.println(custDto);
+//System.out.println(address);
+//System.out.println(profileImage!=null);,@RequestBody MultipartFile profileImage, @RequestBody MultipartFile acDoc,@RequestBody MultipartFile pcDoc
+//System.out.println(acDoc!=null);
+//System.out.println(pcDoc!=null);
+	return ResponseEntity.ok().body(agServ.addMyCustomer(agentId,custDto,address));
 }
 @GetMapping(value="/getMyCustomersPremiums/{agentId}")
 public ResponseEntity<?>getMyCustomersPremiums(@PathVariable long agentId)
-{
+{ System.out.println("in getMyCustomersPremiums");
 	return ResponseEntity.ok().body(agServ.getMyCustomersPolicyPremiums(agentId));
 }
 @GetMapping(value="/getMyCustomerPolicies/{agentId}/customer/{customerId}")
@@ -137,5 +102,39 @@ public ResponseEntity<?>addMyCustomersPolicy(@PathVariable long agentId,@PathVar
 
 {
 	return ResponseEntity.ok().body(agServ.addMyCustomersPolicy(agentId,customerId,policyId,customerPolicyDto));
+}
+@PostMapping(value="/addMyCustomersDocument/{agentId}/customer/{customerId}")
+public ResponseEntity<?>addMyCustomersDocumnets(@RequestParam("profileImage") MultipartFile profileImage, @RequestParam("acDoc") MultipartFile acDoc,@RequestParam("pcDoc") MultipartFile pcDoc){
+	System.out.println(profileImage.getSize());
+	
+	System.out.println(profileImage.isEmpty());
+	System.out.println(acDoc.getSize());
+	System.out.println(pcDoc.getOriginalFilename());
+	return ResponseEntity.ok().body("Parameters Recieved");
+}
+@PostMapping(value="/payMyCustomersPremium")
+public ResponseEntity<?>payMyCustomersPremium(@RequestParam long agentId, @RequestParam long customerId,@RequestParam long policyId,@RequestParam long customerPolicyId,@RequestParam double amount){
+	System.out.println(agentId+" "+customerId+""+policyId+""+customerPolicyId+""+amount);
+	return ResponseEntity.ok().body(agServ.fillCustomersPremium(agentId, customerId, policyId, customerPolicyId, amount));
+}
+@GetMapping(value="/getAppliedPolicies/{agentId}")
+public ResponseEntity<?>getAppiliedPolicies(@PathVariable long agentId){
+	return ResponseEntity.ok().body(agServ.getAppiliedPolicies(agentId));
+}
+@GetMapping(value="/getApplicablePoliciesForCustomer/{customerId}")
+public ResponseEntity<?>getApplicablePoliciesForCustomer(@PathVariable long customerId){
+	return ResponseEntity.ok().body(agServ.getApplicablePoliciesForCustomer(customerId));
+}
+@PutMapping(value="/applyForClaim/{customerPolicyId}")
+public ResponseEntity<?>applyForClaim(@PathVariable long customerPolicyId){
+	return ResponseEntity.ok().body(agServ.changeClaimStatus(customerPolicyId));
+}
+@PutMapping(value="/applyForSurrender/{customerPolicyId}")
+public ResponseEntity<?>applyForSurrender(@PathVariable long customerPolicyId){
+	return ResponseEntity.ok().body(agServ.changeSurrenderStatus(customerPolicyId));
+}
+@GetMapping(value="/getMyCustomorsPolicyHistory/{agentId}")
+public ResponseEntity<?>getMyCustomorsPolicyHistory(@PathVariable long agentId){
+	return ResponseEntity.ok().body(agServ.getPolicyHistoryByAgent(agentId));
 }
 }

@@ -26,17 +26,22 @@ import com.app.dao.AgentDao;
 import com.app.dao.CustomerDao;
 import com.app.dao.CustomerPolicyDao;
 import com.app.dao.PolicyDao;
+import com.app.dao.PolicyTransactionDao;
 import com.app.dto.AgentDto;
 import com.app.dto.AgentUpdateDto;
 import com.app.dto.CustomerDto;
 import com.app.dto.CustomerPolicyDto;
 import com.app.dto.ForgotPasswordDto;
+import com.app.dto.PolicyReturnDto;
+import com.app.dto.PolicyTransactionsDto;
 import com.app.dto.SigninDto;
 import com.app.dto.SignupDto;
+import com.app.entities.Address;
 import com.app.entities.Agent;
 import com.app.entities.Customer;
 import com.app.entities.CustomerPolicy;
 import com.app.entities.Policy;
+import com.app.entities.PolicyTransactions;
 
 import lombok.extern.slf4j.Slf4j;
 @Service
@@ -59,6 +64,8 @@ public class AgentServiceImpl implements AgentService {
 	private String customerFolder;
 	@Autowired
 	private PasswordEncoder encoder;
+	@Autowired
+	private PolicyTransactionDao polTranDao;
 	@PostConstruct
 	public void anyInit() {
 		log.info("in init {} ", folder);
@@ -81,6 +88,7 @@ public class AgentServiceImpl implements AgentService {
 	public AgentDto addAgent(SignupDto signupDto) {
 	    
 		Agent agent=this.mapper.map(signupDto,Agent.class);
+	agent.setAddress(new Address());
 	   agent.setPassword(encoder.encode(signupDto.getPassword()));
 		Agent retAgent=agDao.save(agent);
 		
@@ -114,21 +122,25 @@ public class AgentServiceImpl implements AgentService {
 
 
 	@Override
-	public AgentUpdateDto upDateProfile(@Valid AgentUpdateDto agUpDto, MultipartFile profileImage, MultipartFile acDoc,
-			MultipartFile pcDoc) throws IOException {
-		agDao.findById(agUpDto.getId()).orElseThrow(()->new UserNotFoundException("Agent Not Found With ID  "+agUpDto.getId()));
-		String profileImagePath = folder.concat(File.separator).concat("AgentID "+agUpDto.getId());
-		Files.copy(profileImage.getInputStream(), Paths.get(profileImagePath), StandardCopyOption.REPLACE_EXISTING);
-		agUpDto.setImage(profileImagePath);
-		String aadharDocPath = folder.concat(File.separator).concat("AgentAadhar "+agUpDto.getId());
-		Files.copy(acDoc.getInputStream(), Paths.get(aadharDocPath), StandardCopyOption.REPLACE_EXISTING);
-		agUpDto.setAadharDoc(aadharDocPath);
-		String panDocPath = folder.concat(File.separator).concat("AgentPan  "+agUpDto.getId());
-		Files.copy(pcDoc.getInputStream(), Paths.get(panDocPath), StandardCopyOption.REPLACE_EXISTING);
-		agUpDto.setPanDoc(panDocPath);
-	Agent	 agent=mapper.map(agUpDto, Agent.class);
+	public AgentDto upDateProfile(AgentDto agDto,Address address) {
+ Agent agentTemp=		agDao.findById(agDto.getId()).orElseThrow(()->new UserNotFoundException("Agent Not Found With ID  "+agDto.getId()));
+   agDto.setPassword(agentTemp.getPassword());
+   agDto.setSecurityQuestion(agentTemp.getSecurityQuestion());
+   agDto.setSecurityAnswer(agentTemp.getSecurityQuestion());
+   agDto.setAddress(address);
+ //		String profileImagePath = folder.concat(File.separator).concat("AgentID "+agUpDto.getId());
+//		Files.copy(profileImage.getInputStream(), Paths.get(profileImagePath), StandardCopyOption.REPLACE_EXISTING);
+//		agUpDto.setImage(profileImagePath);
+//		String aadharDocPath = folder.concat(File.separator).concat("AgentAadhar "+agUpDto.getId());
+//		Files.copy(acDoc.getInputStream(), Paths.get(aadharDocPath), StandardCopyOption.REPLACE_EXISTING);
+//		agUpDto.setAadharDoc(aadharDocPath);
+//		String panDocPath = folder.concat(File.separator).concat("AgentPan  "+agUpDto.getId());
+//		Files.copy(pcDoc.getInputStream(), Paths.get(panDocPath), StandardCopyOption.REPLACE_EXISTING);
+//		agUpDto.setPanDoc(panDocPath);
+	Agent	 agent=mapper.map(agDto, Agent.class);
 		agDao.save(agent);
-		return agUpDto;
+		
+		return mapper.map(agent, AgentDto.class);
 	}
 
 	@Override
@@ -138,21 +150,21 @@ public class AgentServiceImpl implements AgentService {
 	}
 
 	@Override
-	public CustomerDto addMyCustomer(@Valid long agentId, CustomerDto custDto, MultipartFile profileImage,
-			MultipartFile acDoc, MultipartFile pcDoc) throws IOException {
+	public CustomerDto addMyCustomer( long agentId, CustomerDto custDto, Address address){
 		Agent agent=agDao.findById(agentId).orElseThrow(()-> new UserNotFoundException("Agent Not Found Exception "+agentId));
-		
+		System.out.println(custDto.getAddress());
 		Customer customer=custDao.save(mapper.map(custDto, Customer.class));
 		customer.setAgent(agent);
-		String profileImagePath = customerFolder.concat(File.separator).concat("CustomerId "+customer.getId());
-		Files.copy(profileImage.getInputStream(), Paths.get(profileImagePath), StandardCopyOption.REPLACE_EXISTING);
-		customer.setImage(profileImagePath);
-		String aadharDocPath = customerFolder.concat(File.separator).concat("CustomerAadhar "+customer.getId());
-		Files.copy(acDoc.getInputStream(), Paths.get(aadharDocPath), StandardCopyOption.REPLACE_EXISTING);
-		customer.setAadharDoc(aadharDocPath);
-		String panDocPath = customerFolder.concat(File.separator).concat("CustomerPan  "+customer.getId());
-		Files.copy(pcDoc.getInputStream(), Paths.get(panDocPath), StandardCopyOption.REPLACE_EXISTING);
-		customer.setPanDoc(panDocPath);
+		customer.setAddress(address);
+//		String profileImagePath = customerFolder.concat(File.separator).concat("CustomerId "+customer.getId());
+//		Files.copy(profileImage.getInputStream(), Paths.get(profileImagePath), StandardCopyOption.REPLACE_EXISTING);
+//		customer.setImage(profileImagePath);
+//		String aadharDocPath = customerFolder.concat(File.separator).concat("CustomerAadhar "+customer.getId());
+//		Files.copy(acDoc.getInputStream(), Paths.get(aadharDocPath), StandardCopyOption.REPLACE_EXISTING);
+//		customer.setAadharDoc(aadharDocPath);
+//		String panDocPath = customerFolder.concat(File.separator).concat("CustomerPan  "+customer.getId());
+//		Files.copy(pcDoc.getInputStream(), Paths.get(panDocPath), StandardCopyOption.REPLACE_EXISTING);
+//		customer.setPanDoc(panDocPath);
 		//custDao.save(mapper.map(custDto, Customer.class));
 		return mapper.map(customer, CustomerDto.class);
 		//return custDto;
@@ -162,7 +174,7 @@ public class AgentServiceImpl implements AgentService {
 	public List<CustomerPolicyDto> getMyCustomersPolicies(long agentId,long customerId) {
 		Agent agent=agDao.findById(agentId).orElseThrow(()->new UserNotFoundException("Agent not found with Id "+agentId));
 		Customer customer=custDao.findById(customerId).orElseThrow(()->new UserNotFoundException("Customer not found with Id "+customerId));
-		return custPolDao.findByAgentAndCustomer(agent,customer).stream().map((customerPolicy)->mapper.map(customerPolicy, CustomerPolicyDto.class)).collect(Collectors.toList());
+		return custPolDao.findByAgentAndCustomerAndClaimStatusAndSurrenderStatus(agent,customer,0,0).stream().map((customerPolicy)->mapper.map(customerPolicy, CustomerPolicyDto.class)).collect(Collectors.toList());
 	}
 
 	@Override
@@ -185,4 +197,65 @@ public class AgentServiceImpl implements AgentService {
 		return mapper.map(customerPolicy, CustomerPolicyDto.class);
 	}
 
+	@Override
+	public PolicyTransactionsDto fillCustomersPremium(long agentId, long customerId, long policyId,long customerPolicyId, double amount) {
+		Agent agent=agDao.findById(agentId).orElseThrow(()->new UserNotFoundException("Agent not found with Id "+agentId));
+		Customer customer=custDao.findById(customerId).orElseThrow(()->new UserNotFoundException("Customer not found with Id "+customerId));
+		Policy policy=polDao.findById(policyId).orElseThrow(()->new ResourceNotFoundException("Policy not found with id "+policyId));
+	   PolicyTransactions policyTransactions=new PolicyTransactions();
+	   policyTransactions.setAmount(amount);
+	   policyTransactions.setAgent(agent);
+	   policyTransactions.setCustomer(customer);
+	   policyTransactions.setPolicy(policy);
+	   policyTransactions.setPaymentDate(LocalDate.now());
+	   CustomerPolicy customerPolicy=custPolDao.findById(customerPolicyId).orElseThrow(()->new ResourceNotFoundException("CustomersPolicy not found with id "+customerPolicyId));
+//	  Calendar c=Calendar.getInstance();
+//	  c.setTime(customerPolicy.getPremiumDate());
+//	  c.add(Calendar.MONTH, 1);
+	   customerPolicy.setPremiumDate(customerPolicy.getPremiumDate().plusMonths(1));
+	   
+		return mapper.map(polTranDao.save(policyTransactions), PolicyTransactionsDto.class);
+	}
+
+	@Override
+	public List<CustomerPolicyDto> getAppiliedPolicies(long agentId) {
+		Agent agent=agDao.findById(agentId).orElseThrow(()->new UserNotFoundException("Agent not found with Id "+agentId));
+		return custPolDao.findByAgentAndStatusAndClaimStatusAndSurrenderStatus(agent,false,0,0).stream().map((customerPolicy)->mapper.map(customerPolicy, CustomerPolicyDto.class)).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<PolicyReturnDto> getApplicablePoliciesForCustomer(long customerId) {
+		custDao.findById(customerId).orElseThrow(()->new UserNotFoundException("Customer not found with Id "+customerId));
+		return polDao.getApplicablePoliciesForCustomer(customerId).stream().map((policy)->mapper.map(policy, PolicyReturnDto.class)).collect(Collectors.toList());
+	}
+
+	@Override
+	public CustomerPolicyDto changeClaimStatus(long customerPolicyId) {
+	CustomerPolicy custPolicy=custPolDao.findById(customerPolicyId).orElseThrow(()->new ResourceNotFoundException("Customers Policy Not Found With ID"));
+	custPolicy.setClaimStatus(1);
+
+	
+	custPolicy.setClaimDate(LocalDate.now());
+	custPolicy=custPolDao.save(custPolicy);
+	return mapper.map(custPolicy, CustomerPolicyDto.class);
+	}
+
+	@Override
+	public CustomerPolicyDto changeSurrenderStatus(long customerPolicyId) {
+		CustomerPolicy custPolicy=custPolDao.findById(customerPolicyId).orElseThrow(()->new ResourceNotFoundException("Customers Policy Not Found With ID"));
+		custPolicy.setSurrenderStatus(1);
+		
+		
+		custPolicy.setClaimDate(LocalDate.now());
+		custPolicy=custPolDao.save(custPolicy);
+		
+		return mapper.map(custPolicy, CustomerPolicyDto.class);
+	}
+
+	@Override
+	public List<CustomerPolicyDto> getPolicyHistoryByAgent(long agentId) {
+	
+		return custPolDao.getPolicyHistoyByAgent(agentId).stream().map((policy)->mapper.map(policy, CustomerPolicyDto.class)).collect(Collectors.toList());
+	}
+  
 }

@@ -1,14 +1,56 @@
 import AgentSideBar from "./agentSidebar";
 import AgentNavBar from "./agentNavbar";
 import "./Dashboard.css";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
+import config from "../config";
+
 const AgentPaynow=()=>{
+    let location = useLocation()
+  
+  let agent = location.state.agent
+  let customer=location.state.customer
+  let premium=location.state.premium
+  const Navigate = useNavigate()
+  const [token, setToken] = useState(sessionStorage.getItem('token_AGENT'))
+ 
+  axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
+  if (token == null) {
+    toast.error('Unauthorized access please login first')
+    Navigate('/signin')
+  }
+  const payNow=()=>{
+    console.log(agent.id,customer.id,premium.policy.id,premium.id,premium.premium)
+    let agentId=agent.id;
+    let customerId=customer.id;
+    let policyId=premium.policy.id;
+    let customerPolicyId=premium.id
+    let amount=premium.premium
+    axios.post(`${config.SpingUrl}/agent/payMyCustomersPremium`,{},{
+        params:{
+            agentId,
+            customerId,
+            policyId,
+            customerPolicyId,
+            amount,
+        }
+    }).then((response)=>{
+        console.log(response.data);
+        if(response.status==200)
+        toast.success("Premium Paid SuccessFully")
+        Navigate("/agentPremiumPayment",{state:{agent:agent}})
+    }
+    ).catch(error=>toast.error("Premium Paid Failed "+error))
+  }
     return(
         <div className="dashboard d-flex">
     	<div>
-      	<AgentSideBar/>
+      	<AgentSideBar agent={agent}/>
       </div>
       <div style={{flex:"1 1 auto", display:"flex", flexFlow:"column", height:"100vh", overflowY:"auto"}}>
-        <AgentNavBar/>
+        <AgentNavBar agentName={agent.firstName}/>
        
           <center>
           <table className='table table mt-5' style={{width:'35%'}}>
@@ -21,36 +63,28 @@ const AgentPaynow=()=>{
             </thead>
             <tbody style={styles.myfont}>
                 <tr>
-                    <td>Name :</td>
-                    <td>Customer Name </td>
+                    <td>Customer</td>
+                    <td>{customer.firstName} {customer.lastName}</td>
                 </tr>
                 <tr>
                     <td>Policy :</td>
-                    <td>Jeevan Labh</td>
+                    <td>{premium.policy.policyName}</td>
                 </tr>
                 <tr>
-                    <td>Policy Id :</td>
-                    <td>225645</td>
+                    <td>Agent</td>
+                    <td>{agent.firstName} {agent.lastName}</td>
                 </tr>
                 <tr>
                     <td>Ammout :</td>
-                    <td>5000 Rs</td>
+                    <td>{premium.premium}</td>
                 </tr>
                 <tr>
-                    <td>Late Fee :</td>
-                    <td>50 Rs</td>
-                </tr>
-                <tr>
-                    <td>Premium No :</td>
-                    <td>27</td>
-                </tr>
-                <tr>
-                    <td>Date</td>
-                    <td>30 jun 2022</td>
+                    <td>Premium Date</td>
+                    <td>{premium.premiumDate}</td>
                 </tr>
             </tbody>
           </table>
-          <button className='btn mt-3' style={styles.button}>Pay Now</button>
+          <button className='btn mt-3' style={styles.button} onClick={payNow}>Pay Now</button>
           </center>
         </div>
         </div>

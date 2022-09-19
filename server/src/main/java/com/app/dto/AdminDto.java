@@ -18,24 +18,24 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class AdminDto {
-	@NotNull
+
 	private long id;
-	@NotBlank
+
 	private String firstName;
-	@NotBlank
+
 	private String lastName;
 	private long phoneNumber;
-	@Email(message="Email Address not Valid")
+	
 	private String email;
-  @Pattern(regexp = "((?=.*\\d)(?=.*[a-z])(?=.*[#@$*]).{5,20})", message = "Blank or invalid password")
+ 
 	private String password;
-  @NotBlank
+
 	private String securityQuestion;
- @NotBlank
+
 	private String securityAnswer;
  
 
- private String token;
+private String token;
  private String Role="ADMIN";
 
 

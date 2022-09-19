@@ -1,50 +1,105 @@
-import CustomerSideBar from "./adminsidebar";
-import CustomerNavBar from "./adminnavbar";
+import AdminSideBar from "./adminsidebar";
+import AdminNavBar from "./adminnavbar";
 import "./Dashboard.css";
 import { Col, Form, InputGroup, Row, Container, Button } from "react-bootstrap";
 import { Formik } from "formik";
-import { Link } from "react-router-dom";
+import axios from "axios";
+import { useState, useEffect } from "react";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import * as yup from "yup";
 import "../../App.css";
+import config from './../config';
 
 const schema = yup.object().shape({
   policyName: yup.string().required("Please enter Policy Name"),
-  startDate: yup.string().required("Please enter Start Date"),
-  endDate: yup.string().required("Please enter End Date"),
-  primium: yup.string().required("Please enter Primium"),
-  maturity: yup.string().required("Please enter Maturity"),
-  primeDate: yup.string().required("Please enter prime date"),
-  policyImage:yup.string().required("Please give a Policy Image")
+  minEntryAge: yup.string().required("Please enter Min Entry Age"),
+  maxEntryAge: yup.string().required("Please enter Max Entry Age"),
+  minPeriodMonths: yup.string().required("Please enter Minimun Period Months"),
+  maxPeriodMonths: yup.string().required("Please enter Maximum Period Months"),
+  minMonthPremium: yup.string().required("Please enter Minumum Month preminum"),
+  maxMonthPremium: yup.string().required("Please enter Maximum Month preminum"),
+  perAnnumRate: yup.string().required("Please enter Per Annum Rate"),
+  agentCommisionPercentage: yup
+    .string()
+    .required("Please enter agent Commission Percentage"),
+  policyDescription: yup.string().required("Please enter Pocicy Description"),
+  policyImage: yup.string().required("Please give a Policy Image"),
 });
 
 const AdminAddPolicy = () => {
+  const location = useLocation()
+  let admin=location.state.admin
+  const navigate = useNavigate();
+  const [policyDetails, setpolicyDetails] = useState();
+  const [token, setToken] = useState(sessionStorage.getItem("token_ADMIN"));
+  useEffect(() => {
+    if (!sessionStorage["token_ADMIN"]) {
+      navigate("/signin");
+    }
+  }, []);
+
   return (
     <div className="dashboard d-flex">
-      <div>
-        <CustomerSideBar />
+      	<div>
+      	<AdminSideBar admin={admin}/>
       </div>
-      <div
-        style={{
-          flex: "1 1 auto",
-          display: "flex",
-          flexFlow: "column",
-          height: "100vh",
-          overflowY: "hidden",
-        }}
-      >
-        <CustomerNavBar />
+      <div style={{flex:"1 1 auto", display:"flex", flexFlow:"column", height:"100vh", overflowY:"auto"}}>
+        <AdminNavBar adminName={admin.firstName}/>
         <div>
           <Formik
             validationSchema={schema}
-            onSubmit={console.log}
+            onSubmit={(values) => {
+              let policyName = values.policyName;
+              let minEntryAge = values.minEntryAge;
+              let maxEntryAge = values.maxEntryAge;
+              let minPeriodMonths = values.minPeriodMonths;
+              let maxPeriodMonths = values.maxPeriodMonths;
+              let minMonthPremium = values.minMonthPremium;
+              let maxMonthPremium = values.maxMonthPremium;
+              let policyDescription = values.policyDescription;
+              let policyImage = "rakesh.jpg";
+              let agentCommisionPercentage = values.agentCommisionPercentage;
+              let perAnnumRate = values.perAnnumRate;
+              console.log(policyName);
+              const url = `${config.SpingUrl}/admin/addPolicy`;
+              axios.defaults.headers.common["Authorization"] =
+                "Bearer " + token;
+              axios
+                .post(url, {
+                  policyName,
+                  minEntryAge,
+                  maxEntryAge,
+                  minPeriodMonths,
+                  maxPeriodMonths,
+                  minMonthPremium,
+                  maxMonthPremium,
+                  policyDescription,
+                  policyImage,
+                  agentCommisionPercentage,
+                  perAnnumRate,
+                })
+                .then((response) => {
+                  setpolicyDetails(response.data);
+                  toast.success("Policy added Successfully");
+                  navigate("/adminallplans",{state:{admin:admin}})
+                })
+                .catch((error) => {
+                  toast.error("Data Not Found" + error);
+                });
+            }}
             initialValues={{
               policyName: "",
-              startDate: "",
-              endDate: "",
-              primium: "",
-              maturity: "",
-              primeDate: "",
-              policyImage:""
+              minEntryAge: "",
+              maxEntryAge: "",
+              minPeriodMonths: "",
+              maxPeriodMonths: "",
+              minMonthPremium: "",
+              maxMonthPremium: "",
+              policyDescription: "",
+              policyImage: "",
+              agentCommisionPercentage: "",
+              perAnnumRate: "",
             }}
           >
             {({
@@ -57,14 +112,19 @@ const AdminAddPolicy = () => {
               errors,
             }) => (
               <div className="dashboard d-flex">
-                              <Container style={styles.container}>
-                              <h1 style={{marginBottom:'40px',marginLeft:'10px',textAlign:'center'}}><b>New Policy</b></h1>
+                <Container style={styles.container}>
+                  <h1
+                    style={{
+                      marginBottom: "40px",
+                      marginLeft: "10px",
+                      textAlign: "center",
+                    }}
+                  >
+                    <b>New Policy</b>
+                  </h1>
                   <Form
                     noValidate
-                    onSubmit={(values)=>{
-                      
-                    }
-                    }
+                    onSubmit={handleSubmit}
                     style={styles.myfont}
                   >
                     <Row>
@@ -97,67 +157,24 @@ const AdminAddPolicy = () => {
                         md="12"
                         controlId="validationFormik07"
                       >
-                        <Form.Label>Start Date</Form.Label>
-                        <Form.Control
-                          type="date"
-                          name="startDate"
-                          value={values.startDate}
-                          onChange={handleChange}
-                          isValid={touched.startDate && !errors.startDate}
-                          isInvalid={!!errors.startDate}
-                        />
-                        <Form.Control.Feedback
-                          className="FeedBack"
-                          type="invalid"
-                        >
-                          {errors.startDate}
-                        </Form.Control.Feedback>
-                      </Form.Group>
-                    </Row>
-                    <Row>
-                      <Form.Group
-                        as={Col}
-                        md="12"
-                        controlId="validationFormik07"
-                      >
-                        <Form.Label>End Date</Form.Label>
-                        <Form.Control
-                          type="date"
-                          name="endDate"
-                          value={values.endDate}
-                          onChange={handleChange}
-                          isValid={touched.endDate && !errors.endDate}
-                          isInvalid={!!errors.endDate}
-                        />
-                        <Form.Control.Feedback
-                          className="FeedBack"
-                          type="invalid"
-                        >
-                          {errors.endDate}
-                        </Form.Control.Feedback>
-                      </Form.Group>
-                    </Row>
-                    <Row>
-                      <Form.Group
-                        as={Col}
-                        md="12"
-                        controlId="validationFormik07"
-                      >
-                        <Form.Label>Primium</Form.Label>
+                        <Form.Label>Policy Description</Form.Label>
                         <Form.Control
                           type="text"
-                          name="primium"
-                          placeholder="Enter Primium in rupees"
-                          value={values.primium}
+                          name="policyDescription"
+                          value={values.policyDescription}
                           onChange={handleChange}
-                          isValid={touched.primium && !errors.primium}
-                          isInvalid={!!errors.primium}
+                          placeholder="Add Policy Description"
+                          isValid={
+                            touched.policyDescription &&
+                            !errors.policyDescription
+                          }
+                          isInvalid={!!errors.policyDescription}
                         />
                         <Form.Control.Feedback
                           className="FeedBack"
                           type="invalid"
                         >
-                          {errors.primium}
+                          {errors.policyDescription}
                         </Form.Control.Feedback>
                       </Form.Group>
                     </Row>
@@ -167,21 +184,21 @@ const AdminAddPolicy = () => {
                         md="12"
                         controlId="validationFormik07"
                       >
-                        <Form.Label>Maturity</Form.Label>
+                        <Form.Label>Minimun Entry Age</Form.Label>
                         <Form.Control
-                          type="text"
-                          name="maturity"
-                          placeholder="Enter Maturity in rupees"
-                          value={values.maturity}
+                          type="number"
+                          name="minEntryAge"
+                          value={values.minEntryAge}
                           onChange={handleChange}
-                          isValid={touched.maturity && !errors.maturity}
-                          isInvalid={!!errors.maturity}
+                          placeholder="Enter Min Entry Age"
+                          isValid={touched.minEntryAge && !errors.minEntryAge}
+                          isInvalid={!!errors.minEntryAge}
                         />
                         <Form.Control.Feedback
                           className="FeedBack"
                           type="invalid"
                         >
-                          {errors.maturity}
+                          {errors.minEntryAge}
                         </Form.Control.Feedback>
                       </Form.Group>
                     </Row>
@@ -191,30 +208,186 @@ const AdminAddPolicy = () => {
                         md="12"
                         controlId="validationFormik07"
                       >
-                        <Form.Label>Prime Date</Form.Label>
+                        <Form.Label>Maximum Entry Age</Form.Label>
                         <Form.Control
-                          type="date"
-                          name="primeDate"
-                          value={values.primeDate}
+                          type="number"
+                          name="maxEntryAge"
+                          placeholder="Enter Maximum Entry Age"
+                          value={values.maxEntryAge}
                           onChange={handleChange}
-                          isValid={touched.primeDate && !errors.primeDate}
-                          isInvalid={!!errors.primeDate}
+                          isValid={touched.maxEntryAge && !errors.maxEntryAge}
+                          isInvalid={!!errors.maxEntryAge}
                         />
                         <Form.Control.Feedback
                           className="FeedBack"
                           type="invalid"
                         >
-                          {errors.primeDate}
+                          {errors.maxEntryAge}
                         </Form.Control.Feedback>
                       </Form.Group>
-                                      </Row>
-                                      <Row>
+                    </Row>
+                    <Row>
                       <Form.Group
                         as={Col}
                         md="12"
                         controlId="validationFormik07"
                       >
-                        <Form.Label>Prime Date</Form.Label>
+                        <Form.Label>Minumun Period of Months</Form.Label>
+                        <Form.Control
+                          type="number"
+                          name="minPeriodMonths"
+                          value={values.minPeriodMonths}
+                          onChange={handleChange}
+                          placeholder="Enter Min Period of Months"
+                          isValid={
+                            touched.minPeriodMonths && !errors.minPeriodMonths
+                          }
+                          isInvalid={!!errors.minPeriodMonths}
+                        />
+                        <Form.Control.Feedback
+                          className="FeedBack"
+                          type="invalid"
+                        >
+                          {errors.minPeriodMonths}
+                        </Form.Control.Feedback>
+                      </Form.Group>
+                    </Row>
+                    <Row>
+                      <Form.Group
+                        as={Col}
+                        md="12"
+                        controlId="validationFormik07"
+                      >
+                        <Form.Label>Maximun Period of Months</Form.Label>
+                        <Form.Control
+                          type="number"
+                          name="maxPeriodMonths"
+                          value={values.maxPeriodMonths}
+                          onChange={handleChange}
+                          placeholder="Enter Max Period of Months"
+                          isValid={
+                            touched.maxPeriodMonths && !errors.maxPeriodMonths
+                          }
+                          isInvalid={!!errors.maxPeriodMonths}
+                        />
+                        <Form.Control.Feedback
+                          className="FeedBack"
+                          type="invalid"
+                        >
+                          {errors.maxPeriodMonths}
+                        </Form.Control.Feedback>
+                      </Form.Group>
+                    </Row>
+                    <Row>
+                      <Form.Group
+                        as={Col}
+                        md="12"
+                        controlId="validationFormik07"
+                      >
+                        <Form.Label>Minimun Month Premium</Form.Label>
+                        <Form.Control
+                          type="number"
+                          name="minMonthPremium"
+                          value={values.minMonthPremium}
+                          onChange={handleChange}
+                          placeholder="Enter Min Month of Premium"
+                          isValid={
+                            touched.minMonthPremium && !errors.minMonthPremium
+                          }
+                          isInvalid={!!errors.minMonthPremium}
+                        />
+                        <Form.Control.Feedback
+                          className="FeedBack"
+                          type="invalid"
+                        >
+                          {errors.minMonthPremium}
+                        </Form.Control.Feedback>
+                      </Form.Group>
+                    </Row>
+                    <Row>
+                      <Form.Group
+                        as={Col}
+                        md="12"
+                        controlId="validationFormik07"
+                      >
+                        <Form.Label>Maximun Month Premium</Form.Label>
+                        <Form.Control
+                          type="number"
+                          name="maxMonthPremium"
+                          value={values.maxMonthPremium}
+                          onChange={handleChange}
+                          placeholder="Enter Max Month Premium"
+                          isValid={
+                            touched.maxMonthPremium && !errors.maxMonthPremium
+                          }
+                          isInvalid={!!errors.maxMonthPremium}
+                        />
+                        <Form.Control.Feedback
+                          className="FeedBack"
+                          type="invalid"
+                        >
+                          {errors.maxMonthPremium}
+                        </Form.Control.Feedback>
+                      </Form.Group>
+                    </Row>
+                    <Row>
+                      <Form.Group
+                        as={Col}
+                        md="12"
+                        controlId="validationFormik07"
+                      >
+                        <Form.Label>Agent Commission Percentage</Form.Label>
+                        <Form.Control
+                          type="number"
+                          name="agentCommisionPercentage"
+                          value={values.agentCommisionPercentage}
+                          onChange={handleChange}
+                          placeholder="Enter Agent Commission Percentage"
+                          isValid={
+                            touched.agentCommisionPercentage &&
+                            !errors.agentCommisionPercentage
+                          }
+                          isInvalid={!!errors.agentCommisionPercentage}
+                        />
+                        <Form.Control.Feedback
+                          className="FeedBack"
+                          type="invalid"
+                        >
+                          {errors.agentCommisionPercentage}
+                        </Form.Control.Feedback>
+                      </Form.Group>
+                    </Row>
+                    <Row>
+                      <Form.Group
+                        as={Col}
+                        md="12"
+                        controlId="validationFormik07"
+                      >
+                        <Form.Label>Per Annum Rate</Form.Label>
+                        <Form.Control
+                          type="number"
+                          name="perAnnumRate"
+                          value={values.perAnnumRate}
+                          onChange={handleChange}
+                          placeholder="Enter Per Annume Rate"
+                          isValid={touched.perAnnumRate && !errors.perAnnumRate}
+                          isInvalid={!!errors.perAnnumRate}
+                        />
+                        <Form.Control.Feedback
+                          className="FeedBack"
+                          type="invalid"
+                        >
+                          {errors.perAnnumRate}
+                        </Form.Control.Feedback>
+                      </Form.Group>
+                    </Row>
+                    <Row>
+                      <Form.Group
+                        as={Col}
+                        md="12"
+                        controlId="validationFormik07"
+                      >
+                        <Form.Label>Policy Descriptive Image</Form.Label>
                         <Form.Control
                           type="file"
                           name="policyImage"
@@ -230,19 +403,23 @@ const AdminAddPolicy = () => {
                           {errors.policyImage}
                         </Form.Control.Feedback>
                       </Form.Group>
-                                      </Row>
-                                      <Row>
-              <Form.Group as={Col} md="12" className="mb-2" controlId="validationFormik08">
-              <Button
-                      type="submit"
-                      
-                      variant="outline-secondary"
-                style={styles.signinButton}
-              >
-                Save Policy
-                    </Button>
-                  </Form.Group>
-                </Row>
+                    </Row>
+                    <Row>
+                      <Form.Group
+                        as={Col}
+                        md="12"
+                        className="mb-2"
+                        controlId="validationFormik08"
+                      >
+                        <Button
+                          type="submit"
+                          variant="outline-secondary"
+                          style={styles.signinButton}
+                        >
+                          Save Policy
+                        </Button>
+                      </Form.Group>
+                    </Row>
                   </Form>
                 </Container>
               </div>
@@ -256,12 +433,12 @@ const AdminAddPolicy = () => {
 export default AdminAddPolicy;
 const styles = {
   container: {
-    width: 600,
+    width: 800,
     height: "auto",
     padding: 20,
     position: "relative",
     top: 100,
-    left: 'auto',
+    left: "auto",
     right: 0,
     bottom: 0,
     margin: "auto",

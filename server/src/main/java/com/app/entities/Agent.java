@@ -1,16 +1,14 @@
 package com.app.entities;
 
-import java.sql.Date;
+
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -46,8 +44,8 @@ public class Agent extends BaseEntity implements UserDetails {
 	private String image;
 	
    private int age;
-	private Date dateOfBirth;
-	private Date hireDate;
+	private LocalDate dateOfBirth;
+	private LocalDate hireDate;
 	@Column(unique = true,length=12)
    private String aadhar;
 	private String aadharDoc;
@@ -58,8 +56,8 @@ public class Agent extends BaseEntity implements UserDetails {
 
 	@Embedded
 	private Address address;
-	@OneToMany(mappedBy = "agent",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-	private List<Customer>customers=new ArrayList<>();
+//	@OneToMany(mappedBy = "agent",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+//	private List<Customer>customers=new ArrayList<>();
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		List<GrantedAuthority> grantedAuthorities=new ArrayList<GrantedAuthority>();

@@ -6,6 +6,7 @@ import '../../App.css'
 import { toast } from 'react-toastify'
 import axios from 'axios'
 import { useNavigate } from "react-router-dom";
+import config from './../config';
 const schema = yup.object().shape({
   email: yup.string().required("Please Enter email address").matches(/\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,"Invalid email ID"),
   password: yup.string()
@@ -42,11 +43,11 @@ function ForgotPassword() {
         console.log(role);
         let url="";
         if(role==="CUSTOMER")
-       url='http://localhost:8080/customer/forgotPassword';
+       url=`${config.ExpressUrl}/customer/forgotPassword`;
         else if(role==="AGENT")
-        url='http://localhost:8080/agent/forgotPassword';
+        url=`${config.SpingUrl}/agent/forgotPassword`;
         else
-        url='http://localhost:8080/admin/forgotPassword';
+        url=`${config.SpingUrl}/admin/forgotPassword`;
         console.log(url);
           axios
             .post(url, {

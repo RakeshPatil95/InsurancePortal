@@ -7,7 +7,7 @@ const NavBar=()=>{
     
     <Navbar.Brand>
       <img
-        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRlz-3StMO88R-0pKkdMXiloEpP1qxSwBzSqA&usqp=CAU"
+        src={require(`../Images/logo-color.png`)}
         className="logo"
         style={styles.logo}
         alt="React Bootstrap logo"
@@ -26,7 +26,7 @@ const NavBar=()=>{
          
           <NavLink to="/aboutus" style={styles.myfont}>About Us</NavLink>
         </Nav>
-        <Form className="d-flex" style={{marginRight:'350px'}}>
+        <Form className="d-flex" style={{marginRight:'250px'}}>
           <FormControl
             type="search"
             placeholder="Search Your Dream Here"
@@ -70,7 +70,7 @@ const styles = {
       textDecoration:'none',color:'black',
     },
     logo:{
-      width:"100px",
+      width:"200px",
         height:"50px",
         margin:'none',
        borderRadius:'10px'

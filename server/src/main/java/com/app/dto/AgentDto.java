@@ -1,7 +1,11 @@
 package com.app.dto;
 
-import java.sql.Date;
 
+
+import java.time.LocalDate;
+
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -9,6 +13,9 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Length;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.app.entities.Address;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,40 +28,34 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class AgentDto {
-@NotBlank
+
 private long id;
-@NotBlank
+
 private String firstName;
-@NotBlank
+
 private String lastName;
-@Length(min=10,max = 10)
-@NotNull
+
 private long phoneNumber;
-@Email
-@NotNull
+
 private String email;
-@NotBlank
 private String securityQuestion;
-@NotBlank
 private String securityAnswer;
 private String password;
 private String token;
 private byte[] image;
-@Min(18)
-@Max(100)
-private int age;
-private Date dateOfBirth;
-private Date hireDate;
-@Length(min=12,max=12)
+
+@DateTimeFormat(pattern = "yyyy-MM-dd")
+@Temporal(TemporalType.DATE)
+private LocalDate dateOfBirth;
+private LocalDate hireDate;
+
 private String aadhar;
 private  String aadharDoc;
-@Length(min=10,max=10)
+
 private String pan;
 private String panDoc;
-@Length(min=6,max=6)
-private int pincode;
 private String Role="AGENT";
-
+private Address address;
 
 
 }

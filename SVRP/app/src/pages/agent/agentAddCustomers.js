@@ -1,15 +1,28 @@
 import AgentSideBar from "./agentSidebar";
 import AgentNavBar from "./agentNavbar";
 import "./Dashboard.css";
-import { Col, Form, InputGroup, Row, Container, Button } from "react-bootstrap";
-import { Formik } from "formik";
-import { Link } from "react-router-dom";
+import { Col, InputGroup,Form, Row, Container, Button,} from "react-bootstrap";
+import { Formik,Field } from "formik";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import "../../App.css";
+import { useState } from "react";
+import { toast } from "react-toastify";
+import axios from "axios";
+import config from './../config';
+// const SUPPORTED_FORMATS = ['image/jpg', 'image/jpeg', 'image/png'];
+// const FILE_SIZE = 1024 * 1024;
 
 const schema = yup.object().shape({
   firstName: yup.string().required("Please Enter your First name"),
   lastName: yup.string().required("Please Enter your Last name"),
+  phoneNumber: yup
+    .string()
+    .required("Enter mobile Number")
+    .matches(
+      /^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/,
+      "Please enter valid 10 digit number"
+    ),
   email: yup
     .string()
     .required("Please Enter email address")
@@ -17,15 +30,10 @@ const schema = yup.object().shape({
       /\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
       "Invalid email ID"
     ),
-  mobileNumber: yup
-    .string()
-    .required("Enter mobile Number")
-    .matches(
-      /^\(?(\d{3})\)?[- ]?(\d{3})[- ]?(\d{4})$/,
-      "Please enter valid 10 digit number"
-    ),
-  address1: yup.string().required("Please Enter your Address"),
-  address2: yup.string().required("Please Enter your Address"),
+    dateOfBirth:yup.string().required("Please Select a Date of Birth"),
+  
+  addressLine1: yup.string().required("Please Enter your Address"),
+  addressLine2: yup.string().required("Please Enter your Address"),
   pincode: yup
     .string()
     .required("Please Enter your pincode")
@@ -36,15 +44,29 @@ const schema = yup.object().shape({
   village: yup.string().required("Please Enter your village"),
   city: yup.string().required("Please Enter your city"),
   state: yup.string().required("Please Enter your state"),
-  adharcard: yup.string().required("Please upload your Adhar card"),
-  pan: yup.string().required("Please upload your PAN card"),
+  aadhar: yup.string().required("Please Enter your Adhar card Number"),
+  pan: yup.string().required("Please Enter your PAN card Number"),
+  
 });
 
 const AgentAddCustomer = () => {
+  let location = useLocation()
+  
+  let agent = location.state.agent
+  
+  const Navigate = useNavigate()
+  const [token, setToken] = useState(sessionStorage.getItem('token_AGENT'))
+ 
+  axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
+ 
+  if (token == null) {
+    toast.error('Unauthorized access please login first')
+    Navigate('/signin')
+  }
   return (
-    <div className="dashboard d-flex">
+    <div className="dashboard d-flex" >
       <div>
-        <AgentSideBar />
+        <AgentSideBar agent={agent} />
       </div>
       <div
         style={{
@@ -52,27 +74,84 @@ const AgentAddCustomer = () => {
           display: "flex",
           flexFlow: "column",
           height: "100vh",
-          overflowY: "hidden",
+          overflowY: "auto",
         }}
       >
-        <AgentNavBar />
+        <AgentNavBar agentName={agent.firstName}/>
         <div>
-          <Formik
+          <Formik 
             validationSchema={schema}
-            onSubmit={console.log}
+            onSubmit={(values) => {
+            console.log(values);
+             
+              let firstName = values.firstName
+              let lastName=values.lastName
+              let email=values.email
+              let phoneNumber=values.phoneNumber
+              let dateOfBirth=values.dateOfBirth
+              let addressLine1=values.addressLine1
+              let addressLine2=values.addressLine2
+              let pincode=values.pincode
+              let village=values.village
+              let city=values.city
+              let state=values.state
+              let aadhar=values.aadhar
+              let pan=values.pan
+             
+            console.log(dateOfBirth)
+              axios
+              .post(`${config.SpingUrl}/agent/addMyCustomer/${agent.id}`, {},{
+                params:{
+                  firstName,
+              lastName,
+              email,
+              phoneNumber,
+              dateOfBirth,
+              addressLine1,
+              addressLine2,
+              pincode,
+              village,
+              city,
+              state,
+              aadhar,
+              pan,
+             
+              
+                }
+                
+              }).then((response)=>{
+                let customer=null;
+                if(response.status==200)
+               { toast.success("Customer Added SuccessFully")
+                   customer=response.data;
+                //console.log("customer==>>"+customer.id);
+                Navigate("/agentAddCustomersProfileAndDocs",{state:{agent:agent,customer:customer}})
+              }
+              else
+              {
+                toast.error("Failed to add")
+              }
+              
+              }).catch((error)=>{
+                toast.error("Failed to Add Customer"+error)
+              })
+              
+            }}
             initialValues={{
               firstName: "",
               lastName: "",
               email: "",
-              mobileNumber: "",
-              address1: "",
-              address2: "",
+              phoneNumber: "",
+              dateOfBirth:"",
+              addressLine1: "",
+              addressLine2: "",
               pincode: "",
               village: "",
               city: "",
               state: "",
-              adharcard: "",
-              pan: "",
+              aadhar: "",
+              pan:"",
+             
             }}
           >
             {({
@@ -83,14 +162,15 @@ const AgentAddCustomer = () => {
               touched,
               isValid,
               errors,
+              setFieldValue
             }) => (
-              <div>
+              <div >
                 <h1>Add Customer Details:</h1>
                 <Container style={styles.container}>
                   <Form
                     noValidate
                     onSubmit={handleSubmit}
-                    style={styles.myfont}
+                    style={styles.myfont} 
                   >
                     <Row className="mb-2">
                       <Form.Group
@@ -147,18 +227,18 @@ const AgentAddCustomer = () => {
                         <Form.Label>Mobile Number</Form.Label>
                         <Form.Control
                           type="text"
-                          name="mobileNumber"
+                          name="phoneNumber"
                           placeholder="Enter your Number here"
-                          value={values.mobileNumber}
+                          value={values.phoneNumber}
                           onChange={handleChange}
-                          isValid={touched.mobileNumber && !errors.mobileNumber}
-                          isInvalid={!!errors.mobileNumber}
+                          isValid={touched.phoneNumber && !errors.phoneNumber}
+                          isInvalid={!!errors.phoneNumber}
                         />
                         <Form.Control.Feedback
                           className="FeedBack"
                           type="invalid"
                         >
-                          {errors.mobileNumber}
+                          {errors.phoneNumber}
                         </Form.Control.Feedback>
                       </Form.Group>
                       <Form.Group
@@ -190,44 +270,69 @@ const AgentAddCustomer = () => {
                         md="12"
                         controlId="validationFormik05"
                       >
-                        <Form.Label>Address Line 1</Form.Label>
+                        <Form.Label>Date Of Birth</Form.Label>
                         <Form.Control
                           className="SignUpFormControls"
-                          type="text"
-                          name="address1"
-                          placeholder="Enter your address here"
-                          value={values.address1}
+                          type="date"
+                          name="dateOfBirth"
+                          placeholder="Select Date Of Birth:"
+                          value={values.dateOfBirth}
                           onChange={handleChange}
-                          isValid={touched.address1 && !errors.address1}
-                          isInvalid={!!errors.address1}
+                          isValid={touched.dateOfBirth && !errors.dateOfBirth}
+                          isInvalid={!!errors.dateOfBirth}
                         />
                         <Form.Control.Feedback
                           className="FeedBack"
                           type="invalid"
                         >
-                          {errors.address1}
+                          {errors.dateOfBirth}
                         </Form.Control.Feedback>
                       </Form.Group>
+                    </Row>
+                    <Row className="mb-2">
                       <Form.Group
                         as={Col}
                         md="12"
                         controlId="validationFormik06"
                       >
-                        <Form.Label>Address Line 2</Form.Label>
+                        <Form.Label>Address Line 1</Form.Label>
                         <Form.Control
+                          className="SignUpFormControls"
                           type="text"
-                          name="address2"
-                          placeholder="Confirm your address here"
-                          value={values.address2}
+                          name="addressLine1"
+                          placeholder="Enter your address here"
+                          value={values.addressLine1}
                           onChange={handleChange}
-                          isValid={touched.address2 && !errors.address2}
-                          isInvalid={!!errors.address2}
+                          isValid={touched.addressLine1 && !errors.addressLine1}
+                          isInvalid={!!errors.addressLine1}
                         />
                         <Form.Control.Feedback
                           className="FeedBack"
                           type="invalid"
                         >
-                          {errors.address2}
+                          {errors.addressLine1}
+                        </Form.Control.Feedback>
+                      </Form.Group>
+                      <Form.Group
+                        as={Col}
+                        md="12"
+                        controlId="validationFormik07"
+                      >
+                        <Form.Label>Address Line 2</Form.Label>
+                        <Form.Control
+                          type="text"
+                          name="addressLine2"
+                          placeholder="Confirm your address here"
+                          value={values.addressLine2}
+                          onChange={handleChange}
+                          isValid={touched.addressLine2 && !errors.addressLine2}
+                          isInvalid={!!errors.addressLine2}
+                        />
+                        <Form.Control.Feedback
+                          className="FeedBack"
+                          type="invalid"
+                        >
+                          {errors.addressLine2}
                         </Form.Control.Feedback>
                       </Form.Group>
                     </Row>
@@ -235,7 +340,7 @@ const AgentAddCustomer = () => {
                       <Form.Group
                         as={Col}
                         md="6"
-                        controlId="validationFormik07"
+                        controlId="validationFormik08"
                       >
                         <Form.Label>Pincode</Form.Label>
                         <Form.Control
@@ -257,7 +362,7 @@ const AgentAddCustomer = () => {
                       <Form.Group
                         as={Col}
                         md="6"
-                        controlId="validationFormik07"
+                        controlId="validationFormik09"
                       >
                         <Form.Label>Village</Form.Label>
                         <Form.Control
@@ -281,7 +386,7 @@ const AgentAddCustomer = () => {
                       <Form.Group
                         as={Col}
                         md="6"
-                        controlId="validationFormik07"
+                        controlId="validationFormik10"
                       >
                         <Form.Label>City</Form.Label>
                         <Form.Control
@@ -303,7 +408,7 @@ const AgentAddCustomer = () => {
                       <Form.Group
                         as={Col}
                         md="6"
-                        controlId="validationFormik07"
+                        controlId="validationFormik11"
                       >
                         <Form.Label>State</Form.Label>
                         <Form.Control
@@ -323,38 +428,39 @@ const AgentAddCustomer = () => {
                         </Form.Control.Feedback>
                       </Form.Group>
                     </Row>
-                    <Row>
+                    <Row className="mb-2">
                       <Form.Group
                         as={Col}
-                        md="12"
-                        controlId="validationFormik07"
+                        md="6"
+                        controlId="validationFormik12"
                       >
-                        <Form.Label>Adhar Card</Form.Label>
+                        <Form.Label>Aadhar Number</Form.Label>
                         <Form.Control
-                          type="file"
-                          name="adharcard"
-                          value={values.adharcard}
+                          type="number"
+                          name="aadhar"
+                          placeholder="Enter your First Name here"
+                          value={values.aadhar}
                           onChange={handleChange}
-                          isValid={touched.adharcard && !errors.adharcard}
-                          isInvalid={!!errors.adharcard}
+                          isValid={touched.aadhar && !errors.aadhar}
+                          isInvalid={!!errors.aadhar}
                         />
                         <Form.Control.Feedback
                           className="FeedBack"
                           type="invalid"
                         >
-                          {errors.adharcard}
+                          {errors.aadhar}
                         </Form.Control.Feedback>
                       </Form.Group>
                       <Form.Group
                         as={Col}
-                        md="12"
-                        className="mb-2"
-                        controlId="validationFormik07"
+                        md="6"
+                        controlId="validationFormik13"
                       >
-                        <Form.Label>PAN</Form.Label>
+                        <Form.Label>Pan Card Number</Form.Label>
                         <Form.Control
-                          type="file"
+                          type="text"
                           name="pan"
+                          placeholder="Enter your Last Name here"
                           value={values.pan}
                           onChange={handleChange}
                           isValid={touched.pan && !errors.pan}
@@ -369,12 +475,12 @@ const AgentAddCustomer = () => {
                       </Form.Group>
                     </Row>
                     <Row>
-                      <Form.Group
+                    <Form.Group
                         as={Col}
                         md="12"
-                        className="mb-2"
-                        controlId="validationFormik08"
+                        controlId="validationFormik14"
                       >
+                       
                         <Button
                           type="submit"
                           variant="outline-secondary"

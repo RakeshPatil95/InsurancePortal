@@ -8,7 +8,8 @@ import {
   CDBSidebarMenuItem,
 } from "cdbreact";
 import { NavLink } from "react-router-dom";
-const CustomerSideBar = () => {
+const AdminSideBar = (props) => {
+  let admin=props.admin;
   return (
     <div style={{ height: "100vh", overflow: "scroll initial" }}>
       <CDBSidebar textColor="#fff" backgroundColor="#004E8F">
@@ -25,44 +26,68 @@ const CustomerSideBar = () => {
 
         <CDBSidebarContent className="sidebar-content">
           <CDBSidebarMenu>
-            <NavLink exact to="/admindashboard" activeClassName="activeClicked">
+            <NavLink exact to="/admindashboard" activeClassName="activeClicked" state={{admin:admin}}>
               <CDBSidebarMenuItem icon="columns">Dashboard</CDBSidebarMenuItem>
+            </NavLink>
+            
+            <NavLink exact to="/admincustomers" activeClassName="activeClicked" state={{admin:admin}}>
+              <CDBSidebarMenuItem icon="table">My Customers</CDBSidebarMenuItem>
+            </NavLink>
+            <NavLink exact to="/adminagents" activeClassName="activeClicked" state={{admin:admin}}>
+              <CDBSidebarMenuItem icon="table">My Agents</CDBSidebarMenuItem>
             </NavLink>
             <NavLink
               exact
               to="/newapplications"
               activeClassName="activeClicked"
+              state={{admin:admin}}
             >
               <CDBSidebarMenuItem icon="table">
                 New Applications
               </CDBSidebarMenuItem>
             </NavLink>
-            <NavLink exact to="/admincustomers" activeClassName="activeClicked">
-              <CDBSidebarMenuItem icon="table">My Customers</CDBSidebarMenuItem>
+         
+            <NavLink
+              exact
+              to="/adminClaimApplications"
+              activeClassName="activeClicked"
+              state={{admin:admin}}
+            >
+              <CDBSidebarMenuItem icon="table">
+                New Claims
+              </CDBSidebarMenuItem>
             </NavLink>
-            <NavLink exact to="/adminagents" activeClassName="activeClicked">
-              <CDBSidebarMenuItem icon="table">My Agents</CDBSidebarMenuItem>
+           
+            <NavLink
+              exact
+              to="/adminSurrenderApplications"
+              activeClassName="activeClicked"
+              state={{admin:admin}}
+            >
+              <CDBSidebarMenuItem icon="table">
+                New Surrenders
+              </CDBSidebarMenuItem>
             </NavLink>
+
             <NavLink
               exact
               to="/adminprofile"
               activeClassName="activeClicked"
+              state={{admin:admin}}
             >
+
               <CDBSidebarMenuItem icon="user">My Profile</CDBSidebarMenuItem>
             </NavLink>
             <NavLink
               exact
               to="/adminallplans"
               activeClassName="activeClicked"
+              state={{admin:admin}}
             >
               <CDBSidebarMenuItem icon="th-large">All Plans</CDBSidebarMenuItem>
             </NavLink>
 
-            <NavLink exact to="/totalbusiness" activeClassName="activeClicked">
-              <CDBSidebarMenuItem icon="table">
-                Total Business
-              </CDBSidebarMenuItem>
-            </NavLink>
+           
           </CDBSidebarMenu>
         </CDBSidebarContent>
 
@@ -79,4 +104,4 @@ const CustomerSideBar = () => {
     </div>
   );
 };
-export default CustomerSideBar;
+export default AdminSideBar;

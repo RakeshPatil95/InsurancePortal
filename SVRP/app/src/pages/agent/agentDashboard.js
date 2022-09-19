@@ -2,98 +2,37 @@ import AgentSideBar from './agentSidebar'
 import AgentNavBar from './agentNavbar';
 import React from "react";
 import {Row,Col,Card, Button} from 'react-bootstrap'
-import { Navigate, useNavigate, Link } from 'react-router-dom';
-import {
-  CDBBtn,
-  CDBProgress,
-  CDBTable,
-  CDBTableHeader,
-  CDBTableBody,
-  CDBContainer,
-  CDBLink } from "cdbreact";
-import { Pie, Bar } from "react-chartjs-2";
-
+import { Navigate, useNavigate, Link, useLocation } from 'react-router-dom';
+import  { useEffect, useState } from "react";
+import axios from 'axios';
+import { toast } from 'react-toastify';
 import "./Dashboard.css";
 
 const AgentDashboard = () => {
-	const Navigate=useNavigate();
+  let location=useLocation();
+  const Navigate=useNavigate();
+  const [token, setToken] = useState(sessionStorage.getItem("token_AGENT"));
 
-  const data = {
-    chart1:{
-      labels: [
-        "Eating",
-        "Drinking",
-        "Sleeping",
-      ],
-      datasets: [
-        {
-          label: "My First dataset",
-          backgroundColor: [
-            "#F2C94C",
-            "#2F80ED",
-            "#9B51E0",
-          ],
-          borderWidth: 0,
-          data: [9, 22, 7],
-        },
-      ]
-    },
-    chart2:{
-      labels: [
-        "Eating",
-        "Drinking",
-        "Sleeping",
-        "Designing",
-        "Coding",
-        "Cycling",
-        "Running",
-      ],
-      datasets: [
-        {
-          label: "My First dataset",
-          backgroundColor: "rgba(255, 153, 51, 0.8)",
-          borderColor: "rgb(102, 51, 0)",
-          data: [65, 59, 75, 81, 56, 55, 40],
-        },
-        {
-          label: "My Second dataset",
-          backgroundColor: "#2F80ED",
-          borderColor: "rgb(0, 41, 102)",
-          data: [38, 48, 60, 79, 96, 47, 80],
-        },
-      ]
-    }
+  axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+  useEffect(()=>{
+   
+  if(!token)
+  {
+    toast.error("Unauthorized access please login first")
+    Navigate("/signin")
   }
-  const options = {
-    responsive: true,
-    maintainAspectRatio: false,
-    legend: {display:false}, 
-    scales: {
-      xAxes: [{
-        ticks: {
-          display: false
-        }, 
-      }],
-      yAxes: [{
-        gridLines: {
-          display:false
-        },
-        ticks: {
-          display: false
-        }
-      }]
-    }
-  }
+},[])
+ let agent=location.state.agent;
 
 
   return (
   
     <div className="dashboard d-flex">
     	<div>
-      	<AgentSideBar/>
+      	<AgentSideBar agent={agent}/>
       </div>
       <div style={{flex:"1 1 auto", display:"flex", flexFlow:"column", height:"100vh", overflowY:"hidden"}}>
-        <AgentNavBar/>
+        <AgentNavBar agentName={agent.firstName} />
 		<Row>
 		<Col className='col-6'>
 		<Card border="primary" style={{ marginRight:'10px',margin:'10px',backgroundColor:'lightblue'}}>
@@ -102,7 +41,7 @@ const AgentDashboard = () => {
       <Card.Title>My Customers</Card.Title>
      
     </Card.Body>
-     <Card.Footer> <Link to='/agentCustomers' className='btn '>View Details</Link></Card.Footer>
+     <Card.Footer> <Link to='/agentCustomers' state={{agent:agent}} className='btn '>View Details</Link></Card.Footer>
   </Card>
 		</Col>
 		<Col className='col-6'>
@@ -112,7 +51,7 @@ const AgentDashboard = () => {
       <Card.Title>Premium Payments</Card.Title>
       
     </Card.Body>
-	<Card.Footer> <Link to='/agentPremiumPayment' className='btn '>View Details</Link></Card.Footer>
+	<Card.Footer> <Link to='/agentPremiumPayment' className='btn ' state={{agent:agent}}>View Details</Link></Card.Footer>
   </Card>
 		</Col>
 		</Row>
@@ -123,17 +62,17 @@ const AgentDashboard = () => {
     <Card.Body>
       <Card.Title>My Profile</Card.Title>
     </Card.Body>
-	<Card.Footer> <Link to='/agentProfile' className='btn '>View Details</Link></Card.Footer>
+	<Card.Footer> <Link to='/agentProfile' className='btn ' state={{agent:agent}}>View Details</Link></Card.Footer>
   </Card>
 		</Col>
 		<Col className='col-6'>
 		<Card border="primary" style={{margin:'10px',backgroundColor:'lightpink'}}>
    
     <Card.Body>
-      <Card.Title>New Plans</Card.Title>
+      <Card.Title>Applied Policies</Card.Title>
 	 
     </Card.Body>
-	<Card.Footer> <Link to='/agentAllPlans' className='btn '>View Details</Link></Card.Footer>
+	<Card.Footer> <Link to='/agentAppliedPolicies'state={{agent:agent}} className='btn '>View Details</Link></Card.Footer>
   </Card>
 		</Col>
 		</Row>

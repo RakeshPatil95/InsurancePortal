@@ -1,9 +1,5 @@
 package com.app.dto;
 
-import javax.persistence.Lob;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-
 //import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,5 +30,7 @@ public class PolicyReturnDto {
 	private double agentCommisionPercentage;
 
 	private double perAnnumRate;
+	private  String policyImage;
+	private String policyDescription;
 
 }

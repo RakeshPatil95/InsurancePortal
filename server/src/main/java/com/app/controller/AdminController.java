@@ -9,11 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,16 +22,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.app.customerException.UserNotFoundException;
 import com.app.dto.AddPolicyDto;
 import com.app.dto.AdminDto;
+import com.app.dto.AdminUpdateDto;
 import com.app.dto.AgentDto;
 import com.app.dto.ApiResponse;
 import com.app.dto.CustomerDto;
 import com.app.dto.ForgotPasswordDto;
 import com.app.dto.PolicyReturnDto;
-
-import com.app.dto.AdminUpdateDto;
+import com.app.entities.Address;
 import com.app.service.AdminService;
 import com.app.service.PolicyService;
 
@@ -108,11 +104,11 @@ public ResponseEntity<List<CustomerDto>> getAllCustomers()
 
 return ResponseEntity.ok(adServ.getAllCustomers());
 }
-@PutMapping(value="/updateProfile")
-public ResponseEntity<?>upDateProfile(@ModelAttribute @Valid AdminUpdateDto adupDto,@RequestParam MultipartFile profileImage) throws IOException
+@PutMapping(value="/updateAdmin")
+public ResponseEntity<?>upDateProfile(@ModelAttribute  AdminDto adDto,@ModelAttribute Address address) 
 {
 	
-	return ResponseEntity.ok().body(adServ.updateAdmin( adupDto,profileImage));
+	return ResponseEntity.ok().body(adServ.updateAdmin( adDto,address));
 	
 }
 //@PostMapping("/addProfileImage/{adminId}")
@@ -128,5 +124,54 @@ public ResponseEntity<?> getProfileImage(@PathVariable  @Valid long adminId) thr
 
 return ResponseEntity.ok(adServ.getProfileImage(adminId));
 }
-
+@GetMapping(value="/getMyCustomerPolicies/customer/{customerId}")
+public ResponseEntity<?>getMyCustomersPolicies(@PathVariable long customerId)
+{
+	return ResponseEntity.ok(adServ.getMyCustomerPolicies(customerId));
+}
+@GetMapping(value="/getNewAppilcations")
+public ResponseEntity<?>getNewApplications()
+{
+	return ResponseEntity.ok(adServ.getNewAppicatons());
+}
+@PutMapping(value="/acceptPolicy/{customerPolicyId}")
+public ResponseEntity<?>acceptPolicy(@PathVariable long customerPolicyId)
+{
+	return ResponseEntity.ok(adServ.acceptPolicy(customerPolicyId));
+}
+@DeleteMapping(value="/rejectPolicy/{customerPolicyId}")
+public ResponseEntity<?>rejectPolicy( @PathVariable long customerPolicyId)
+{
+	return ResponseEntity.ok(adServ.rejectPolicy(customerPolicyId));
+}
+@GetMapping(value="/getNewClaims")
+public ResponseEntity<?>getNewClaims()
+{
+	return ResponseEntity.ok(adServ.getNewClaims());
+}
+@PutMapping(value="/acceptClaim/{customerPolicyId}")
+public ResponseEntity<?>acceptClaim(@PathVariable long customerPolicyId)
+{
+	return ResponseEntity.ok(adServ.acceptClaim(customerPolicyId));
+}
+@PutMapping(value="/rejectClaim/{customerPolicyId}")
+public ResponseEntity<?>rejectClaim( @PathVariable long customerPolicyId)
+{
+	return ResponseEntity.ok(adServ.rejectClaim(customerPolicyId));
+}
+@GetMapping(value="/getNewSurrenders")
+public ResponseEntity<?>getNewSurrenders()
+{
+	return ResponseEntity.ok(adServ.getNewSurrenders());
+}
+@PutMapping(value="/acceptSurrender/{customerPolicyId}")
+public ResponseEntity<?>acceptSurrender(@PathVariable long customerPolicyId,@RequestParam int surrenderAmount )
+{System.out.println("Surreder Amount==>"+surrenderAmount);
+	return ResponseEntity.ok(adServ.acceptSurrender(customerPolicyId,surrenderAmount));
+}
+@PutMapping(value="/rejectSurrender/{customerPolicyId}")
+public ResponseEntity<?>rejectSurrender( @PathVariable long customerPolicyId,@RequestParam int surrenderAmount )
+{
+	return ResponseEntity.ok(adServ.rejectSurrender(customerPolicyId,surrenderAmount));
+}
 }

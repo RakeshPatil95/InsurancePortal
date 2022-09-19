@@ -1,65 +1,112 @@
-import CustomerSideBar from './adminsidebar'
-import CustomerNavBar from './adminnavbar';
+import AdminSideBar from './adminsidebar'
+import AdminNavBar from './adminnavbar';
 import "./Dashboard.css";
-import { Link } from 'react-router-dom';
-const AdminAgentsDetails =()=>{
+import React, { useEffect, useState } from "react";
+import { useNavigate, Link, useLocation } from 'react-router-dom';
+
+import "./Dashboard.css";
+import axios from 'axios';
+import { toast } from 'react-toastify';
+const AdminAgentsDetails = () => {
+  let location=useLocation();
+  const Navigate=useNavigate();
+  const [token, setToken] = useState(sessionStorage.getItem("token_ADMIN"));
+
+  axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+  useEffect(()=>{
+   
+  if(!token)
+  {
+    toast.error("Unauthorized access please login first")
+    Navigate("/signin")
+  }
+},[])
+let admin=location.state.admin
+let agent=location.state.agent
+
     return(
         <div className="dashboard d-flex">
     	<div>
-      	<CustomerSideBar/>
+      	<AdminSideBar admin={admin}/>
       </div>
-      <div style={{flex:"1 1 auto", display:"flex", flexFlow:"column", height:"100vh", overflowY:"hidden"}}>
-        <CustomerNavBar/>
-        <h1 >Details:</h1>
+      <div style={{flex:"1 1 auto", display:"flex", flexFlow:"column", height:"100vh", overflowY:"auto"}}>
+        <AdminNavBar adminName={admin.firstName}/>
+        <h1 >Agent Details:</h1>
        
         <center>
-             <h1>AgentName</h1>
+            <h1>{agent.firstName} { agent.lastName}</h1>
              <br />
 
         <table className='table'  style={{width:'60%',border:'2px',borderBlockStyle:'solid'}}>
   <tbody style={styles.myfont}>
-    <tr>
-      <td><h4>Agent Name</h4></td>
-      <td><h4>Sagar</h4></td>
-    </tr>
-    <tr>
-      <td>Adhar Card</td>
-      <td>4444 3333 2222 1111</td>
-    </tr>
+   
     <tr>
     <td>Mobile Number</td>
-      <td>9579260490</td>
+                  <td>{ agent.phoneNumber}</td>
     </tr>
     <tr>
     <td>Email ID</td>
-      <td>rrp@gmail.com</td>
+                  <td>{ agent.email}</td>
     </tr>
     <tr>
     <td>Date of Birth</td>
-      <td>11/02/1996</td>
+                  <td>{ agent.dateOfBirth}</td>
     </tr>
     <tr>
-    <td>Address</td>
-      <td>Pune</td>
+    <td>PinCode</td>
+                  <td>{ agent.address.pincode}</td>
+    </tr>
+    <tr>
+    <td>AddressLine1</td>
+                  <td>{ agent.address.addressLine1}</td>
+    </tr>
+    <tr>
+    <td>AddressLine2</td>
+                  <td>{ agent.address.addressLine2}</td>
+    </tr>
+    <tr>
+    <td>Village</td>
+                  <td>{ agent.address.village}</td>
+    </tr>
+    <tr>
+    <td>City</td>
+                  <td>{ agent.address.city}</td>
+    </tr>
+    <tr>
+    <td>State</td>
+                  <td>{ agent.address.state}</td>
     </tr>
     <tr>
     <td>Pan Card </td>
-      <td>pancard.pdf</td>
+                  <td>{ agent.pan}</td>
                             </tr>
                             <tr>
-    <td>Premium</td>
-      <td>2000 rps</td>
+                            
+      <td>Adhar Card</td>
+                  <td>{ agent.aadhar}</td>
+    
     </tr>
     </tbody>
                     </table>
                 </center>
                 <center>
-                <Link to='/adminAgentsCustomersDetails' className='btn btn-success'  style={{
+                <Link to='/adminagents' className='btn btn-success '  
+                state={{admin:admin}}
+                style={{
                 backgroundColor: "#FFCB08",
                 color: "black",
                 fontWeight: "bold",
                 fontSize: 18,
-              }}>View Customer List</Link>   
+                marginRight:50,
+              }}>Back to Agents</Link> 
+               <Link to='/adminAgentsCustomers' className='btn btn-success' 
+                state={{admin:admin,agent:agent}}
+               style={{
+                backgroundColor: "#FFCB08",
+                color: "black",
+                fontWeight: "bold",
+                fontSize: 18,
+              }}>Check Customers</Link>   
               
                 </center>
         </div>

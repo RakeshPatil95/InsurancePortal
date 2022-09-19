@@ -1,28 +1,25 @@
-import CustomerSideBar from "./adminsidebar";
-import CustomerNavBar from "./adminnavbar";
+import AdminSidebar from './adminsidebar'
+import AdminNavBar from './adminnavbar';
 import { Link } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import "./Dashboard.css";
 const AdminPolicyDetails = () => {
+  const location = useLocation()
+  let admin=location.state.admin
+  const policyDetails= location.state.policy
   return (
     <div className="dashboard d-flex">
-      <div>
-        <CustomerSideBar />
+      	<div>
+      	<AdminSidebar admin={admin}/>
       </div>
-      <div
-        style={{
-          flex: "1 1 auto",
-          display: "flex",
-          flexFlow: "column",
-          height: "100vh",
-          overflowY: "hidden",
-        }}
-      >
-        <CustomerNavBar />
+      <div style={{flex:"1 1 auto", display:"flex", flexFlow:"column", height:"100vh", overflowY:"auto"}}>
+        <AdminNavBar adminName={admin.firstName}/>
         <h1>Details:</h1>
         <td>
           <Link
             to="/adminAddPolicy"
             className="btn btn-primary"
+            state={{admin:admin}}
             style={{
               backgroundColor: "#FFCB08",
               borderRadius: "10px",
@@ -37,7 +34,6 @@ const AdminPolicyDetails = () => {
         <center>
           <h1>PolicyDetails</h1>
           <br />
-
           <table
             className="table"
             style={{ width: "60%", border: "2px", borderBlockStyle: "solid" }}
@@ -48,65 +44,40 @@ const AdminPolicyDetails = () => {
                   <h4>Policy Name</h4>
                 </td>
                 <td>
-                  <h4>Jeevan Labh</h4>
+                  <h4>{ policyDetails.policyName}</h4>
                 </td>
               </tr>
               <tr>
-                <td>Policy Holder Name</td>
-                <td>Sagar</td>
+                <td>Policy Discription</td>
+                <td>{ policyDetails.policyDescription}</td>
               </tr>
               <tr>
-                <td>Start Date</td>
-                <td>20-06-2020</td>
+                <td>Minimun Entry Age</td>
+                <td>{policyDetails.minEntryAge }</td>
               </tr>
               <tr>
-                <td>End Date</td>
-                <td>20-03-2030</td>
+                <td>Maximum Entry Age</td>
+                <td>{ policyDetails.maxEntryAge}</td>
               </tr>
               <tr>
-                <td>Primium</td>
-                <td>2000 Rps</td>
+                <td>Minimum Period Months</td>
+                <td>{ policyDetails.minPeriodMonths}</td>
               </tr>
               <tr>
-                <td>Maturity</td>
-                <td>50,00,000 Rps</td>
+                <td>Maximum Period Moths</td>
+                <td>{ policyDetails.maxPeriodMonths}</td>
               </tr>
               <tr>
-                <td>Prim Date</td>
-                <td>20-06-2022</td>
+                <td>Agent Commission Percentage</td>
+                <td>{ policyDetails.agentCommisionPercentage}</td>
               </tr>
-            </tbody>
+              <tr>
+                <td>Per Annum Rate</td>
+                <td>{policyDetails.perAnnumRate }</td>
+                  </tr>
+              </tbody>
           </table>
-        </center>
-        <center>
-          <table className="table" style={{ width: "60%" }}>
-            <tr>
-              <td>
-                <button
-                  className="btn btn-success mt-4"
-                  style={{
-                    width: "350px",
-                    borderRadius: "15px",
-                    backgroundColor: "green",
-                  }}
-                >
-                  Update Policy
-                </button>
-              </td>
-              <td>
-                <button
-                  className="btn btn-danger mt-4"
-                  style={{
-                    width: "350px",
-                    borderRadius: "15px",
-                    backgroundColor: "red",
-                  }}
-                >
-                  Delete Policy
-                </button>
-              </td>
-            </tr>
-          </table>
+          <Link to='/adminallplans' className='btn btn-success ' style={{width:'350px',borderRadius:'15px'}}  state={{admin:admin}} >Back To Plans</Link>
         </center>
       </div>
     </div>

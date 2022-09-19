@@ -18,11 +18,11 @@ public class UserDetailsService   implements org.springframework.security.core.u
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 		Agent agent = agentDao.findByEmail(email);
-		System.out.println("Agent in user Details==>"+agent);
+	
 		if(agent==null) {
 			Admin admin = adminDao.findByEmail(email);
 			if(admin!=null) {
-				System.out.println("Admin in user Details==>"+agent);
+	
 				return admin;
 			}
 			else
