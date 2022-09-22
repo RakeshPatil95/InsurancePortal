@@ -16,7 +16,7 @@ let agent=""
   const Navigate = useNavigate()
   const [token, setToken] = useState(sessionStorage.getItem('token_AGENT'))
  
-  axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
+
  
   
   useEffect(() => {
@@ -25,7 +25,7 @@ let agent=""
       Navigate('/signin')
     }
     else{
-     
+      axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
     axios.get(`${config.SpingUrl}/agent/getAllPolicies`)
       .then(response => setPolicies(response.data) ).catch(error=>toast.error(error))
   }},[]);

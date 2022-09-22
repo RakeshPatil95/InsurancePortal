@@ -111,16 +111,16 @@ public void anyInit() {
    adDao.save(admin);
   return mapper.map(admin, AdminDto.class);
 	}
-//	@Override
-//	public String uploadProfileImage(long adminId, MultipartFile profileImage) throws IOException {
-//	Admin admin=adDao.findById(adminId).orElseThrow(()->new UserNotFoundException("Admin Not Found With Id "+adminId));
-//	String imagePath = folder.concat(File.separator).concat("AdminId "+adminId);
-//	log.info("bytes copied {} ",
-//			Files.copy(profileImage.getInputStream(), Paths.get(imagePath), StandardCopyOption.REPLACE_EXISTING));
-//	admin.setImage(imagePath);
-//	return "Admin Profile Uploaded SuccessFully";
-//		
-//	}
+	@Override
+	public AdminDto uploadProfileImage(long adminId, MultipartFile profileImage) throws IOException {
+	Admin admin=adDao.findById(adminId).orElseThrow(()->new UserNotFoundException("Admin Not Found With Id "+adminId));
+	String imagePath = folder.concat(File.separator).concat("AdminId "+adminId);
+	log.info("bytes copied {} ",
+			Files.copy(profileImage.getInputStream(), Paths.get(imagePath), StandardCopyOption.REPLACE_EXISTING));
+	admin.setImage(imagePath);
+	return mapper.map(admin, AdminDto.class);
+		
+	}
 	@Override
 	public byte[] getProfileImage(long adminId) throws IOException {
 		Admin admin=adDao.findById(adminId).orElseThrow(()->new UserNotFoundException("Admin Not Found With Id "+adminId));
@@ -191,5 +191,6 @@ public void anyInit() {
 		custPolDao.save(custPolicy);
 		return mapper.map(custPolicy, CustomerPolicyDto.class);
 	}
+
 
 }

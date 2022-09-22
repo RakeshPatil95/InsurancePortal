@@ -42,7 +42,7 @@ private String securityQuestion;
 private String securityAnswer;
 private String password;
 private String token;
-private byte[] image;
+private String image;
 
 @DateTimeFormat(pattern = "yyyy-MM-dd")
 @Temporal(TemporalType.DATE)

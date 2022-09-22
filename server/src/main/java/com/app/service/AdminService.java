@@ -33,5 +33,6 @@ CustomerPolicyDto acceptClaim(long customerPolicyId);
 CustomerPolicyDto rejectClaim(long customerPolicyId);
 CustomerPolicyDto acceptSurrender(long customerPolicyId, double surrenderAmount);
 CustomerPolicyDto rejectSurrender(long customerPolicyId, double surrenderAmount);
+AdminDto uploadProfileImage(long adminId, MultipartFile profileImage) throws IOException;
 
 }

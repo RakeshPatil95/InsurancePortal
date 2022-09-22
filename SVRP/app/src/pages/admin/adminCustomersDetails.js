@@ -6,22 +6,47 @@ import { useLocation, useNavigate } from "react-router-dom";
 import "./Dashboard.css";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
+import config from './../config';
+import DefaultProfile from '../../Images/avatar.png'
+import { Button } from "react-bootstrap";
 const AdminCustomersDetails = () => {
   let location=useLocation();
   const Navigate=useNavigate();
   const [token, setToken] = useState(sessionStorage.getItem("token_ADMIN"));
+  const [profilePhoto,setProfilePhoto]=useState(false);
+  let admin=location.state.admin
+const customer = location.state.customerDetails;
 
-  axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+  let profileImageGet=`${config.SpingUrl}/customer/getProfileImage/${customer.id}`
+  let aadharViewUrl=`${config.SpingUrl}/customer/getAadharDoc/${customer.id}`
+  let panViewUrl=`${config.SpingUrl}/customer/getPanDoc/${customer.id}`
+  
   useEffect(()=>{
    
-  if(!token)
-  {
-    toast.error("Unauthorized access please login first")
-    Navigate("/signin")
-  }
-},[])
-let admin=location.state.admin
-const customer = location.state.customerDetails;
+    if(!token)
+    {
+      toast.error("Unauthorized access please login first")
+      Navigate("/signin")
+    }
+    else{
+      axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+      axios.get(profileImageGet, 
+        ).then((response)=>{
+           
+    
+            if(response.data != null){
+           
+            setProfilePhoto(true)
+         
+            }
+    
+        
+        }).catch((error)=>{
+            console.log(error)
+        })
+    }
+  },[])
+
 
   return (
     <div className="dashboard d-flex">
@@ -40,6 +65,7 @@ const customer = location.state.customerDetails;
         <AdminNavBar adminName={admin.firstName} />
         <h1>Customer Details:</h1>
         <center>
+        <img  className = "img-circle mt-2" src={profilePhoto ? `${config.SpingUrl}/customer/getProfileImage/${customer.id}`  : DefaultProfile } style={{overflow : 'auto', width:200, height:200, borderRadius:30}} />
           <h1>
           {customer.firstName} {customer.lastName}
           </h1>
@@ -95,6 +121,10 @@ const customer = location.state.customerDetails;
               <tr>
                 <td>Pan Card </td>
                 <td>{customer.pan}</td>
+              </tr>
+              <tr>
+                <td><Button onClick={()=>{window.open(aadharViewUrl,"_blank")}} className='btn btn-success'>View Aadhar</Button> </td>
+                <td><Button onClick={()=>{window.open(panViewUrl,"_blank")}} className='btn btn-success'>View Pan</Button></td>
               </tr>
             </tbody>
           </table>

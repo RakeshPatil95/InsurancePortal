@@ -16,12 +16,13 @@ const AgentCustomersPolicyDetails = () => {
   const Navigate = useNavigate()
   const [token, setToken] = useState(sessionStorage.getItem('token_AGENT'))
 
-  axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
+
   if (token == null) {
     toast.error('Unauthorized access please login first')
     Navigate('/signin')
   }
   const claim=()=>{
+    axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
     let policyEndDate=new Date(customerPolicy.policyEndDate);
     if(policyEndDate>new Date())
     {
@@ -38,6 +39,7 @@ const AgentCustomersPolicyDetails = () => {
 }
   
   const surrender=()=>{
+    axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
     let policyStartDate=customerPolicy.policyStartDate;
 let MonthsUpToDate=getMonthDifference(new Date(policyStartDate),new Date());
     if(MonthsUpToDate<6){

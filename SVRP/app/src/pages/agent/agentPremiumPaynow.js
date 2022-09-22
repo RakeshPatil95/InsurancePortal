@@ -16,13 +16,14 @@ const AgentPaynow=()=>{
   const Navigate = useNavigate()
   const [token, setToken] = useState(sessionStorage.getItem('token_AGENT'))
  
-  axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
+
   if (token == null) {
     toast.error('Unauthorized access please login first')
     Navigate('/signin')
   }
   const payNow=()=>{
-    console.log(agent.id,customer.id,premium.policy.id,premium.id,premium.premium)
+    axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
+  
     let agentId=agent.id;
     let customerId=customer.id;
     let policyId=premium.policy.id;

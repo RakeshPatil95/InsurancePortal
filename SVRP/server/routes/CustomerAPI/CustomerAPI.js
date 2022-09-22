@@ -61,14 +61,14 @@ router.put('/updateprofile/:custId',(request, response) => {
 
 router.post('/:custId/buypolicy/:policyId',(request,response)=>{
     const { custId,policyId } = request.params;
-    const { policy_start_date, policy_end_date, premium_date, premium, invoice, claim_date, claim_amount, status } = request.body
+    const { policy_start_date, policy_end_date, premium_date, premium, claim_date, claim_amount, status } = request.body
     console.log(status)
     const claim_status = 0;
     const surrender_status = 0;
     const surrender_amount = 0
-    const statement = `Insert into customer_policy(policy_start_date,policy_end_date,premium_date,premium,invoice,claim_date,claim_amount,status,policy_id,customer_id,claim_status,surrender_status,surrender_amount) values(?,?,?,?,?,?,?,?,?,?,?,?,?) `
+    const statement = `Insert into customer_policy(policy_start_date,policy_end_date,premium_date,premium,claim_date,claim_amount,status,policy_id,customer_id,claim_status,surrender_status,surrender_amount) values(?,?,?,?,?,?,?,?,?,?,?,?) `
 
-    db.Pool.query(statement,[policy_start_date,policy_end_date,premium_date,premium,invoice,claim_date,claim_amount,status,policyId,custId,claim_status,surrender_status,surrender_amount],(error,data)=>{
+    db.Pool.query(statement,[policy_start_date,policy_end_date,premium_date,premium,claim_date,claim_amount,status,policyId,custId,claim_status,surrender_status,surrender_amount],(error,data)=>{
          response.send(utils.createResult(error,data));
     })
 })
@@ -76,7 +76,7 @@ router.post('/:custId/buypolicy/:policyId',(request,response)=>{
 router.get('/:custId/myallpolicies/', (request, response) => {
     const {custId}= request.params
     const statement = `Select * from Customer_policy where customer_id = ? 
-    and claim_status=0 and surrender_status=0`
+    and claim_status=0 and surrender_status=0 and status=1`
     db.Pool.query(statement,[custId],(error,data)=>{
          response.send(utils.createResult(error,data));
     })
@@ -100,8 +100,8 @@ router.get('/:custId/getCustomorsPolicyHistory', (request, response) => {
 })
 router.get('/:custId/premiumpayments/', (request, response) => {
     const {custId}=request.params
-    const statement = `Select * from Customer_policy where id =? and premium_date < date(now())`
-
+    const statement = `Select * from Customer_policy where customer_id =? and premium_date < date(now()) and status=1`
+      
     db.Pool.query(statement,[custId],(error,data)=>{
          response.send(utils.createResult(error,data));
     })
@@ -159,7 +159,7 @@ router.post('/payMyCustomersPremium', (request, response) => {
 router.get('/:custId/mypremiumpendingpolicies', (request, response) => {
     const {custId}= request.params
     const statement = `Select * from Customer_policy where customer_id = ? 
-    and premium_date<=Date(now())`
+    and premium_date<=Date(now()) and status=1`
     db.Pool.query(statement,[custId],(error,data)=>{
          response.send(utils.createResult(error,data));
     })

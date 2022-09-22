@@ -69,6 +69,7 @@ public ResponseEntity<?>addPolicy(@RequestBody @Valid AddPolicyDto apDto)
 @PostMapping("/addPolicyImage/{policyId}")
 public ResponseEntity<?> addPolicyImage(@PathVariable long policyId, @RequestParam MultipartFile imageFile)
 		throws IOException {
+	System.out.println("****************hiii***************");
 	System.out.println("in upload image " + policyId + " orig file name " + imageFile.getOriginalFilename() + " size "
 			+ imageFile.getSize());
 	return ResponseEntity.status(HttpStatus.CREATED).body(polServ.uploadPolicyImage(policyId, imageFile));
@@ -111,12 +112,12 @@ public ResponseEntity<?>upDateProfile(@ModelAttribute  AdminDto adDto,@ModelAttr
 	return ResponseEntity.ok().body(adServ.updateAdmin( adDto,address));
 	
 }
-//@PostMapping("/addProfileImage/{adminId}")
-//public ResponseEntity<?> addProfileImage(@PathVariable long adminId, @RequestParam MultipartFile profileImage)
-//		throws IOException {
-//	
-//	return ResponseEntity.status(HttpStatus.CREATED).body(adServ.uploadProfileImage(adminId, profileImage));
-//}
+@PostMapping("/addProfileImage/{adminId}")
+public ResponseEntity<?> addProfileImage(@PathVariable long adminId, @RequestParam MultipartFile profileImage)
+		throws IOException {
+	
+	return ResponseEntity.status(HttpStatus.CREATED).body(adServ.uploadProfileImage(adminId, profileImage));
+}
 @GetMapping(value = "/getProfileImage/{adminId}",produces = 
 {MediaType.IMAGE_GIF_VALUE,MediaType.IMAGE_JPEG_VALUE,MediaType.IMAGE_PNG_VALUE})
 public ResponseEntity<?> getProfileImage(@PathVariable  @Valid long adminId) throws IOException

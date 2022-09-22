@@ -12,7 +12,7 @@ const AgentCustomerPolicyHistory = () => {
   const Navigate = useNavigate()
   const [token, setToken] = useState(sessionStorage.getItem('token_AGENT'))
   const [policies,setPolicies]=useState([])
-  axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
+
   if (token == null) {
     toast.error('Unauthorized access please login first')
     Navigate('/signin')
@@ -20,6 +20,7 @@ const AgentCustomerPolicyHistory = () => {
 
   let agent = location.state.agent
   useEffect(()=>{
+    axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
     axios.get(`${config.SpingUrl}/agent/getMyCustomorsPolicyHistory/${agent.id}`,{})
     .then(response=>setPolicies(response.data))
    

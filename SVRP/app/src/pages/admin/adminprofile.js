@@ -47,7 +47,7 @@ const AdminProfile = () => {
   const Navigate = useNavigate()
   let location=useLocation()
  let admin=location.state.admin
-
+const [file,setFile]=useState();
   useEffect(() => {
     if (!sessionStorage["token_ADMIN"]) {
       Navigate("/signin");
@@ -55,6 +55,38 @@ const AdminProfile = () => {
   }, []);
   const [token, setToken] = useState(sessionStorage.getItem("token_ADMIN"));
   axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+  const updateProfileImage=()=>{
+    if(file==null)
+    toast.error("Select Policy Image First")
+    else{
+    
+    const body=new FormData();
+    body.set('profileImage', file);
+  console.log(file)
+    
+ 
+    axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+    axios.post(`${config.SpingUrl}/admin/addProfileImage/${admin.id}`,body,{
+    headers:{
+      'Content-Type': 'multipart/form-data',
+    }
+    })
+    .then((response)=>{
+      
+      if(response.status==201) 
+      {
+       
+      toast.success("Profile Image Updated Successfully")
+      window.location.reload(false);
+    }
+      else{
+        toast.error("Failed to Update Image")
+      }
+    }).catch((error)=>{
+      toast.error("Something Went Wrong")
+    })
+    }
+  }
     return(
         <div className="dashboard d-flex">
     	<div>
@@ -393,6 +425,28 @@ const AdminProfile = () => {
                         </Form.Control.Feedback>
                       </Form.Group>
                     </Row>
+                    <br></br>
+                   
+                    <Row className='mb-2'>
+                    <Form.Group
+                        as={Col}
+                        md="6"
+                        controlId="validationFormik11"
+                      >
+                    
+                    <input
+          onChange={(e) => {
+           
+            setFile(e.target.files[0])
+          }}
+          className='form-control'
+          type='file'
+        /></Form.Group> <Form.Group
+        as={Col}
+        md="6"
+        controlId="validationFormik11"
+      ><Button onClick={updateProfileImage} title='Upload Photo'>Update Image</Button>
+                </Form.Group>    </Row>
 
                     <Row>
                     <Form.Group

@@ -3,16 +3,23 @@ import AdminNavBar from './adminnavbar';
 import "./Dashboard.css";
 import React, { useEffect, useState } from "react";
 import { useNavigate, Link, useLocation } from 'react-router-dom';
-
+import DefaultProfile from '../../Images/avatar.png'
 import "./Dashboard.css";
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import config from '../config';
+import { Button } from 'react-bootstrap';
 const AdminAgentsDetails = () => {
   let location=useLocation();
   const Navigate=useNavigate();
   const [token, setToken] = useState(sessionStorage.getItem("token_ADMIN"));
-
+  let admin=location.state.admin
+  let agent=location.state.agent
+  let panViewUrl=`${config.SpingUrl}/agent/getPanDoc/${agent.id}`
+  let aadharViewUrl=`${config.SpingUrl}/agent/getAadharDoc/${agent.id}`
   axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+  const [profilePhoto,setProfilePhoto]=useState(false);
+  let profileImage=`${config.SpingUrl}/agent/getProfileImage/${agent.id}`
   useEffect(()=>{
    
   if(!token)
@@ -20,9 +27,24 @@ const AdminAgentsDetails = () => {
     toast.error("Unauthorized access please login first")
     Navigate("/signin")
   }
+  else{
+    axios.get(profileImage, 
+      ).then((response)=>{
+         
+  
+          if(response.data != null){
+         
+          setProfilePhoto(true)
+       
+          }
+  
+      
+      }).catch((error)=>{
+          console.log(error)
+      })
+  }
 },[])
-let admin=location.state.admin
-let agent=location.state.agent
+
 
     return(
         <div className="dashboard d-flex">
@@ -31,9 +53,11 @@ let agent=location.state.agent
       </div>
       <div style={{flex:"1 1 auto", display:"flex", flexFlow:"column", height:"100vh", overflowY:"auto"}}>
         <AdminNavBar adminName={admin.firstName}/>
+      
         <h1 >Agent Details:</h1>
        
         <center>
+        <img  className = "img-circle mt-2" src={profilePhoto ? `${config.SpingUrl}/agent/getProfileImage/${agent.id}`  : DefaultProfile } style={{overflow : 'auto', width:200, height:200, borderRadius:30}} />
             <h1>{agent.firstName} { agent.lastName}</h1>
              <br />
 
@@ -85,6 +109,10 @@ let agent=location.state.agent
       <td>Adhar Card</td>
                   <td>{ agent.aadhar}</td>
     
+    </tr>
+    <tr>
+      <td><Button onClick={()=>{window.open(aadharViewUrl,"_blank")}} className='btn btn-primary'>View Aadhar</Button></td>
+      <td><Button onClick={()=>{window.open(panViewUrl,"_blank")}} className='btn btn-primary'>View Pan</Button></td>
     </tr>
     </tbody>
                     </table>

@@ -16,7 +16,7 @@ const AllPolicyDetails=()=>{
   // console.log(policy);
   // console.log(customer);
   const backtoPlans = () => {
-    navigate('/customerallplans', {state: { customer: customer, policy: policy } })
+    navigate('/customerBuyPolicy', {state: { customer: customer, policy: policy } })
   }
     return(
         <div className="dashboard d-flex">
@@ -53,7 +53,7 @@ const AllPolicyDetails=()=>{
                     </tr>
                   </tbody>
                 </table>
-                <button onClick={backtoPlans} className='btn btn-warning mt-3' style={{ width: '350px', borderRadius: '15px' }}>Back to Plans</button>
+                <button onClick={backtoPlans} className='btn btn-warning mt-3' style={{ width: '350px', borderRadius: '15px' }}>buy Policy</button>
               </center></>
             
           

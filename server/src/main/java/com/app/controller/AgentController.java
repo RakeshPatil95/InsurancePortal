@@ -7,6 +7,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -136,5 +137,44 @@ public ResponseEntity<?>applyForSurrender(@PathVariable long customerPolicyId){
 @GetMapping(value="/getMyCustomorsPolicyHistory/{agentId}")
 public ResponseEntity<?>getMyCustomorsPolicyHistory(@PathVariable long agentId){
 	return ResponseEntity.ok().body(agServ.getPolicyHistoryByAgent(agentId));
+}
+@PostMapping("/addProfileImage/{agentId}")
+public ResponseEntity<?> addProfileImage(@PathVariable long agentId, @RequestParam MultipartFile profileImage)
+		throws IOException {
+	
+	return ResponseEntity.status(HttpStatus.CREATED).body(agServ.uploadProfileImage(agentId, profileImage));
+}
+@GetMapping(value = "/getProfileImage/{agentId}",produces = 
+{MediaType.IMAGE_GIF_VALUE,MediaType.IMAGE_JPEG_VALUE,MediaType.IMAGE_PNG_VALUE})
+public ResponseEntity<?> getProfileImage(@PathVariable  @Valid long agentId) throws IOException
+{
+
+return ResponseEntity.ok(agServ.getProfileImage(agentId));
+}
+@PostMapping("/addAadharDoc/{agentId}")
+public ResponseEntity<?> addAadharDoc(@PathVariable long agentId, @RequestParam MultipartFile aadharDoc)
+		throws IOException {
+	
+	return ResponseEntity.status(HttpStatus.CREATED).body(agServ.uploadAadharDoc(agentId, aadharDoc));
+}
+@PostMapping("/addPanDoc/{agentId}")
+public ResponseEntity<?> addPanDoc(@PathVariable long agentId, @RequestParam MultipartFile panDoc)
+		throws IOException {
+	
+	return ResponseEntity.status(HttpStatus.CREATED).body(agServ.uploadPanDoc(agentId, panDoc));
+}
+@GetMapping(value = "/getAadharDoc/{agentId}",produces = 
+{MediaType.IMAGE_GIF_VALUE,MediaType.IMAGE_JPEG_VALUE,MediaType.IMAGE_PNG_VALUE})
+public ResponseEntity<?> getAadharDoc(@PathVariable  @Valid long agentId) throws IOException
+{
+
+return ResponseEntity.ok(agServ.getAadharDoc(agentId));
+}
+@GetMapping(value = "/getPanDoc/{agentId}",produces = 
+{MediaType.IMAGE_GIF_VALUE,MediaType.IMAGE_JPEG_VALUE,MediaType.IMAGE_PNG_VALUE})
+public ResponseEntity<?> getPanDoc(@PathVariable  @Valid long agentId) throws IOException
+{
+
+return ResponseEntity.ok(agServ.getPanDoc(agentId));
 }
 }

@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import DefaultProfile from '../../Images/avatar.png'
 import {
   CDBSidebar,
   CDBSidebarContent,
@@ -7,9 +8,40 @@ import {
   CDBSidebarMenu,
   CDBSidebarMenuItem,
 } from "cdbreact";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import axios from "axios";
+import config from "../config";
 const AgentSidebar = (props) => {
   let agent=props.agent;
+  const [token, setToken] = useState(sessionStorage.getItem("token_ADMIN"));
+  const Navigate=useNavigate();
+  let profileImage=`${config.SpingUrl}/agent/getProfileImage/${agent.id}`
+  const [profilePhoto,setProfilePhoto]=useState(false);
+  axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+  useEffect(() => {
+    if (!sessionStorage["token_AGENT"]) {
+      Navigate("/signin");
+    }
+      else{
+        axios.get(profileImage, 
+    ).then((response)=>{
+       
+
+        if(response.data != null){
+       
+        setProfilePhoto(true)
+     
+        }
+
+    
+    }).catch((error)=>{
+        console.log(error)
+    })
+    }
+      
+    
+  }, []);
+
   return (
     <div style={{ height: "100vh", overflow: "scroll initial" }}>
       <CDBSidebar textColor="#fff" backgroundColor="#004E8F">
@@ -26,6 +58,10 @@ const AgentSidebar = (props) => {
 
         <CDBSidebarContent className="sidebar-content">
           <CDBSidebarMenu>
+          <CDBSidebarMenuItem><img  className = "img-circle mt-5" src={profilePhoto ? `${config.SpingUrl}/agent/getProfileImage/${agent.id}`  : DefaultProfile } style={{overflow : 'auto', width:130, height:130, borderRadius:65}} /></CDBSidebarMenuItem>
+           
+           <br></br>
+           <br></br>
             <NavLink exact to="/agentdashboard" state={{agent:agent}} activeClassName="activeClicked">
               <CDBSidebarMenuItem icon="columns">Dashboard</CDBSidebarMenuItem>
             </NavLink>

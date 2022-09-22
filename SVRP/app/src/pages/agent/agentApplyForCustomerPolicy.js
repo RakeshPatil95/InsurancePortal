@@ -36,7 +36,7 @@ const AgentApplyForCustomerPolicy = () => {
   const Navigate = useNavigate()
   const [token, setToken] = useState(sessionStorage.getItem('token_AGENT'))
  
-  axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
+
  
   if (token == null) {
     toast.error('Unauthorized access please login first')
@@ -61,6 +61,7 @@ const AgentApplyForCustomerPolicy = () => {
           <Formik 
             validationSchema={schema}
             onSubmit={(values) => {
+           
             let tenure=values.tenure;
              let status=false;
              let policyStartDate=new Date();
@@ -77,6 +78,7 @@ const AgentApplyForCustomerPolicy = () => {
              console.log("claimAmount"+claimAmount);
              console.log("claimDate"+claimDate)
              console.log("premiumDate"+premiumDate);
+             axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
               axios
               .post(`${config.SpingUrl}/agent/addMyCustomersPolicy/agent/${agent.id}/customer/${customer.id}/policy/${policy.id}`, {
                 policyStartDate,
@@ -94,7 +96,7 @@ const AgentApplyForCustomerPolicy = () => {
                { toast.success("Applied Successfully\n  Request Sent For Verification")
                  
                   console.log(response.data)
-                  Navigate('/agentdashboard',{state:{agent:agent}})
+                  Navigate('/agentAppliedPolicies',{state:{agent:agent}})
                
               }
               else

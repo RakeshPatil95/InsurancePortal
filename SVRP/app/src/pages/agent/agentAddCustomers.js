@@ -56,8 +56,7 @@ const AgentAddCustomer = () => {
   
   const Navigate = useNavigate()
   const [token, setToken] = useState(sessionStorage.getItem('token_AGENT'))
- 
-  axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
+
  
   if (token == null) {
     toast.error('Unauthorized access please login first')
@@ -97,7 +96,8 @@ const AgentAddCustomer = () => {
               let state=values.state
               let aadhar=values.aadhar
               let pan=values.pan
-             
+              
+  axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
             console.log(dateOfBirth)
               axios
               .post(`${config.SpingUrl}/agent/addMyCustomer/${agent.id}`, {},{
@@ -125,7 +125,7 @@ const AgentAddCustomer = () => {
                { toast.success("Customer Added SuccessFully")
                    customer=response.data;
                 //console.log("customer==>>"+customer.id);
-                Navigate("/agentAddCustomersProfileAndDocs",{state:{agent:agent,customer:customer}})
+                Navigate("/agentCustomers",{state:{agent:agent}})
               }
               else
               {

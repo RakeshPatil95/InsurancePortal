@@ -16,7 +16,8 @@ const Agentcustomers = () => {
   const Navigate=useNavigate();
   const [token, setToken] = useState(sessionStorage.getItem("token_AGENT"));
 
-  axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+
+  console.log(token);
   useEffect(()=>{
    
   if(!token)
@@ -25,7 +26,7 @@ const Agentcustomers = () => {
     Navigate("/signin")
   }
    else{
-     
+    axios.defaults.headers.common["Authorization"] = "Bearer " + token;
     axios.get(`${config.SpingUrl}/agent/getMyCustomers/${agent.id}`).then((response)=>
     {
         setCustomers(response.data);

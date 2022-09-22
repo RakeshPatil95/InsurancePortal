@@ -24,8 +24,7 @@ import com.app.jwt.JWTRequestFilter;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 	//dep : password enc
-	@Autowired
-	private PasswordEncoder enc;
+	
 	@Autowired
 	private JWTRequestFilter filter;
 
@@ -41,7 +40,14 @@ public class SecurityConfig {
 		.antMatchers("/agent/signup").permitAll()
 		.antMatchers("/admin/signup").permitAll()
 		.antMatchers("/admin/getPolicyImage/{policyId}").permitAll()
+		.antMatchers("/admin/getProfileImage/{adminId}").permitAll()
+		.antMatchers("/agent/getProfileImage/{agentId}").permitAll()
 		.antMatchers("/admin/forgotPassword").permitAll()
+		.antMatchers("/customer/getProfileImage/{custId}").permitAll()
+		.antMatchers("/customer/getPanDoc/{custId}").permitAll()
+		.antMatchers("/customer/getAadharDoc/{custId}").permitAll()
+		.antMatchers("/agent/getPanDoc/{agentId}").permitAll()
+		.antMatchers("/agent/getAadharDoc/{agentId}").permitAll()
 		.antMatchers(HttpMethod.OPTIONS).permitAll()
 		.anyRequest().authenticated().and().
 		sessionManagement()

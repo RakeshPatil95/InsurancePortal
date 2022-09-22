@@ -4,6 +4,11 @@ import { useLocation, useNavigate } from "react-router-dom";
 import "./Dashboard.css";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { Button } from "react-bootstrap";
+import config from "../config";
+import DefaultProfile from '../../Images/avatar.png'
+import { toast } from "react-toastify";
+import axios from "axios";
 const AdminCustomersDetails = (props) => {
   const location = useLocation();
 
@@ -11,11 +16,36 @@ const AdminCustomersDetails = (props) => {
   let agent = location.state.agent;
   let admin=location.state.admin
   let customer=location.state.customer
-  useEffect(() => {
-    if (!sessionStorage["token_ADMIN"]) {
-      navigate("/signin");
-    } 
-  }, []);
+  const [profilePhoto,setProfilePhoto]=useState(false);
+  let panViewUrl=`${config.SpingUrl}/customer/getPanDoc/${customer.id}`
+let aadharViewUrl=`${config.SpingUrl}/customer/getAadharDoc/${customer.id}`
+let profileImageGet=`${config.SpingUrl}/customer/getProfileImage/${customer.id}`
+const [token, setToken] = useState(sessionStorage.getItem('token_ADMIN'))
+useEffect(()=>{
+   
+  if(!token)
+  {
+    toast.error("Unauthorized access please login first")
+    navigate("/signin")
+  }
+  else{
+    axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+    axios.get(profileImageGet, 
+      ).then((response)=>{
+         
+  
+          if(response.data != null){
+         
+          setProfilePhoto(true)
+       
+          }
+  
+      
+      }).catch((error)=>{
+          console.log(error)
+      })
+  }
+},[])
   return (
     <div className="dashboard d-flex">
       <div>
@@ -33,6 +63,7 @@ const AdminCustomersDetails = (props) => {
         <AdminNavBar adminName={admin.firstName} />
         <h1>Customer Details:</h1>
         <center>
+        <img  className = "img-circle mt-2" src={profilePhoto ? `${config.SpingUrl}/customer/getProfileImage/${customer.id}`  : DefaultProfile } style={{overflow : 'auto', width:200, height:200, borderRadius:30}} />
           <h1>
             {customer.firstName} {customer.lastName}
           </h1>
@@ -87,6 +118,10 @@ const AdminCustomersDetails = (props) => {
               <tr>
                 <td>Pan Card </td>
                 <td>{customer.pan}</td>
+              </tr>
+              <tr>
+                <td><Button onClick={()=>{window.open(aadharViewUrl,"_blank")}} className='btn btn-success'>View Aadhar</Button> </td>
+                <td><Button onClick={()=>{window.open(panViewUrl,"_blank")}} className='btn btn-success'>View Pan</Button></td>
               </tr>
             </tbody>
           </table>

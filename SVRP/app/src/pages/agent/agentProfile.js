@@ -50,7 +50,13 @@ const AgentProfile=()=>{
   let location = useLocation()
   
   let agent = location.state.agent
-  
+
+
+  let panViewUrl=`${config.SpingUrl}/agent/getPanDoc/${agent.id}`
+  let aadharViewUrl=`${config.SpingUrl}/agent/getAadharDoc/${agent.id}`
+const [profileImage,setProfileImage]=useState();
+const [aadharDoc,setAadharDoc]=useState();
+const[panDoc,setPanDoc]=useState();
   const Navigate = useNavigate()
   const [token, setToken] = useState(sessionStorage.getItem('token_AGENT'))
  
@@ -60,6 +66,102 @@ const AgentProfile=()=>{
   if (token == null) {
     toast.error('Unauthorized access please login first')
     Navigate('/signin')
+  }
+  const updateProfileImage=()=>{
+    if(profileImage==null)
+    toast.error("Select Profile Image Image First")
+    else{
+    
+    const body=new FormData();
+    body.set('profileImage', profileImage);
+  console.log(profileImage)
+    
+ 
+    axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+    axios.post(`${config.SpingUrl}/agent/addProfileImage/${agent.id}`,body,{
+    headers:{
+      'Content-Type': 'multipart/form-data',
+    }
+    })
+    .then((response)=>{
+      
+      if(response.status==201) 
+      {
+       
+      toast.success("Profile Image Updated Successfully")
+      window.location.reload(false);
+    }
+      else{
+        toast.error("Failed to Update Image")
+      }
+    }).catch((error)=>{
+      toast.error("Something Went Wrong")
+    })
+    }
+  }
+  const updateAadharDoc=()=>{
+    if(aadharDoc==null)
+    toast.error("Select Aadhar Doc Image First")
+    else{
+    
+    const body=new FormData();
+    body.set('aadharDoc', aadharDoc);
+  console.log(aadharDoc)
+     
+ 
+    axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+    axios.post(`${config.SpingUrl}/agent/addAadharDoc/${agent.id}`,body,{
+    headers:{
+      'Content-Type': 'multipart/form-data',
+    }
+    })
+    .then((response)=>{
+      
+      if(response.status==201) 
+      {
+       
+      toast.success("Aadhar Doc Updated Successfully")
+      window.location.reload(false);
+    }
+      else{
+        toast.error("Failed to Update Aadhar")
+      }
+    }).catch((error)=>{
+      toast.error("Something Went Wrong")
+    })
+    }
+  }
+  const updatePanDoc=()=>{
+    if(panDoc==null)
+    toast.error("Select Pan Doc First")
+    else{
+    
+    const body=new FormData();
+    body.set('panDoc', panDoc);
+  console.log(panDoc)
+    
+ 
+    axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+    axios.post(`${config.SpingUrl}/agent/addPanDoc/${agent.id}`,body,{
+    headers:{
+      'Content-Type': 'multipart/form-data',
+    }
+    })
+    .then((response)=>{
+      
+      if(response.status==201) 
+      {
+       
+      toast.success("Pan Doc Updated Successfully")
+      window.location.reload(false);
+    }
+      else{
+        toast.error("Failed to Update Pan Doc")
+      }
+    }).catch((error)=>{
+      toast.error("Something Went Wrong")
+    })
+    }
   }
   return (
     <div className="dashboard d-flex" >
@@ -482,6 +584,69 @@ const AgentProfile=()=>{
                         </Form.Control.Feedback>
                       </Form.Group>
                     </Row>
+                    <Row className='mb-2'>
+                    <Form.Group
+                        as={Col}
+                        md="6"
+                        controlId="validationFormik11"
+                      >
+                    
+                    <input
+          onChange={(e) => {
+           
+            setProfileImage(e.target.files[0])
+          }}
+          className='form-control'
+          type='file'
+        /></Form.Group> <Form.Group
+        as={Col}
+        md="6"
+        controlId="validationFormik11"
+      ><Button onClick={updateProfileImage} title='Upload Photo'>Update Profile Image</Button>
+                </Form.Group>    </Row>
+                <Row className='mb-2'>
+                    <Form.Group
+                        as={Col}
+                        md="6"
+                        controlId="validationFormik11"
+                      >
+                    
+                    <input
+          onChange={(e) => {
+           
+            setAadharDoc(e.target.files[0])
+          }}
+          className='form-control'
+          type='file'
+        /></Form.Group> <Form.Group
+        as={Col}
+        md="6"
+        controlId="validationFormik11"
+      ><Button onClick={updateAadharDoc} title='Upload Photo' >Update Aadhar</Button>
+      <Button onClick={()=>{window.open(aadharViewUrl,"_blank")}} className='btn btn-success'>View Aadhar</Button>
+                </Form.Group>    </Row>
+                <Row className='mb-2'>
+                    <Form.Group
+                        as={Col}
+                        md="6"
+                        controlId="validationFormik11"
+                      >
+                    
+                    <input
+          onChange={(e) => {
+           
+            setPanDoc(e.target.files[0])
+          }}
+          className='form-control'
+          type='file'
+        /></Form.Group> <Form.Group
+        as={Col}
+        md="6"
+        controlId="validationFormik11"
+      ><Button onClick={updatePanDoc} title='Upload Photo'>Update Pan Doc</Button>
+      <Button onClick={()=>{window.open(panViewUrl,"_blank")}} className='btn btn-success'>View Pan</Button>
+                </Form.Group>    </Row>
+                
                     <Row>
                     <Form.Group
                         as={Col}
@@ -515,7 +680,7 @@ const styles = {
     height: "auto",
     padding: 20,
     position: "relative",
-    top: 100,
+    top: 10,
     left: "auto",
     right: 0,
     bottom: 0,

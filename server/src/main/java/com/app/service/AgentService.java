@@ -35,5 +35,11 @@ public List<PolicyReturnDto> getApplicablePoliciesForCustomer(long customerId);
 public CustomerPolicyDto changeClaimStatus(long customerPolicyId);
 public CustomerPolicyDto changeSurrenderStatus(long customerPolicyId);
 public List<CustomerPolicyDto> getPolicyHistoryByAgent(long agentId);
+public AgentDto uploadProfileImage(long agentId, MultipartFile profileImage) throws IOException;
+public byte[] getProfileImage(@Valid long agentId) throws IOException;
+public AgentDto uploadAadharDoc(long agentId, MultipartFile aadharDoc)  throws IOException;
+public AgentDto uploadPanDoc(long agentId, MultipartFile panDoc)  throws IOException;
+public byte[] getAadharDoc(@Valid long agentId)throws IOException;
+public byte[] getPanDoc(@Valid long agentId)throws IOException;
 
 }

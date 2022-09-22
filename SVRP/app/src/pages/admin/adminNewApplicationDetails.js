@@ -8,13 +8,20 @@ import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import "./Dashboard.css";
 import config from './../config';
+import { Button } from "react-bootstrap";
 const AdminNewApplicationDetails =()=>{
   let location=useLocation();
   const Navigate=useNavigate();
   const [token, setToken] = useState(sessionStorage.getItem("token_ADMIN"));
   let customerPolicy=location.state.customerPolicy
   let admin=location.state.admin
+  let customer=customerPolicy.customer;
   console.log(customerPolicy);
+  let panViewUrl=`${config.SpingUrl}/customer/getPanDoc/${customer.id}`
+  let aadharViewUrl=`${config.SpingUrl}/customer/getAadharDoc/${customer.id}`
+let profileImageGet=`${config.SpingUrl}/customer/getProfileImage/${customer.id}`
+
+
   axios.defaults.headers.common["Authorization"] = "Bearer " + token;
   const accept=(customerPolicyId)=>{
     axios.put(`${config.SpingUrl}/admin/acceptPolicy/${customerPolicyId}`).then(
@@ -111,6 +118,11 @@ const AdminNewApplicationDetails =()=>{
     <td>Premium</td>
       <td>{customerPolicy.premium} INR</td>
     </tr>
+    <tr>
+                <td><Button onClick={()=>{window.open(aadharViewUrl,"_blank")}} className='btn btn-success'>View Aadhar</Button> </td>
+                <td><Button onClick={()=>{window.open(panViewUrl,"_blank")}} className='btn btn-success' style={{marginRight:'20px'}}>View Pan</Button>
+                <Button onClick={()=>{window.open(profileImageGet,"_blank")}} className='btn btn-success'> View Profile Image</Button></td>
+              </tr>
     </tbody>
                     </table>
                 </center>

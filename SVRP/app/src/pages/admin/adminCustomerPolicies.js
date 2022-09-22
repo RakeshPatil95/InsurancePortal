@@ -14,7 +14,7 @@ const AdminCustomerPolicies = () => {
   let admin = location.state.admin
   let customer = location.state.customer
   const Navigate = useNavigate()
-  const [token, setToken] = useState(sessionStorage.getItem('token_AGENT'))
+  const [token, setToken] = useState(sessionStorage.getItem('token_ADMIN'))
 
   axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
   useEffect(()=>{

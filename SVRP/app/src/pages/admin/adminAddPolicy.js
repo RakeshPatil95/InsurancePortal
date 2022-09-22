@@ -24,7 +24,7 @@ const schema = yup.object().shape({
     .string()
     .required("Please enter agent Commission Percentage"),
   policyDescription: yup.string().required("Please enter Pocicy Description"),
-  policyImage: yup.string().required("Please give a Policy Image"),
+ 
 });
 
 const AdminAddPolicy = () => {
@@ -58,7 +58,7 @@ const AdminAddPolicy = () => {
               let minMonthPremium = values.minMonthPremium;
               let maxMonthPremium = values.maxMonthPremium;
               let policyDescription = values.policyDescription;
-              let policyImage = "rakesh.jpg";
+              
               let agentCommisionPercentage = values.agentCommisionPercentage;
               let perAnnumRate = values.perAnnumRate;
               console.log(policyName);
@@ -75,7 +75,7 @@ const AdminAddPolicy = () => {
                   minMonthPremium,
                   maxMonthPremium,
                   policyDescription,
-                  policyImage,
+                 
                   agentCommisionPercentage,
                   perAnnumRate,
                 })
@@ -97,7 +97,7 @@ const AdminAddPolicy = () => {
               minMonthPremium: "",
               maxMonthPremium: "",
               policyDescription: "",
-              policyImage: "",
+              
               agentCommisionPercentage: "",
               perAnnumRate: "",
             }}
@@ -381,29 +381,7 @@ const AdminAddPolicy = () => {
                         </Form.Control.Feedback>
                       </Form.Group>
                     </Row>
-                    <Row>
-                      <Form.Group
-                        as={Col}
-                        md="12"
-                        controlId="validationFormik07"
-                      >
-                        <Form.Label>Policy Descriptive Image</Form.Label>
-                        <Form.Control
-                          type="file"
-                          name="policyImage"
-                          value={values.primeDate}
-                          onChange={handleChange}
-                          isValid={!errors.policyImage}
-                          isInvalid={!!errors.policyImage}
-                        />
-                        <Form.Control.Feedback
-                          className="FeedBack"
-                          type="invalid"
-                        >
-                          {errors.policyImage}
-                        </Form.Control.Feedback>
-                      </Form.Group>
-                    </Row>
+                   
                     <Row>
                       <Form.Group
                         as={Col}

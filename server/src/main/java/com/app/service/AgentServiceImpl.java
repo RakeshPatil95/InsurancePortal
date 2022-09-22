@@ -28,7 +28,6 @@ import com.app.dao.CustomerPolicyDao;
 import com.app.dao.PolicyDao;
 import com.app.dao.PolicyTransactionDao;
 import com.app.dto.AgentDto;
-import com.app.dto.AgentUpdateDto;
 import com.app.dto.CustomerDto;
 import com.app.dto.CustomerPolicyDto;
 import com.app.dto.ForgotPasswordDto;
@@ -256,6 +255,60 @@ public class AgentServiceImpl implements AgentService {
 	public List<CustomerPolicyDto> getPolicyHistoryByAgent(long agentId) {
 	
 		return custPolDao.getPolicyHistoyByAgent(agentId).stream().map((policy)->mapper.map(policy, CustomerPolicyDto.class)).collect(Collectors.toList());
+	}
+
+	@Override
+	public AgentDto uploadProfileImage(long agentId, MultipartFile profileImage) throws IOException {
+		Agent agent=agDao.findById(agentId).orElseThrow(()->new UserNotFoundException("Agent Not Found With Id "+agentId));
+		String imagePath = folder.concat(File.separator).concat("AgentId "+agentId);
+		log.info("bytes copied {} ",
+				Files.copy(profileImage.getInputStream(), Paths.get(imagePath), StandardCopyOption.REPLACE_EXISTING));
+		agent.setImage(imagePath);
+		return mapper.map(agent, AgentDto.class);
+	}
+
+	@Override
+	public byte[] getProfileImage(@Valid long agentId) throws IOException {
+		Agent agent=agDao.findById(agentId).orElseThrow(()->new UserNotFoundException("Agent Not Found With Id "+agentId));
+		if(agent.getImage()==null)
+			  throw new ResourceNotFoundException("Admin doesnt have an ProfileImage");
+					return Files.readAllBytes(Paths.get(agent.getImage()));
+	}
+
+	@Override
+	public AgentDto uploadAadharDoc(long agentId, MultipartFile aadharDoc) throws IOException {
+		Agent agent=agDao.findById(agentId).orElseThrow(()->new UserNotFoundException("Agent Not Found With Id "+agentId));
+		String imagePath = folder.concat(File.separator).concat("Aadhar "+agentId);
+		log.info("bytes copied {} ",
+				Files.copy(aadharDoc.getInputStream(), Paths.get(imagePath), StandardCopyOption.REPLACE_EXISTING));
+		agent.setAadharDoc(imagePath);
+		return mapper.map(agent, AgentDto.class);
+	}
+
+	@Override
+	public AgentDto uploadPanDoc(long agentId, MultipartFile panDoc)  throws IOException {
+		Agent agent=agDao.findById(agentId).orElseThrow(()->new UserNotFoundException("Agent Not Found With Id "+agentId));
+		String imagePath = folder.concat(File.separator).concat("Pan "+agentId);
+		log.info("bytes copied {} ",
+				Files.copy(panDoc.getInputStream(), Paths.get(imagePath), StandardCopyOption.REPLACE_EXISTING));
+		agent.setPanDoc(imagePath);
+		return mapper.map(agent, AgentDto.class);
+	}
+
+	@Override
+	public byte[] getAadharDoc(@Valid long agentId) throws IOException {
+		Agent agent=agDao.findById(agentId).orElseThrow(()->new UserNotFoundException("Agent Not Found With Id "+agentId));
+		if(agent.getAadharDoc()==null)
+			  throw new ResourceNotFoundException("Agent doesnt have an Aadhar Doc");
+					return Files.readAllBytes(Paths.get(agent.getAadharDoc()));
+	}
+
+	@Override
+	public byte[] getPanDoc(@Valid long agentId) throws IOException {
+		Agent agent=agDao.findById(agentId).orElseThrow(()->new UserNotFoundException("Agent Not Found With Id "+agentId));
+		if(agent.getPanDoc()==null)
+			  throw new ResourceNotFoundException("Agent doesnt have an Pan Doc");
+					return Files.readAllBytes(Paths.get(agent.getPanDoc()));
 	}
   
 }

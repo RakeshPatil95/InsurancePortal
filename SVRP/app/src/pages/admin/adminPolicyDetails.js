@@ -1,12 +1,55 @@
 import AdminSidebar from './adminsidebar'
 import AdminNavBar from './adminnavbar';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import "./Dashboard.css";
+import { useEffect, useState } from 'react';
+import { Button } from 'react-bootstrap';
+import { toast } from 'react-toastify';
+import axios from 'axios';
+import config from '../config';
 const AdminPolicyDetails = () => {
   const location = useLocation()
   let admin=location.state.admin
   const policyDetails= location.state.policy
+  const [file,setFile]=useState();
+  const Navigate=useNavigate();
+  const [token, setToken] = useState(sessionStorage.getItem("token_ADMIN"));
+  useEffect(() => {
+    if (!sessionStorage["token_ADMIN"]) {
+      Navigate("/signin");
+    }
+  }, []);
+  const updatePolicyImage=()=>{
+    if(file==null)
+    toast.error("Select Policy Image First")
+    else{
+    
+    const body=new FormData();
+    body.set('imageFile', file);
+  console.log(file)
+    
+    console.log(body.imageFile);
+    axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+    axios.post(`${config.SpingUrl}/admin/addPolicyImage/${policyDetails.id}`,body,{
+    headers:{
+      'Content-Type': 'multipart/form-data',
+    }
+    })
+    .then((response)=>{
+      
+      if(response.status==201) 
+      {Navigate("/adminallplans", {state:{admin:admin}})
+      toast.success("Image Updated Successfully")
+    }
+      else{
+        toast.error("Failed to Update Image")
+      }
+    }).catch((error)=>{
+      toast.error("Something Went Wrong")
+    })
+    }
+  }
   return (
     <div className="dashboard d-flex">
       	<div>
@@ -74,6 +117,18 @@ const AdminPolicyDetails = () => {
               <tr>
                 <td>Per Annum Rate</td>
                 <td>{policyDetails.perAnnumRate }</td>
+                  </tr>
+                  <tr>
+                <td>Update Image</td>
+                <td><input
+          onChange={(e) => {
+           
+            setFile(e.target.files[0])
+          }}
+          className='form-control'
+          type='file'
+        /></td>
+       <td> <Button onClick={updatePolicyImage} title='Upload Photo'>Update Image</Button></td>
                   </tr>
               </tbody>
           </table>
