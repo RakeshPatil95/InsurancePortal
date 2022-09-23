@@ -111,11 +111,11 @@ const Signin = () => {
 
           errors,
         }) => (
-          <div>
-            <Container style={styles.container}>
-              <Form noValidate onSubmit={handleSubmit} style={styles.myfont}>
-                <Row className="mb-2">
-                  <Form.Group as={Col} md="12" controlId="validationFormik02">
+          <div style={styles.myfont}>
+          <Form noValidate onSubmit={handleSubmit} style={styles.container}>
+            <Row className="mb-2">
+              
+                  <Form.Group as={Col}  md="12" controlId="validationFormik02">
                     <Form.Label>Role</Form.Label>
                     <InputGroup hasValidation>
                       <Form.Select
@@ -130,7 +130,9 @@ const Signin = () => {
                         <option value="CUSTOMER">CUSTOMER</option>
                       </Form.Select>
                     </InputGroup>
-                  </Form.Group>
+                </Form.Group>
+                 </Row>
+            <Row>
                   <Form.Group as={Col} md="12" controlId="validationFormik01">
                     <Form.Label>Email</Form.Label>
                     <Form.Control
@@ -146,6 +148,8 @@ const Signin = () => {
                       {errors.email}
                     </Form.Control.Feedback>
                   </Form.Group>
+            </Row>
+            <Row>
                   <Form.Group as={Col} md="12" controlId="validationFormik05">
                     <Form.Label>Password</Form.Label>
                     <Form.Control
@@ -163,8 +167,8 @@ const Signin = () => {
                     </Form.Control.Feedback>
                     <Link to="/forgotPassword">Forgot Password</Link>
                   </Form.Group>
-                </Row>
-                <Row>
+            </Row>
+            <Row>
                   <Form.Group
                     as={Col}
                     md="12"
@@ -183,10 +187,9 @@ const Signin = () => {
                       <Link to="/signup">Signup here</Link>
                     </div>
                   </Form.Group>
-                </Row>
-              </Form>
-            </Container>
-          </div>
+            </Row>
+            </Form>
+            </div>
         )}
       </Formik>
     </div>
@@ -194,20 +197,25 @@ const Signin = () => {
 }
 const styles = {
   container: {
-    width: 600,
-    height: 'auto',
+    top:180,
+    maxWidth: '500px',
+    minWidth: '300px',
+    maxHeight: '700px',
+   width: '30%',
+    height: '60%',
+    margin: '100px auto',
+    borderRadius: '25px',
+    width: '100%',
     padding: 20,
+    overflow: 'auto',
     position: 'relative',
-    top: 100,
-    left: -400,
-    right: 0,
-    bottom: 0,
     margin: 'auto',
-    borderColor: 'white',
-    borderRadius: 10,
-    broderWidth: 1,
-    borderStyle: 'solid',
-    boxShadow: '1px 1px 20px 5px white',
+   borderColor: 'white',
+  // borderRadius: 10,
+   broderWidth: 1,
+   borderStyle: 'solid',
+   boxShadow: '1px 1px 20px 5px white',
+  background: "rgba(0,0, 0, 0.5)",
   },
   signinButton: {
     position: 'relative',

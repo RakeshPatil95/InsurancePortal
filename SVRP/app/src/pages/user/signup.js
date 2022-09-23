@@ -35,7 +35,7 @@ function Signup() {
   const Navigate=useNavigate();
   
   return (
-    <div className='App'>
+    <div className='App' style={{overflowY:'auto'}}>
        <Navbar />
     <Formik
       validationSchema={schema}
@@ -291,20 +291,24 @@ function Signup() {
 }
 const styles = {
   container: {
-    width: 600,
-    height: "auto",
+    top:100,
+    maxWidth: '500px',
+    minWidth: '300px',
+    maxHeight: '900px',
+   width: '30%',
+    height: '100%',
+    margin: '100px auto',
+    borderRadius: '25px',
+    width: '100%',
     padding: 20,
-    position: "relative",
-    top: 100,
-    left: -400,
-    right: 0,
-    bottom: 0,
-   margin: "auto",
-    borderColor: "#004E8F",
-    borderRadius: 10,
-    broderWidth: 1,
-    borderStyle: "solid",
-    boxShadow: "1px 1px 20px 5px white",
+    position: 'relative',
+    margin: 'auto',
+   borderColor: 'white',
+  // borderRadius: 10,
+   broderWidth: 1,
+   borderStyle: 'solid',
+   boxShadow: '1px 1px 20px 5px white',
+  background: "rgba(0,0, 0, 0.5)",
   },
   signinButton: {
     position: "relative",

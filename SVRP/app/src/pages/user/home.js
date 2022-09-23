@@ -10,7 +10,7 @@ const Home=()=>{
     return (
      
          
-      <div  className="App"> 
+      <div  className="App" > 
         <NavBar/>
      <Carousel>
   <Carousel.Item interval={1000}>

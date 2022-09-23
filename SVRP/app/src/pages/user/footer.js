@@ -5,9 +5,9 @@ const Footer=()=>{
   {/* Section: Social media */}
   <section className="d-flex justify-content-center justify-content-lg-between p-3 border-bottom">
     {/* Left */}
-    <div className="me-5 d-none d-lg-block">
+    {/* <div className="me-2 d-none d-lg-block">
       <span>Get connected with us on social networks:</span>
-    </div>
+    </div> */}
     {/* Left */}
     {/* Right */}
     <div>
@@ -39,9 +39,9 @@ const Footer=()=>{
       {/* Grid row */}
       <div className="row mt-3">
         {/* Grid column */}
-        <div className="col-md-3 col-lg-4 col-xl-5 mx-auto mb-4">
+        <div className="col-md-3 col-lg-4 col-xl-5 mx-auto mb-2">
           {/* Content */}
-          <h6 className="text-uppercase fw-bold mb-4">
+          <h6 className="text-uppercase fw-bold mb-2">
             <i className="fas fa-gem me-3" />SVRP Insurance
           </h6>
           <p>Zindagi ke Saath bhi , Zindagi ke Baad bhi <br />A  Lifetime of Relationship
@@ -49,7 +49,7 @@ const Footer=()=>{
         </div>
         {/* Grid column */}
         {/* Grid column */}
-        <div className="col-md-2 col-lg-2 col-xl-2 mx-auto mb-4">
+        <div className="col-md-2 ">
           {/* Links */}
           <h6 className="text-uppercase fw-bold mb-4">
             Products
@@ -109,10 +109,6 @@ const Footer=()=>{
   </section>
   {/* Section: Links  */}
   {/* Copyright */}
-  <div className="text-center p-4" style={{backgroundColor: 'rgba(0, 0, 0, 0.05)'}}>
-    © 2022 Copyright:
-    <Link className="text-reset fw-bold" to='/'>SVRP Insurance</Link>
-  </div>
   {/* Copyright */}
 </footer>
     )
