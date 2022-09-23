@@ -2,8 +2,9 @@ import { NavLink } from "react-router-dom";
 import { toast,ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 import {Navbar,Nav,NavDropdown,Form,FormControl,Button } from "react-bootstrap";
-const CustomerNavBar = () => {
-  
+const CustomerNavBar = (props) => {
+ let CustomerName=props.customerName;
+
   const signout = () => {
     toast("Thanks for Visiting...!!!", {
       style: {
@@ -33,7 +34,7 @@ const CustomerNavBar = () => {
         >
           
          
-          <NavLink to="#" style={styles.myfont}>Welcome Customer</NavLink>
+          <NavLink to="#" style={styles.myfont}>Welcome {CustomerName}</NavLink>
         </Nav>
         <Form className="d-flex" style={{marginRight:'350px'}}>
           <FormControl

@@ -34,7 +34,6 @@ const CustomerPolicies=()=>{
       })
       .then((response) => {
         const result = response.data
-        console.log(result)
         if (result['status'] === 'success') {
           console.log(result)
           // set the homes to the state member
@@ -50,7 +49,7 @@ const CustomerPolicies=()=>{
       	<CustomerSideBar/>
       </div>
       <div style={{flex:"1 1 auto", display:"flex", flexFlow:"column", height:"100vh", overflowY:"hidden"}}>
-        <CustomerNavBar/>
+        <CustomerNavBar customerName={customer.user.first_name}/>
         <h1 style={{marginBottom:'40px',marginLeft:'10px',textAlign:'center'}}><b>My Policies</b></h1>
 
       
@@ -58,7 +57,8 @@ const CustomerPolicies=()=>{
         <thead>
           <tr>
           
-          <th>Policy Id</th>
+              <th>Policy Id</th>
+          <th>Policy Name</th> 
           <th>Premium</th>
           <th>Premium Date</th>
           <th>Policy Start Date</th>
@@ -73,6 +73,7 @@ const CustomerPolicies=()=>{
             return (
               <tr>
                 <td>{list.policy_id}</td>
+                <td>{list.policy_name}</td>
                 <td>{list.premium}</td>
                 <td>{list.premium_date}</td>
                 <td>{list.policy_start_date}</td>

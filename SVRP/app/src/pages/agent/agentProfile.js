@@ -570,7 +570,7 @@ const[panDoc,setPanDoc]=useState();
                         <Form.Control
                           type="text"
                           name="pan"
-                          placeholder="Enter your Last Name here"
+                          placeholder="Enter your Pan Number here"
                           value={values.pan}
                           onChange={handleChange}
                           isValid={touched.pan && !errors.pan}

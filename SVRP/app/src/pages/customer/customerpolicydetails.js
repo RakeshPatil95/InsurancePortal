@@ -11,6 +11,8 @@ const CustomerPolicyDetails=()=>{
   let Navigate = useNavigate()
   let customer=location.state.customer
   let policy = location.state.policy
+  console.log(customer)
+  console.log(policy)
   const [policydetails,setpolicydetails]=useState()
   const navigate=useNavigate()
 
@@ -23,13 +25,15 @@ const CustomerPolicyDetails=()=>{
   },[]);
   
    const getPolicyDetails =()=> {
-    axios.get(config.ExpressUrl+'/customer/getPolicyDetails/'+policy.policy_id,{
+    axios.get(config.ExpressUrl+'/customer/getPolicyDetails/'+policy.id,{
       headers:{token:sessionStorage['token_CUSTOMER']},
     })
     .then((response)=>{
-      const result=response.data
+      const result = response.data
+      console.log(result)
       if(result['status']==='success'){
         setpolicydetails(response.data.data)
+        console.log(policydetails)
       }
     })
   }
@@ -73,7 +77,7 @@ let MonthsUpToDate=getMonthDifference(new Date(policyStartDate),new Date());
       	<CustomerSideBar/>
       </div>
       <div style={{flex:"1 1 auto", display:"flex", flexFlow:"column", height:"100vh", overflowY:"hidden"}}>
-        <CustomerNavBar/>
+        <CustomerNavBar customerName={customer.user.first_name}/>
         <center>
              <h1>PolicyDetails</h1>
              <br />
@@ -82,11 +86,11 @@ let MonthsUpToDate=getMonthDifference(new Date(policyStartDate),new Date());
   <tbody style={styles.myfont}>
     <tr>
       <td><h4>Policy Name</h4></td>
-                  <td><h4> policydetails[0].policy_name</h4></td>
+                  <td><h4> {policy.policy_name} </h4></td>
                 </tr>
                 <tr>
       <td><h4>Policy Description</h4></td>
-                  <td><h4> policydetails[0].policy_description</h4></td>
+                  <td><h4>  {policy.policy_description}</h4></td>
     </tr>
     <tr>
       <td>Policy Holder Name</td>
@@ -94,19 +98,19 @@ let MonthsUpToDate=getMonthDifference(new Date(policyStartDate),new Date());
     </tr>
     <tr>
     <td>Start Date</td>
-                  <td>{ policy.policy_start_date}</td>
+                  <td> {policy.policy_start_date}</td>
     </tr>
     <tr>
     <td>End Date</td>
-                  <td>{policy.policy_end_date }</td>
+                  <td>{policy.policy_end_date} </td>
     </tr>
     <tr>
     <td>Primium</td>
-                  <td>{ policy.premium}</td>
+                  <td> {policy.premium}</td>
     </tr>
     <tr>
     <td>Premium Date</td>
-                  <td>{ policy.premium_date}</td>
+                  <td>{policy.premium_date}</td>
                             </tr>
     </tbody>
                     </table>

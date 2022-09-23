@@ -13,7 +13,7 @@ import axios from "axios";
 import config from "../config";
 const AgentSidebar = (props) => {
   let agent=props.agent;
-  const [token, setToken] = useState(sessionStorage.getItem("token_ADMIN"));
+  const [token, setToken] = useState(sessionStorage.getItem("token_AGENT"));
   const Navigate=useNavigate();
   let profileImage=`${config.SpingUrl}/agent/getProfileImage/${agent.id}`
   const [profilePhoto,setProfilePhoto]=useState(false);

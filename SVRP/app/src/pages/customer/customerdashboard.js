@@ -21,7 +21,7 @@ const CustomerDashBoard = () => {
       	<CustomerSideBar/>
       </div>
       <div style={{flex:"1 1 auto", display:"flex", flexFlow:"column", height:"100vh", overflowY:"hidden"}}>
-        <CustomerNavBar/>
+        <CustomerNavBar customerName={customer.user.first_name}/>
 		<Row>
 		<Col className='col-6'>
 		<Card border="primary" style={{ marginRight:'10px',margin:'10px',backgroundColor:'lightblue'}}>
@@ -40,7 +40,7 @@ const CustomerDashBoard = () => {
       <Card.Title>Premium Payment</Card.Title>
       
     </Card.Body>
-	<Card.Footer> <Link to='/customerpremiumpayments' className='btn '>View Details</Link></Card.Footer>
+	<Card.Footer> <Link to='/customerpremiumpayments' state={{customer:customer}} className='btn '>View Details</Link></Card.Footer>
   </Card>
 		</Col>
 		</Row>

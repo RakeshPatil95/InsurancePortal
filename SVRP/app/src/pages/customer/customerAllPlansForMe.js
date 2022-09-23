@@ -12,8 +12,10 @@ import { toast } from 'react-toastify'
 const CustomerAllPlansForMe=()=>{
 
 let location=useLocation()
-let customer=location.state.customer
-const[allplans,setallplans]=useState([])
+  let customer = location.state.customer
+  console.log(customer)
+  const [allplans, setallplans] = useState([])
+  //console.log(allplans)
 const navigate=useNavigate()
 useEffect(()=>{
   if(!sessionStorage['token_CUSTOMER']){
@@ -24,7 +26,7 @@ useEffect(()=>{
 },[]);
 
 const getallplans=()=>{
-  axios.get(config.ExpressUrl+`/customer/${customer}/allplansforme`,{
+  axios.get(config.ExpressUrl+`/customer/${customer.user.id}/allplansforme`,{
     headers:{token:sessionStorage['token_CUSTOMER']},
   })
   .then((response)=>{
@@ -44,31 +46,33 @@ const getallplans=()=>{
       	<CustomerSideBar/>
       </div>
       <div style={{flex:"1 1 auto", display:"flex", flexFlow:"column", height:"100vh", overflowY:"auto"}}>
-        <CustomerNavBar/>
+        <CustomerNavBar customerName={customer.user.first_name}/>
        
        <Row xs={1} md={2} className="g-3">
        {allplans.map((list) => {
+         let imageUrl=`${config.SpingUrl}/admin/getPolicyImage/${list.id}`
             return (
     <Col>
       <Card className='col-12'>
-        <Card.Img variant="top"  src="https://events.ibx.com/wp-content/uploads/2017/03/cost-of-health-coverage1.jpg" />
+        <Card.Img variant="top"  src={imageUrl} />
         <Card.Body>
           <Card.Title ><h3>{list.policy_name}</h3></Card.Title>
           <Card.Text>
-                      <h5>{ list.policy_description}</h5>
+                       <h5>{ list.policy_description}</h5>
           </Card.Text>
           <div className='d-flex justify-content-center'>
-          <Link to='/allpolicydetails' state={{customer:customer,policy:list}} className='btn btn-success ' style={{width:'350px',borderRadius:'15px'}}  >View Policy</Link>
+          <Link to='/customerBuyPolicy' state={{customer:customer,policy:list}} className='btn btn-success ' style={{width:'350px',borderRadius:'15px'}}  >Buy Policy</Link>
           </div>
         </Card.Body>
       </Card>
     </Col>
             )})}
   
-</Row>
-<Footer/>
+          </Row>
+          <Footer/>
        </div>
        </div>
+       
     )
 }
 export default CustomerAllPlansForMe;

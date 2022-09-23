@@ -32,42 +32,34 @@ const schema = yup.object().shape({
 
 const CustomerUploadDocuments = () => {
   let location = useLocation()
-    let customer = location.state.customer
-    console.log(customer)
+  let customer = location.state.customer
+  console.log(customer)
+const[ProfileImage,setProfileImage]=useState()
   const Navigate = useNavigate()
-  
+  const uploadImage = (proImage) => {
+    const profileImage = new FormData()
+    profileImage.set('image', proImage)
+    axios
+    .post(config.ExpressUrl + '/customer/uploadProfilePhoto/' + customer.id, profileImage, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        token: sessionStorage['token_CUSTOMER'],
+      },
+    })
+    .then((response) => {
+      const result = response.data
+      if (result['status'] === 200) {
+        toast.success('successfully uploaded a Profile Photo')
+      } else {
+        toast.error('error while uploading file')
+      }
+    })
+  }
   useEffect(() => {
     if(!sessionStorage['token_CUSTOMER']){
      Navigate('/signin')
     }
   }, []);
-  const uploadProfileImage = (image) => {
-    console.log(image)
-    axios
-    .post(`${config.ExpressUrl}/customer/uploadDocuments/${customer.id}`,
-    image,
-        {
-        headers: {
-        'Content-Type': 'multipart/form-data',
-        token: sessionStorage['token_CUSTOMER'],
-      },
-}).then((response)=>{
-//  let customer=null;
-if(response.status==200)
-{ toast.success("Document Added SuccessFully")
-  // customer=response.data;
-  //console.log(response.data)
-//console.log("customer==>>"+customer.id);
-}
-else
-{
-toast.error("Failed to add docs")
-}
-
-}).catch((error)=>{
-toast.error("Failed to Add Customer docs"+error)
-})
-  }
   return (
     <div className="dashboard d-flex" >
       <div>
@@ -87,38 +79,10 @@ toast.error("Failed to Add Customer docs"+error)
           <Formik 
             validationSchema={schema}
             onSubmit={(values) => {
-              uploadProfileImage(values.profileImage)
-            //console.log(values);
-             //let Documents=new FormData();
-            //  Documents.set('image',values.profileImage)
-            //  Documents.set('image',values.acDoc)
-            //  Documents.set('image',values.pcDoc)   
-            //         axios
-            //         .post(`${config.serverURL}/customer/uploadDocuments/${customer.id}`,
-            //             Documents,
-            //             {
-            //             headers: {
-            //             'Content-Type': 'multipart/form-data',
-            //             token: sessionStorage['token_CUSTOMER'],
-            //           },
-            //   }).then((response)=>{
-            //   //  let customer=null;
-            //     if(response.status==200)
-            //    { toast.success("Document Added SuccessFully")
-            //       // customer=response.data;
-            //       //console.log(response.data)
-            //     //console.log("customer==>>"+customer.id);
-            //   }
-            //   else
-            //   {
-            //     toast.error("Failed to add docs")
-            //   }
-              
-            //   }).catch((error)=>{
-            //     toast.error("Failed to Add Customer docs"+error)
-            //   })
-              
-            }}
+              const profileImage = values.profileImage
+              console.log(profileImage)
+            }
+            }
             initialValues={{
              profileImage:"",
              acDoc:"",
@@ -150,13 +114,14 @@ toast.error("Failed to Add Customer docs"+error)
                         <input 
                         type="file"
                             className='form-control'
-                            onChange={(event)=>setFieldValue("profileImage",event.target.files[0])}
+                            onSubmit={(event) => setProfileImage(event.target.files[0])}
                        />
                        <ErrorMessage name="profileImage"/>
                         </td>
                         <td>
                         <Button
-                          type="submit"
+                            type="submit"
+                            onClick={uploadImage(ProfileImage)}
                           variant="outline-secondary"
                           style={styles.signinButton}
                         >

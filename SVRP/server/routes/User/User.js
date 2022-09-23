@@ -40,8 +40,12 @@ router.post('/signup',(request,response)=>{
     const { firstName, lastName, phoneNumber, email, securityQuestion, securityAnswer, password } = request.body;
     const encryptedPassword = String(cryptoJs.MD5(password))
     const age = 0;
-    const statement = `insert into customer(first_name,last_name,phone_number,email,security_question,security_answer,password,age) values(?,?,?,?,?,?,?,?)`;
-    db.Pool.query(statement,[firstName,lastName,phoneNumber,email, securityQuestion,securityAnswer,encryptedPassword,age],(error,data)=>{
+    const city = "Not yet added"
+    const pincode = 000000
+    const state = "Not yed added";
+    const village ="Not yet added"
+    const statement = `insert into customer(first_name,last_name,phone_number,email,security_question,security_answer,password,age,city,pincode,state ,village ,date_of_birth) values(?,?,?,?,?,?,?,?,?,?,?,?,Date(now()))`;
+    db.Pool.query(statement,[firstName,lastName,phoneNumber,email, securityQuestion,securityAnswer,encryptedPassword,age,city,pincode,state,village],(error,data)=>{
       response.send(utils.createResult(error,data));
     })
 })

@@ -14,7 +14,7 @@ const Admincustomers = () => {
   const Navigate=useNavigate();
   const [token, setToken] = useState(sessionStorage.getItem("token_ADMIN"));
 
-  axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+ 
   useEffect(()=>{
    
   if(!token)
@@ -36,7 +36,7 @@ let admin=location.state.admin
    
   }
   }, [])
-
+  axios.defaults.headers.common["Authorization"] = "Bearer " + token;
   const getAllCustomers = () => {
    let url=`${config.SpingUrl}/admin/getAllCustomers`;
     axios.get(url).then((response) => {

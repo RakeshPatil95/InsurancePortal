@@ -5,7 +5,7 @@ const CustomerNewPolicyDetails =()=>{
     return(
         <div className="dashboard d-flex">
     	<div>
-      	<CustomerSideBar/>
+      	<CustomerSideBar />
       </div>
       <div style={{flex:"1 1 auto", display:"flex", flexFlow:"column", height:"100vh", overflowY:"hidden"}}>
         <CustomerNavBar/>

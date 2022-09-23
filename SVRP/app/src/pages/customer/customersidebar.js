@@ -1,17 +1,50 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import DefaultProfile from '../../Images/avatar.png'
 import {
   CDBSidebar,
   CDBSidebarContent,
-  CDBSidebarFooter,
+  CDBSidebarFooter, 
   CDBSidebarHeader,
   CDBSidebarMenu,
   CDBSidebarMenuItem,
 } from 'cdbreact';
-import { NavLink } from 'react-router-dom';
+
 import { useLocation } from 'react-router-dom';
+import { NavLink, useNavigate } from "react-router-dom";
+import axios from "axios";
+import config from "../config";
 const CustomerSideBar = () => {
   let location=useLocation()
   let customer=location.state.customer
+  console.log("customer Id"+customer.user.id);
+  let profileImage=`${config.SpingUrl}/customer/getProfileImage/${customer.user.id}`
+  const [profilePhoto,setProfilePhoto]=useState(false);
+  const Navigate=useNavigate();
+  const [token, setToken] = useState(sessionStorage.getItem("token_CUSTOMER"));
+  axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+  useEffect(() => {
+    if (!sessionStorage["token_CUSTOMER"]) {
+      Navigate("/signin");
+    }
+      else{
+        axios.get(profileImage, 
+    ).then((response)=>{
+       
+
+        if(response.data != null){
+       
+        setProfilePhoto(true)
+     
+        }
+
+    
+    }).catch((error)=>{
+        console.log(error)
+    })
+    }
+      
+    
+  }, []);
     return(
         
             <div style={{  height: '100vh', overflow: 'scroll initial' }}>
@@ -24,6 +57,10 @@ const CustomerSideBar = () => {
         
                 <CDBSidebarContent className="sidebar-content">
                   <CDBSidebarMenu>
+                  <CDBSidebarMenuItem><img  className = "img-circle mt-5" src={profilePhoto ? `${config.SpingUrl}/customer/getProfileImage/${customer.user.id}`  : DefaultProfile } style={{overflow : 'auto', width:130, height:130, borderRadius:65}} /></CDBSidebarMenuItem>
+           
+           <br></br>
+           <br></br>
               <NavLink exact to="/customerdashboard" state={{ customer: customer }} activeClassName="activeClicked">
                       <CDBSidebarMenuItem icon="columns">Dashboard</CDBSidebarMenuItem>
                     </NavLink>

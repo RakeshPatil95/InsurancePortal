@@ -6,14 +6,14 @@ const db=require('../../db');
 const utils = require('../../utils');
 const multer = require('multer');
 const { date } = require('yup');
-const StorageEngine = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null,'./customerImages')
-    },
-    filename: (req, file, cb) => {
-        cb(null,'Customer'+'_'+ file.originalname);
-    },
-});
+// const StorageEngine = multer.diskStorage({
+//     destination: (req, file, cb) => {
+//         cb(null,'./customerImages')
+//     },
+//     filename: (req, file, cb) => {
+//         cb(null,'Customer'+'_'+ file.originalname);
+//     },
+// });
 const upload = multer({ dest: "uploads/Customer" });
 
 router.get('/profile/:custId',(request,response)=>{
@@ -32,8 +32,9 @@ router.get('/allplans/',(request,response)=>{
     })
 })
 router.get('/:custId/allplansforme/', (request, response) => {
-    const {custId}=request.params
-    const statement = `select * from policy where id != ALL(select policy_id from customer_policy where customer_id=?) and min_entry_age<= ALL (select age from customer where id=? )`
+    const { custId } = request.params
+    console.log(custId)
+    const statement = `select * from policy where id != ALL(select policy_id from customer_policy where customer_id=? ) and min_entry_age<= ALL (select age from customer where id=? )`
 
     db.Pool.query(statement,[custId,custId],(error,data)=>{
          response.send(utils.createResult(error,data));
@@ -47,14 +48,14 @@ router.put('/updateprofile/:custId',(request, response) => {
     // const image = imagename[0].filename
     // const aadhar_doc = imagename[1].filename
     // const pan_doc = imagename[2].filename
-    const image = "Rakesh.jpjj"
+    const image = "customer.jpg"
     const aadhar_doc = "adhar.pdf"
-    const pan_doc="pan.pdf"
+    const pan_doc = "pan.pdf"
     const {
         aadhar,address_line1,address_line2,age,date_of_birth,pan,pincode,state,city,village
     } = request.body
-    const statement = `update customer set aadhar=?,aadhar_doc=?,address_line1=?,address_line2=?,age=?,date_of_birth=?,image=?,pan=?,pan_doc=?,pincode=?,state=?,city=?,village=? where id = ?`
-    db.Pool.query(statement,[aadhar,aadhar_doc,address_line1,address_line2,age,date_of_birth,image,pan,pan_doc,pincode,state,city,village,custId],(error,data)=>{
+    const statement = `update customer set aadhar=?,address_line1=?,address_line2=?,age=?,date_of_birth=?,pan=?,pincode=?,state=?,city=?,village=? where id = ?`
+    db.Pool.query(statement,[aadhar,address_line1,address_line2,age,date_of_birth,pan,pincode,state,city,village,custId],(error,data)=>{
          response.send(utils.createResult(error,data));
     })
 })
@@ -75,8 +76,7 @@ router.post('/:custId/buypolicy/:policyId',(request,response)=>{
 
 router.get('/:custId/myallpolicies/', (request, response) => {
     const {custId}= request.params
-    const statement = `Select * from Customer_policy where customer_id = ? 
-    and claim_status=0 and surrender_status=0 and status=1`
+    const statement = `select p.policy_name,p.policy_description,p.policy_image,c.policy_end_date,c.policy_start_date,c.premium,c.premium_date,c.policy_id,c.claim_amount from policy p INNER JOIN customer_policy c ON p.id=c.policy_id where c.status=1 and c.customer_id=?;`
     db.Pool.query(statement,[custId],(error,data)=>{
          response.send(utils.createResult(error,data));
     })
@@ -100,26 +100,39 @@ router.get('/:custId/getCustomorsPolicyHistory', (request, response) => {
 })
 router.get('/:custId/premiumpayments/', (request, response) => {
     const {custId}=request.params
-    const statement = `Select * from Customer_policy where customer_id =? and premium_date < date(now()) and status=1`
-      
+    const statement = `Select * from Customer_policy where id =? and premium_date < date(now() and status=1)`
+
     db.Pool.query(statement,[custId],(error,data)=>{
          response.send(utils.createResult(error,data));
     })
 })
-router.post('/uploadDocuments/:custId',upload.single('image'), (request, response) => {
+router.post('/uploadProfilePhoto/:custId',upload.single('image'), (request, response) => {
     const { custId } = request.params
-   // const {aadhar}= request.query
-  
- //   console.log(request.files)
+    var file = request.file
+    console.log(file)
+    const profilePhoto = file
+    const statement = `update customer set image=? where id=?`
+    db.Pool.query(statement, [profilePhoto, custId], (error, result) => {
+        response.send(utils.createResult(error, result));
+      }); 
+})
+router.post('/uploadPanCard/:custId',upload.single('image'), (request, response) => {
+    const { custId } = request.params
     var file = request.file
     console.log(file.originalname)
-const filename = file.originalname
-  //  console.log(file[0].originalname)
-    // console.log(file[1].originalname)
-    // console.log(file[2].originalname)
-   // console.log(aadhar);
-    const statement = `update customer set image=?,aadhar_doc=?,pan_doc=? where id=?`
-    db.Pool.query(statement, [filename, id], (error, result) => {
+    const panCard = file.originalname
+    const statement = `update customer set pan_doc=? where id=?`
+    db.Pool.query(statement, [panCard, custId], (error, result) => {
+        response.send(utils.createResult(error, result));
+      }); 
+})
+router.post('/uploadAdharCard/:custId',upload.single('image'), (request, response) => {
+    const { custId } = request.params
+    var file = request.file
+    console.log(file.originalname)
+    const aadharCard = file.originalname
+    const statement = `update customer set aadhar_doc=? where id=?`
+    db.Pool.query(statement, [aadharCard, custId], (error, result) => {
         response.send(utils.createResult(error, result));
       }); 
 })

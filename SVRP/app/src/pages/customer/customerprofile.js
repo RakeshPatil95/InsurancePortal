@@ -1,8 +1,10 @@
 import CustomerSideBar from "./customersidebar";
 import CustomerNavBar from "./customernavbar";
 import "./Dashboard.css";
+import Footer from "../user/footer";
 import { Col, InputGroup,Form, Row, Container, Button,} from "react-bootstrap";
-import { Formik,Field } from "formik";
+import { Formik, Field } from "formik";
+import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import "../../App.css";
@@ -50,9 +52,112 @@ const schema = yup.object().shape({
 const CustomerProfile=()=>{
   let location = useLocation()
   let customer = location.state.customer.user
-  console.log(customer.date_of_birth)
+  let customerUser = location.state.customer
+  let panViewUrl=`${config.SpingUrl}/customer/getPanDoc/${customer.id}`
+  let aadharViewUrl=`${config.SpingUrl}/customer/getAadharDoc/${customer.id}`
+const [profileImage,setProfileImage]=useState();
+const [aadharDoc,setAadharDoc]=useState();
+const[panDoc,setPanDoc]=useState();
+console.log(customer)
+const [token, setToken] = useState(sessionStorage.getItem('token_CUSTOMER'))
+const updateProfileImage=()=>{
+  if(profileImage==null)
+  toast.error("Select Profile Image Image First")
+  else{
+  
+  const body=new FormData();
+  body.set('profileImage', profileImage);
+console.log(profileImage)
+  
+
+  axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+  axios.post(`${config.SpingUrl}/customer/addProfileImage/${customer.id}`,body,{
+  headers:{
+    'Content-Type': 'multipart/form-data',
+  }
+  })
+  .then((response)=>{
+    
+    if(response.status==201) 
+    {
+     
+    toast.success("Profile Image Updated Successfully")
+    window.location.reload(false);
+  }
+    else{
+      toast.error("Failed to Update Image")
+    }
+  }).catch((error)=>{
+    toast.error("Something Went Wrong")
+  })
+  }
+}
+const updateAadharDoc=()=>{
+  if(aadharDoc==null)
+  toast.error("Select Aadhar Doc Image First")
+  else{
+  
+  const body=new FormData();
+  body.set('aadharDoc', aadharDoc);
+console.log(aadharDoc)
+   
+
+  axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+  axios.post(`${config.SpingUrl}/customer/addAadharDoc/${customer.id}`,body,{
+  headers:{
+    'Content-Type': 'multipart/form-data',
+  }
+  })
+  .then((response)=>{
+    
+    if(response.status==201) 
+    {
+     
+    toast.success("Aadhar Doc Updated Successfully")
+    window.location.reload(false);
+  }
+    else{
+      toast.error("Failed to Update Aadhar")
+    }
+  }).catch((error)=>{
+    toast.error("Something Went Wrong")
+  })
+  }
+}
+const updatePanDoc=()=>{
+  if(panDoc==null)
+  toast.error("Select Pan Doc First")
+  else{
+  
+  const body=new FormData();
+  body.set('panDoc', panDoc);
+console.log(panDoc)
+  
+
+  axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+  axios.post(`${config.SpingUrl}/customer/addPanDoc/${customer.id}`,body,{
+  headers:{
+    'Content-Type': 'multipart/form-data',
+  }
+  })
+  .then((response)=>{
+    
+    if(response.status==201) 
+    {
+     
+    toast.success("Pan Doc Updated Successfully")
+    window.location.reload(false);
+  }
+    else{
+      toast.error("Failed to Update Pan Doc")
+    }
+  }).catch((error)=>{
+    toast.error("Something Went Wrong")
+  })
+  }
+}
 // console.log(customer)
-  console.log(sessionStorage['token_CUSTOMER'])
+ // console.log(sessionStorage['token_CUSTOMER'])
   const Navigate = useNavigate()
   useEffect(() => {
     if(!sessionStorage['token_CUSTOMER']){
@@ -64,6 +169,7 @@ const CustomerProfile=()=>{
     Navigate('/customerUploadDocuments', { state: { customer: customer } })
   }
   return (
+    <div>
     <div className="dashboard d-flex" >
       <div>
         <CustomerSideBar customer={customer} />
@@ -97,7 +203,14 @@ const CustomerProfile=()=>{
               let state = values.state
               let aadhar = values.aadhar
               let pan = values.pan
-            
+              let age = yearsDiff(date_of_birth,Date.now())
+              function yearsDiff(d1, d2) {
+                let date1 = new Date(d1);
+                let date2 = new Date(d2);
+                let yearsDiff =  date2.getFullYear() - date1.getFullYear();
+                return yearsDiff;
+              }
+              //console.log(age)
               //console.log(dateOfBirth)
               //console.log(customer)
              // console.log(`${config.serverURL}/updateprofile/${customer.user.id}`)
@@ -116,15 +229,32 @@ const CustomerProfile=()=>{
                   state,
                   aadhar,
                   pan,
+                  age,
                 }, {
                   headers: {
                     token: sessionStorage['token_CUSTOMER']
                 }}
               ).then((response)=>{
                 if(response.status==200)
-               { toast.success("Customer Profile Updated SuccessFully")
-                  // customer=response.data;
-                Navigate("/customerDashboard",{state:{customer:location.state.customer}})
+                {
+                  toast.success("Customer Profile Updated SuccessFully")
+                  axios.get(config.ExpressUrl+`/customer/profile/${customer.id}`,{
+                    headers:{token:sessionStorage['token_CUSTOMER']},
+                  })
+                  .then((response)=>{
+                    const result=response.data
+                    if(result['status']==='success'){
+                      customerUser.user = response.data.data[0]
+                      console.log(response.data)
+                    //  console.log(customer)
+                       Navigate("/customerDashboard",{state:{customer:customerUser}})
+                    }else{
+                      toast.error(result['error'])
+                    }
+                  })
+                  //customer = response.data.data;
+                 // console.log(customer)
+               // Navigate("/customerDashboard",{state:{customer:location.state.customer}})
               }
               else
               {
@@ -163,14 +293,6 @@ const CustomerProfile=()=>{
               setFieldValue
             }) => (
               <div >
-                 {/* <Button variant="outline-success rounded-pill" style={{
-               // width: "90px",
-                height: 40,
-                backgroundColor: "#FFCB08",
-                color: "black",
-                fontWeight: "bold",
-                fontSize: 18,
-              }} >Upload Documents</Button> */}
                 <center><h1>Customer Profile</h1></center>
                 <Container style={styles.container}>
                   <Form
@@ -480,6 +602,68 @@ const CustomerProfile=()=>{
                         </Form.Control.Feedback>
                       </Form.Group>
                     </Row>
+                    <Row className='mb-2'>
+                    <Form.Group
+                        as={Col}
+                        md="6"
+                        controlId="validationFormik11"
+                      >
+                    
+                    <input
+          onChange={(e) => {
+           
+            setProfileImage(e.target.files[0])
+          }}
+          className='form-control'
+          type='file'
+        /></Form.Group> <Form.Group
+        as={Col}
+        md="6"
+        controlId="validationFormik11"
+      ><Button onClick={updateProfileImage} title='Upload Photo'>Update Profile Image</Button>
+                </Form.Group>    </Row>
+                <Row className='mb-2'>
+                    <Form.Group
+                        as={Col}
+                        md="6"
+                        controlId="validationFormik11"
+                      >
+                    
+                    <input
+          onChange={(e) => {
+           
+            setAadharDoc(e.target.files[0])
+          }}
+          className='form-control'
+          type='file'
+        /></Form.Group> <Form.Group
+        as={Col}
+        md="6"
+        controlId="validationFormik11"
+      ><Button onClick={updateAadharDoc} title='Upload Photo' >Update Aadhar</Button>
+      <Button onClick={()=>{window.open(aadharViewUrl,"_blank")}} className='btn btn-success'>View Aadhar</Button>
+                </Form.Group>    </Row>
+                <Row className='mb-2'>
+                    <Form.Group
+                        as={Col}
+                        md="6"
+                        controlId="validationFormik11"
+                      >
+                    
+                    <input
+          onChange={(e) => {
+           
+            setPanDoc(e.target.files[0])
+          }}
+          className='form-control'
+          type='file'
+        /></Form.Group> <Form.Group
+        as={Col}
+        md="6"
+        controlId="validationFormik11"
+      ><Button onClick={updatePanDoc} title='Upload Photo'>Update Pan Doc</Button>
+      <Button onClick={()=>{window.open(panViewUrl,"_blank")}} className='btn btn-success'>View Pan</Button>
+                </Form.Group>    </Row>
                     <Row>
                     <Form.Group
                         as={Col}
@@ -490,7 +674,7 @@ const CustomerProfile=()=>{
                         <Button
                           type="submit"
                           variant="outline-secondary"
-                          onClick={uploadDocs}
+                          //onClick={uploadDocs}
                           style={styles.signinButton}
                         >
                           Update Profile
@@ -504,6 +688,7 @@ const CustomerProfile=()=>{
           </Formik>
         </div>
       </div>
+      </div>
     </div>
   );
 };
@@ -514,7 +699,7 @@ const styles = {
     height: "auto",
     padding: 20,
     position: "relative",
-    top: 100,
+    top: 10,
     left: "auto",
     right: 0,
     bottom: 0,
@@ -541,5 +726,7 @@ const styles = {
     color: "#004E8F",
     textDecoration: "none",
     fontWeight: "bold",
+   
   },
+  
 };

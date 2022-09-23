@@ -8,7 +8,7 @@ const CustomerSummary=()=>{
       	<CustomerSideBar/>
       </div>
       <div style={{flex:"1 1 auto", display:"flex", flexFlow:"column", height:"100vh", overflowY:"auto"}}>
-        <CustomerNavBar/>
+        <CustomerNavBar />
         <div class="d-flex">
   <div class="p-2 ">Flex item</div>
   <div class="p-2">Flex item</div>

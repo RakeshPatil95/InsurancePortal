@@ -48,6 +48,9 @@ public class SecurityConfig {
 		.antMatchers("/customer/getAadharDoc/{custId}").permitAll()
 		.antMatchers("/agent/getPanDoc/{agentId}").permitAll()
 		.antMatchers("/agent/getAadharDoc/{agentId}").permitAll()
+		.antMatchers("/customer/addProfileImage/{custId}").permitAll()
+		.antMatchers("/customer/addAadharDoc/{custId}").permitAll()
+		.antMatchers("/customer/addPanDoc/{custId}").permitAll()
 		.antMatchers(HttpMethod.OPTIONS).permitAll()
 		.anyRequest().authenticated().and().
 		sessionManagement()

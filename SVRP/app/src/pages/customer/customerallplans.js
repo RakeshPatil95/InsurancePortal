@@ -44,7 +44,7 @@ const getallplans=()=>{
       	<CustomerSideBar/>
       </div>
       <div style={{flex:"1 1 auto", display:"flex", flexFlow:"column", height:"100vh", overflowY:"auto"}}>
-        <CustomerNavBar/>
+        <CustomerNavBar customerName={customer.user.first_name}/>
        
        <Row xs={1} md={2} className="g-3">
             {allplans.map((list) => {

@@ -46,12 +46,12 @@ const CustomerPaynow = () => {
           console.log(response.data)
           const policyID= policy.id
           axios.put
-            (`${config.serverURL}/customer/${customerId}/updateCustomersPremiumDate`, { premium_date,policyID }
+            (`${config.ExpressUrl}/customer/${customerId}/updateCustomersPremiumDate`, { premium_date,policyID }
               , { headers: { token: sessionStorage['token_CUSTOMER'] }, }).
             then((response) => {
               if (response.data.status != 'error') {
                 console.log(response.data)
-                //Navigate("/customerPremiumPayments", { state: { customer: customer } })
+                Navigate("/customerPremiumPayments", { state: { customer: customer } })
               }
             }).catch(error => toast.error("Premium Paid Failed " + error))
         }

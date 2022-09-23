@@ -18,8 +18,8 @@ const ApplyForCustomerPolicy = () => {
     let location = useLocation()
     let customer=location.state.customer
     let policy = location.state.policy
-    console.log(customer.user.id)
-    console.log(policy.id)
+    // console.log(customer.user.id)
+    // console.log(policy.id)
     const schema = yup.object().shape({
         premium:yup.number()
         .min(policy.min_month_premium, "premium must be more than "+policy.min_month_premium)
@@ -50,7 +50,7 @@ const ApplyForCustomerPolicy = () => {
           overflowY: "auto",
         }}
       >
-              <CustomerNavBar agentName={customer.user.first_name} />
+              <CustomerNavBar customerName={customer.user.first_name} />
         <div>
           <Formik 
             validationSchema={schema}
@@ -67,13 +67,12 @@ const ApplyForCustomerPolicy = () => {
               let claim_date=Moment(cd).format("YYYY-MM-DD")
               let pd=new Date()
              let premium_date=Moment(pd).format("YYYY-MM-DD")
-             console.log("status==>"+status)
-             console.log("policStartDate"+policy_start_date);
-             console.log("policyEndDate"+policy_end_date)
-             console.log("claimAmount"+claim_amount);
-             console.log("claimDate"+claim_date)
-              console.log("premiumDate" + premium_date);
-              let invoice = "Generated"
+            //  console.log("status==>"+status)
+            //  console.log("policStartDate"+policy_start_date);
+            //  console.log("policyEndDate"+policy_end_date)
+            //  console.log("claimAmount"+claim_amount);
+            //  console.log("claimDate"+claim_date)
+            //   console.log("premiumDate" + premium_date);
               axios
               .post(`${config.ExpressUrl}/customer/${customer.user.id}/buypolicy/${policy.id}`, {
                 policy_start_date,
@@ -82,7 +81,6 @@ const ApplyForCustomerPolicy = () => {
                 claim_date,
                 status,
                 premium,
-                invoice,
                 premium_date,
               },{headers:{token:sessionStorage['token_CUSTOMER']}
               }).then((response) => {
@@ -90,6 +88,7 @@ const ApplyForCustomerPolicy = () => {
                 if(response.data.status!='error')
                 {
                     toast.success("Applied Successfully\n  Request Sent For Verification")
+                    Navigate("/customerDashboard",{state:{customer:customer}})
               }
               else
               {
@@ -137,7 +136,7 @@ const ApplyForCustomerPolicy = () => {
                           className="SignUpFormControls"
                           type="number"
                           name="premium"
-                          placeholder="Select Date Of Birth:"
+                          placeholder="Select Premium Amount"
                           value={values.premium}
                           onChange={handleChange}
                           isValid={touched.premium && !errors.premium}
@@ -163,7 +162,7 @@ const ApplyForCustomerPolicy = () => {
                           className="SignUpFormControls"
                           type="number"
                           name="tenure"
-                          placeholder="Select Date Of Birth:"
+                          placeholder="Select Tenure"
                           value={values.tenure}
                           onChange={handleChange}
                           isValid={touched.tenure && !errors.tenure}
