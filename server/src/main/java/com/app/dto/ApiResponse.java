@@ -12,6 +12,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ApiResponse {
+public ApiResponse(String message2, HttpStatus conflict) {
+        // TODO Auto-generated constructor stub
+    }
 private String message;
 private HttpStatus status;
 }

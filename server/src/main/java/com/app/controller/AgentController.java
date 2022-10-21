@@ -1,6 +1,7 @@
 package com.app.controller;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -78,6 +79,7 @@ return ResponseEntity.ok(polServ.getAllPolicyDetails());
 @GetMapping(value="/getMyCustomers/{agentId}")
 public ResponseEntity<List<CustomerDto>>getMyCustomers(@PathVariable long agentId){
 	return ResponseEntity.ok().body(agServ.getMyCustomers(agentId));
+	
 }
 @PostMapping(value="/addMyCustomer/{agentId}")
 public ResponseEntity<?>addMyCustomer(@PathVariable @Valid long agentId,@ModelAttribute CustomerDto custDto,@ModelAttribute Address address) throws IOException

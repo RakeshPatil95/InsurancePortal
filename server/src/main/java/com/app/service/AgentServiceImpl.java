@@ -127,6 +127,9 @@ public class AgentServiceImpl implements AgentService {
    agDto.setSecurityQuestion(agentTemp.getSecurityQuestion());
    agDto.setSecurityAnswer(agentTemp.getSecurityQuestion());
    agDto.setAddress(address);
+   agDto.setImage(agentTemp.getImage());
+   agDto.setPanDoc(agentTemp.getPanDoc());
+   agDto.setAadharDoc(agentTemp.getAadharDoc());
  //		String profileImagePath = folder.concat(File.separator).concat("AgentID "+agUpDto.getId());
 //		Files.copy(profileImage.getInputStream(), Paths.get(profileImagePath), StandardCopyOption.REPLACE_EXISTING);
 //		agUpDto.setImage(profileImagePath);

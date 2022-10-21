@@ -48,7 +48,7 @@ private CustomerDao custDao;
 @Autowired
 private AgentDao agDao;
 @Autowired
-private ModelMapper mapper;
+private ModelMapper mapper; 
 @Autowired
 private CustomerPolicyDao custPolDao;
 @Value("${project.adminImages}")
@@ -86,7 +86,7 @@ public void anyInit() {
 	}
 	public Admin dtoToAdmin(AdminDto adDto)
 	{
-		return mapper.map(adDto, Admin.class);
+		return mapper.map(adDto, Admin.class); 
 	}
 
 	@Override
@@ -107,6 +107,7 @@ public void anyInit() {
    adminDto.setSecurityQuestion(ad.getSecurityQuestion());
    adminDto.setPassword(ad.getPassword());
    adminDto.setAddress(adress);
+   adminDto.setImage(ad.getImage());
 	Admin admin=mapper.map(adminDto, Admin.class);
    adDao.save(admin);
   return mapper.map(admin, AdminDto.class);

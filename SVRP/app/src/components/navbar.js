@@ -1,7 +1,13 @@
 import { NavLink } from "react-router-dom";
-import {Navbar,Nav,NavDropdown,Form,FormControl,Button } from "react-bootstrap";
-const NavBar=()=>{
+import { Navbar, Nav, NavDropdown, Form, FormControl, Button,Col,Row } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
+const NavBar = () => {
+  const navigate = useNavigate()
+  const signinpage = () => {
+    navigate('/signin')
+  }
   return (
+    <div style={{overflowY:'auto'}}>
     <Navbar bg="#004E8F"  style={styles.navs} variant={"dark"} expand="lg">
     
     
@@ -41,14 +47,20 @@ const NavBar=()=>{
                 color: "black",
                 fontWeight: "bold",
                 fontSize: 18,
-              }} >Search</Button>
+          }} >Search</Button>
         </Form>
-        <NavLink to='/signin'   >
-               SignIn
-            </NavLink>
+        <Button variant="outline-success rounded-pill" style={{
+                width: "100px",
+                height: 45,
+                backgroundColor: "white",
+                color: "black",
+                fontWeight: "bold",
+                fontSize: 18,
+          }} onClick={signinpage}>SignIn</Button>
       </Navbar.Collapse>
     
-  </Navbar>
+    </Navbar>
+    </div>
   )
 }
 export default NavBar;
